@@ -6,9 +6,8 @@
 //
 
 import Foundation
-
-public final class Crobox {
-    public static let sharedInstance = Crobox()
-
+class Crobox {
+    public static let shared = Crobox()
+    var isDebug = false
     
 }
