@@ -17,6 +17,8 @@
 		055047E62BFDEBC1000D5DD4 /* Crobox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055047E52BFDEBC1000D5DD4 /* Crobox.swift */; };
 		057861272BFCE87300C90824 /* croboxsdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 057861262BFCE87300C90824 /* croboxsdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		05CA6B712C00916E00257E41 /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B702C00916E00257E41 /* ItemModel.swift */; };
+		05CA6B732C00B5F700257E41 /* ScoketResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */; };
+		05CA6B752C00B65200257E41 /* LanguageCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B742C00B65200257E41 /* LanguageCode.swift */; };
 		BA86D95F18DE9730FCFA5015 /* Pods_croboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF6ABC54CC061594F2CC1C11 /* Pods_croboxSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +34,8 @@
 		057861232BFCE87300C90824 /* croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		057861262BFCE87300C90824 /* croboxsdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = croboxsdk.h; sourceTree = "<group>"; };
 		05CA6B702C00916E00257E41 /* ItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
+		05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoketResponseModel.swift; sourceTree = "<group>"; };
+		05CA6B742C00B65200257E41 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
 		A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.debug.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.release.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.release.xcconfig"; sourceTree = "<group>"; };
 		BF6ABC54CC061594F2CC1C11 /* Pods_croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				054180212BFF3531006BEF60 /* PromotoionResponseModel.swift */,
+				05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -78,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				0541803D2BFF833E006BEF60 /* CroboxDebug.swift */,
+				05CA6B742C00B65200257E41 /* LanguageCode.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -282,10 +288,12 @@
 				0541803E2BFF833E006BEF60 /* CroboxDebug.swift in Sources */,
 				054180292BFF65E7006BEF60 /* APIRequests.swift in Sources */,
 				054180242BFF658E006BEF60 /* PageView.swift in Sources */,
+				05CA6B752C00B65200257E41 /* LanguageCode.swift in Sources */,
 				05CA6B712C00916E00257E41 /* ItemModel.swift in Sources */,
 				055047E62BFDEBC1000D5DD4 /* Crobox.swift in Sources */,
 				055047E42BFDEB6E000D5DD4 /* Preferences.swift in Sources */,
 				054180262BFF65B2006BEF60 /* CroboxAPIServices.swift in Sources */,
+				05CA6B732C00B5F700257E41 /* ScoketResponseModel.swift in Sources */,
 				054180222BFF3531006BEF60 /* PromotoionResponseModel.swift in Sources */,
 				055047E22BFDEB4F000D5DD4 /* Constant.swift in Sources */,
 			);

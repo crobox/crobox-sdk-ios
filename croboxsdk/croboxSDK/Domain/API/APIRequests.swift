@@ -9,7 +9,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-class APIRequests: NSObject {
+private class APIRequests: NSObject {
     
     static let shared = APIRequests()
     var headers: HTTPHeaders!

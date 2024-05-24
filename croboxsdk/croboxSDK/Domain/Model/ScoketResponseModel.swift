@@ -6,3 +6,6 @@
 //
 
 import Foundation
+public struct ScoketResponseModel: Codable {
+    public let test: Int
+}
