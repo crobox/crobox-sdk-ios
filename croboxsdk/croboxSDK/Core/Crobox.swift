@@ -8,6 +8,9 @@
 import Foundation
 class Crobox {
     public static let shared = Crobox()
-    var isDebug = false
     
+    /*
+     enable or disable debug
+     */
+    var isDebug = false
 }
