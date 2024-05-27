@@ -12,6 +12,7 @@ import Alamofire
 class APIRequests: NSObject {
     
     static let shared = APIRequests()
+   
     var headers: HTTPHeaders!
     
     func header()

@@ -17,7 +17,6 @@
 		055047E62BFDEBC1000D5DD4 /* Crobox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055047E52BFDEBC1000D5DD4 /* Crobox.swift */; };
 		057861272BFCE87300C90824 /* croboxsdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 057861262BFCE87300C90824 /* croboxsdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		05CA6B712C00916E00257E41 /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B702C00916E00257E41 /* ItemModel.swift */; };
-		05CA6B732C00B5F700257E41 /* ScoketResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */; };
 		05CA6B752C00B65200257E41 /* LanguageCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B742C00B65200257E41 /* LanguageCode.swift */; };
 		05CA6B782C00DD2900257E41 /* PromotionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B772C00DD2900257E41 /* PromotionResponse.swift */; };
 		05CA6B7A2C00DD3D00257E41 /* PromotionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B792C00DD3D00257E41 /* PromotionContext.swift */; };
@@ -40,7 +39,6 @@
 		057861232BFCE87300C90824 /* croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		057861262BFCE87300C90824 /* croboxsdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = croboxsdk.h; sourceTree = "<group>"; };
 		05CA6B702C00916E00257E41 /* ItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
-		05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoketResponseModel.swift; sourceTree = "<group>"; };
 		05CA6B742C00B65200257E41 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
 		05CA6B772C00DD2900257E41 /* PromotionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionResponse.swift; sourceTree = "<group>"; };
 		05CA6B792C00DD3D00257E41 /* PromotionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionContext.swift; sourceTree = "<group>"; };
@@ -65,17 +63,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		050DB2882C0499EF00116646 /* RequestQueryParams */ = {
-			isa = PBXGroup;
-			children = (
-				050DB2892C049A0B00116646 /* RequestQueryParams.swift */,
-			);
-			path = RequestQueryParams;
-			sourceTree = "<group>";
-		};
 		0541801F2BFF34CD006BEF60 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				050DB2892C049A0B00116646 /* RequestQueryParams.swift */,
 				054180232BFF658E006BEF60 /* PageView.swift */,
 				05CA6B702C00916E00257E41 /* ItemModel.swift */,
 			);
@@ -85,7 +76,6 @@
 		054180202BFF34D7006BEF60 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				05CA6B7F2C00DD7000257E41 /* SocketResponse */,
 				05CA6B762C00DA5400257E41 /* PromotionsResponse */,
 			);
 			path = Model;
@@ -129,7 +119,6 @@
 		055047DE2BFDEAE9000D5DD4 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				050DB2882C0499EF00116646 /* RequestQueryParams */,
 				0541801F2BFF34CD006BEF60 /* Model */,
 			);
 			path = Data;
@@ -194,14 +183,6 @@
 				05CA6B822C00DD9300257E41 /* Config.swift */,
 			);
 			path = PromotionsResponse;
-			sourceTree = "<group>";
-		};
-		05CA6B7F2C00DD7000257E41 /* SocketResponse */ = {
-			isa = PBXGroup;
-			children = (
-				05CA6B722C00B5F700257E41 /* ScoketResponseModel.swift */,
-			);
-			path = SocketResponse;
 			sourceTree = "<group>";
 		};
 		44142FFD4A6E8FC50EDD7489 /* Pods */ = {
@@ -342,7 +323,6 @@
 				054180262BFF65B2006BEF60 /* CroboxAPIServices.swift in Sources */,
 				05CA6B7C2C00DD4B00257E41 /* Experiment.swift in Sources */,
 				05CA6B7A2C00DD3D00257E41 /* PromotionContext.swift in Sources */,
-				05CA6B732C00B5F700257E41 /* ScoketResponseModel.swift in Sources */,
 				055047E22BFDEB4F000D5DD4 /* Constant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

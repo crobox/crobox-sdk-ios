@@ -21,10 +21,13 @@ class Crobox {
     /*
      index (Home Page)
 
-     
      */
-    func pageIndex(){
-   
+    func pageIndex(languageCode:String, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
+        //TODO
+        let parameters = ["":""]
+        CroboxAPIServices.shared.promotions(parameters: parameters) { isSuccess, promotionResponse in
+            closure(isSuccess, promotionResponse)
+        }
     }
     
     /*
@@ -93,6 +96,5 @@ class Crobox {
    
         
     }
-   
    
 }

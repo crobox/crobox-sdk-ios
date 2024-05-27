@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 public struct PageView {
-    public let ts: Int = 0
+    
+  
 }

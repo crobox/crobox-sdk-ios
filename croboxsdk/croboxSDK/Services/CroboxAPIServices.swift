@@ -11,7 +11,6 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
     
-    //TODO params from models
     func promotions(parameters:[String: Any], closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
       
         APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
