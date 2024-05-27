@@ -10,15 +10,15 @@ public struct ItemModel {
     /*
      custom product id
      */
-    public let productId: Int?
+    public let id: String?
    
     /*
      product count which is added to the cart
      */
-    public let quantity: Int?
+    public let qty: Int?
 
-    public init(productId: Int? = nil, quantity: Int? = nil) {
-        self.productId = productId
-        self.quantity = quantity
+    public init(productId: String? = nil, quantity: Int? = nil) {
+        self.id = productId
+        self.qty = quantity
     }
 }

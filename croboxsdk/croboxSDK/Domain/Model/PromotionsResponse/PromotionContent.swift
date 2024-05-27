@@ -9,7 +9,7 @@ import Foundation
 import SwiftyJSON
 
 // MARK: - Content
-class Content: NSObject {
+class PromotionContent: NSObject {
     
     let id: String?
     let config: Config?

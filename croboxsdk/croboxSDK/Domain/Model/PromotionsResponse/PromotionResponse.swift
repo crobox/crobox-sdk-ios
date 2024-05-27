@@ -6,3 +6,20 @@
 //
 
 import Foundation
+import SwiftyJSON
+
+// MARK: - PromotionResponse
+class PromotionResponse: NSObject {
+  
+    var context: PromotionContext?
+    var promotions = [Promotion]()
+    
+    init(jsonData: JSON) {
+        self.context = PromotionContext(jsonData:jsonData["context"])
+        if  let arr = jsonData["promotions"].array {
+            for item in arr {
+                self.promotions.append(Promotion(jsonData: item))
+            }
+        }
+    }
+}
