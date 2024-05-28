@@ -12,10 +12,10 @@ import SwiftyJSON
 class PromotionContent: NSObject {
     
     let id: String?
-    let config: Config?
+    let config: PromotionConfig?
     
     init(jsonData: JSON) {
         self.id = jsonData["id"].stringValue
-        self.config = Config(jsonData:jsonData["config"])
+        self.config = PromotionConfig(jsonData:jsonData["config"])
     }
 }
