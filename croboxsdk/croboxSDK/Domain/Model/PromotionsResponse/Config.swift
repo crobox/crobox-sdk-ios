@@ -11,15 +11,23 @@ import SwiftyJSON
 // MARK: - Config
 class PromotionConfig: NSObject {
     
-    var text1Text: String
-    var componentBackgroundColor: String
-    var text1Color: String
-    var componentBorderColor: String
+    var data: [String: String] = [:]
     
     init(jsonData: JSON) {
-        self.text1Text = jsonData["Text1_text"].stringValue
-        self.componentBackgroundColor = jsonData["Component_backgroundColor"].stringValue
-        self.text1Color = jsonData["Text1_color"].stringValue
-        self.componentBorderColor = jsonData["Component_borderColor"].stringValue
+        for (key, subJson):(String, JSON) in jsonData {
+            if let stringValue = subJson.string {
+                self.data[key] = stringValue
+            }
+        }
+    }
+    
+    // İsteğe bağlı: Belirli bir anahtar için değer döndürme işlevi
+    func getValue(forKey key: String) -> String? {
+        return data[key]
+    }
+    
+    // İsteğe bağlı: Belirli bir anahtar için varsayılan değerle birlikte değer döndürme işlevi
+    func getValue(forKey key: String, default defaultValue: String) -> String {
+        return data[key] ?? defaultValue
     }
 }
