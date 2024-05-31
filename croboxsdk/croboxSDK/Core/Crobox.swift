@@ -11,27 +11,29 @@ import SwiftyJSON
 
 class Crobox {
     
+    /*
+     croboxSDK instance
+     */
     public static let shared = Crobox()
+   
     /*
      enable or disable debug
      */
     var isDebug = false
     
-    func pageView(queryParams: RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
-        CroboxAPIServices.shared.socket(queryParams: queryParams) { isSuccess, promotionResponse in
+    func pageView(eventType:EventType!, queryParams: RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
+        CroboxAPIServices.shared.socket(eventType: eventType, queryParams: queryParams) { isSuccess, promotionResponse in
             closure(isSuccess, promotionResponse)
         }
     }
     
     func testfunc()
     {
-        var qq = RequestQueryParams()
+        var queryParams = RequestQueryParams()
+        queryParams.localeCode = .af_ZA
         
-        qq.localeCode = .af_ZA
-        
-        pageView(queryParams: qq) { isSuccess, promotionResponse in
-             
-            print(promotionResponse)
+        pageView(eventType: .CustomEvent, queryParams: queryParams) { isSuccess, promotionResponse in
+            print(promotionResponse!)
         }
     }
    

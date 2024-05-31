@@ -11,7 +11,8 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
     
-    func promotions(queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
+    func promotions(queryParams:RequestQueryParams,
+                    closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
         //Mandatory
         var parameters = [
@@ -45,9 +46,6 @@ class CroboxAPIServices {
         }
         if let customProperties = queryParams.customProperties {
             parameters["lh"] = customProperties
-        }
-        if let customProperties = queryParams.referrerUrl {
-            parameters["rf"] = customProperties
         }
         
         APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
@@ -75,7 +73,7 @@ class CroboxAPIServices {
         }
     }
     
-    func socket(queryParams:RequestQueryParams,closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
+    func socket(eventType:EventType!, queryParams:RequestQueryParams,closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
         //Mandatory
         var parameters = [
@@ -83,6 +81,7 @@ class CroboxAPIServices {
             "e": queryParams.viewCounter!,
             "vid": queryParams.viewId!,
             "pid": queryParams.visitorId!,
+            "t": eventType.rawValue
         ] as [String : Any]
         
         //Optional
@@ -109,9 +108,6 @@ class CroboxAPIServices {
         }
         if let customProperties = queryParams.customProperties {
             parameters["lh"] = customProperties
-        }
-        if let customProperties = queryParams.referrerUrl {
-            parameters["rf"] = customProperties
         }
         
         APIRequests.shared.request(method: .post, url: Constant.Socket_Path , parameters: parameters ) {
