@@ -73,7 +73,7 @@ class CroboxAPIServices {
         }
     }
     
-    func socket(eventType:EventType!, queryParams:RequestQueryParams,closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
+    func socket(eventType:EventType!, additionalParams:Any?, queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
         //Mandatory
         var parameters = [
@@ -110,7 +110,10 @@ class CroboxAPIServices {
             parameters["lh"] = customProperties
         }
         
-        checkEventType(eventType:eventType, queryParams:queryParams, parameters: &parameters)
+        checkEventType(eventType:eventType,
+                       queryParams:queryParams,
+                       additionalParams: additionalParams,
+                       parameters: &parameters)
         
         APIRequests.shared.request(method: .post, url: Constant.Socket_Path , parameters: parameters ) {
             (jsonObject, success) in
@@ -136,7 +139,6 @@ class CroboxAPIServices {
             }
         }
     }
-    
 }
 
 
@@ -144,17 +146,23 @@ class CroboxAPIServices {
 // check for event type
 extension CroboxAPIServices
 {
-    func checkEventType(eventType:EventType!, queryParams:RequestQueryParams, parameters: inout [String : Any])
+    func checkEventType(eventType:EventType!, queryParams:RequestQueryParams, additionalParams: Any?, parameters: inout [String : Any])
     {
         switch eventType {
         case .Click:
-            clickEvent(queryParams: queryParams, parameters: &parameters)
+            if let clickParams = additionalParams as? ClickQueryParams {
+                clickEvent(clickParams: clickParams, parameters: &parameters)
+            }
             break
         case .AddCart:
-            //TODO
+            if let addCartQueryParams = additionalParams as? AddCartQueryParams {
+                addToCartEvent(addCartQueryParams: addCartQueryParams, parameters: &parameters)
+            }
             break
         case .RemoveCart:
-            //TODO
+            if let removeFromCartQueryParams = additionalParams as? RemoveFromCartQueryParams {
+                removeFromCartEvent(removeFromCartQueryParams: removeFromCartQueryParams, parameters: &parameters)
+            }
             break
         case .Transaction:
             //TODO
@@ -163,7 +171,9 @@ extension CroboxAPIServices
             //TODO
             break
         case .Error:
-            errorEvent(queryParams: queryParams, parameters: &parameters)
+            if let errorQueryParams = additionalParams as? ErrorQueryParams {
+                errorEvent(errorQueryParams: errorQueryParams, parameters: &parameters)
+            }
             break
         case .CustomEvent:
             //TODO
@@ -190,33 +200,33 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func errorEvent(queryParams:RequestQueryParams, parameters: inout [String : Any])
+    func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : Any])
     {
-        if let tag = queryParams.errorQueryParams?.tag {
+        if let tag = errorQueryParams.tag {
             parameters["tg"] = tag
         }
-        if let name = queryParams.errorQueryParams?.name {
+        if let name = errorQueryParams.name {
             parameters["nm"] = name
         }
-        if let message = queryParams.errorQueryParams?.message {
+        if let message = errorQueryParams.message {
             parameters["msg"] = message
         }
-        if let file = queryParams.errorQueryParams?.file {
+        if let file = errorQueryParams.file {
             parameters["f"] = file
         }
-        if let line = queryParams.errorQueryParams?.line {
+        if let line = errorQueryParams.line {
             parameters["l"] = line
         }
-        if let devicePixelRatio = queryParams.errorQueryParams?.devicePixelRatio {
+        if let devicePixelRatio = errorQueryParams.devicePixelRatio {
             parameters["dpr"] = devicePixelRatio
         }
-        if let deviceLanguage = queryParams.errorQueryParams?.deviceLanguage {
+        if let deviceLanguage = errorQueryParams.deviceLanguage {
             parameters["ul"] = deviceLanguage
         }
-        if let viewPortSize = queryParams.errorQueryParams?.viewPortSize {
+        if let viewPortSize = errorQueryParams.viewPortSize {
             parameters["vp"] = viewPortSize
         }
-        if let screenResolutionSize = queryParams.errorQueryParams?.screenResolutionSize {
+        if let screenResolutionSize = errorQueryParams.screenResolutionSize {
             parameters["sr"] = screenResolutionSize
         }
     }
@@ -226,23 +236,75 @@ extension CroboxAPIServices
 /*
  
  The following arguments are applicable for click events( where t=click ). They are all optional
-
+ 
  */
 
 extension CroboxAPIServices
 {
-    func clickEvent(queryParams:RequestQueryParams, parameters: inout [String : Any])
+    func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : Any])
     {
-        if let productId = queryParams.clickQueryParams?.productId {
+        if let productId = clickParams.productId {
             parameters["pi"] = productId
         }
-        if let category = queryParams.clickQueryParams?.category {
+        if let category = clickParams.category {
             parameters["cat"] = category
         }
-        if let price = queryParams.clickQueryParams?.price {
+        if let price = clickParams.price {
             parameters["price"] = price
         }
-        if let quantity = queryParams.clickQueryParams?.quantity {
+        if let quantity = clickParams.quantity {
+            parameters["qty"] = quantity
+        }
+    }
+}
+
+
+/*
+ 
+ The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
+ 
+ */
+
+extension CroboxAPIServices
+{
+    func addToCartEvent(addCartQueryParams:AddCartQueryParams, parameters: inout [String : Any])
+    {
+        if let productId = addCartQueryParams.productId {
+            parameters["pi"] = productId
+        }
+        if let category = addCartQueryParams.category {
+            parameters["cat"] = category
+        }
+        if let price = addCartQueryParams.price {
+            parameters["price"] = price
+        }
+        if let quantity = addCartQueryParams.quantity {
+            parameters["qty"] = quantity
+        }
+    }
+}
+
+
+/*
+ 
+ The following arguments are applicable for RemoveFromCart events( where t=rmcart ). They are all optional
+ 
+ */
+
+extension CroboxAPIServices
+{
+    func removeFromCartEvent(removeFromCartQueryParams:RemoveFromCartQueryParams, parameters: inout [String : Any])
+    {
+        if let productId = removeFromCartQueryParams.productId {
+            parameters["pi"] = productId
+        }
+        if let category = removeFromCartQueryParams.category {
+            parameters["cat"] = category
+        }
+        if let price = removeFromCartQueryParams.price {
+            parameters["price"] = price
+        }
+        if let quantity = removeFromCartQueryParams.quantity {
             parameters["qty"] = quantity
         }
     }

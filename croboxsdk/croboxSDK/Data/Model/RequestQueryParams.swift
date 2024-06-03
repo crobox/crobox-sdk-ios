@@ -93,7 +93,6 @@ import Foundation
 //"cp.xyz" : Custom Property xyz
 
 struct RequestQueryParams {
-    
     var containerId: String!   // ContainerId (mandatory)
     var viewCounter: Int!       // ViewCounter (mandatory)
     var viewId: String!  // ViewId (mandatory)
@@ -107,9 +106,6 @@ struct RequestQueryParams {
     var customProperties: [String: String]?  // Custom Properties (optional)
     var pageUrl: String?   // ViewController Name
     var referrerUrl: String?   // ViewController Name
-  
-    var errorQueryParams: ErrorQueryParams?
-    var clickQueryParams: ClickQueryParams?
 }
 
 /*
@@ -240,9 +236,8 @@ struct ErrorQueryParams {
     var screenResolutionSize: String?
 }
 
-
 /*
- The following arguments are applicable for click events( where t=click ). They are all optional
+ The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
 
  ProductId
  Type: String
@@ -272,6 +267,20 @@ struct ErrorQueryParams {
 //"qty": Quantity
 
 struct ClickQueryParams {
+    var productId: String?
+    var category: String?
+    var price: Double?
+    var quantity: Int?
+}
+
+struct AddCartQueryParams {
+    var productId: String?
+    var category: String?
+    var price: Double?
+    var quantity: Int?
+}
+
+struct RemoveFromCartQueryParams {
     var productId: String?
     var category: String?
     var price: Double?

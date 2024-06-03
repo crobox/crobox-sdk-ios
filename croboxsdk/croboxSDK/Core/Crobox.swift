@@ -21,20 +21,34 @@ class Crobox {
      */
     var isDebug = false
     
-    func pageView(eventType:EventType!, queryParams: RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
-        CroboxAPIServices.shared.socket(eventType: eventType, queryParams: queryParams) { isSuccess, promotionResponse in
+    func pageView(eventType:EventType!, queryParams: RequestQueryParams,
+                  additionalParams:Any?,
+                  closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
+        
+        CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, promotionResponse in
             closure(isSuccess, promotionResponse)
         }
+        
     }
     
     func testfunc()
     {
         var queryParams = RequestQueryParams()
         queryParams.localeCode = .af_ZA
-        queryParams.errorQueryParams?.name = ""
+        //.....
+
+
+        //example event additionalParams
+        let clickParams = ClickQueryParams(
+            productId: "123",
+            category: "books",
+            price: 12.99,
+            quantity: 1
+        )
         
-        pageView(eventType: .CustomEvent, queryParams: queryParams) { isSuccess, promotionResponse in
+        pageView(eventType: .CustomEvent, queryParams: queryParams, additionalParams: clickParams ) { isSuccess, promotionResponse in
             print(promotionResponse!)
+      
         }
     }
    
