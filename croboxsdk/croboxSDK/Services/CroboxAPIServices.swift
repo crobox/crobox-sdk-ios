@@ -148,7 +148,7 @@ extension CroboxAPIServices
     {
         switch eventType {
         case .Click:
-            //TODO
+            clickEvent(queryParams: queryParams, parameters: &parameters)
             break
         case .AddCart:
             //TODO
@@ -218,6 +218,32 @@ extension CroboxAPIServices
         }
         if let screenResolutionSize = queryParams.errorQueryParams?.screenResolutionSize {
             parameters["sr"] = screenResolutionSize
+        }
+    }
+}
+
+
+/*
+ 
+ The following arguments are applicable for click events( where t=click ). They are all optional
+
+ */
+
+extension CroboxAPIServices
+{
+    func clickEvent(queryParams:RequestQueryParams, parameters: inout [String : Any])
+    {
+        if let productId = queryParams.clickQueryParams?.productId {
+            parameters["pi"] = productId
+        }
+        if let category = queryParams.clickQueryParams?.category {
+            parameters["cat"] = category
+        }
+        if let price = queryParams.clickQueryParams?.price {
+            parameters["price"] = price
+        }
+        if let quantity = queryParams.clickQueryParams?.quantity {
+            parameters["qty"] = quantity
         }
     }
 }

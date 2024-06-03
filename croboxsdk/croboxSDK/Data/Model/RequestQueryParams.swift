@@ -76,13 +76,14 @@ import Foundation
  Description: This header is applicable for web clients but I wonder if it can be re-used for mobile clients as well, in order to distinguish between mobile devices / operating systems.
  */
 
-//// Mandatory
+//Mandatory
 //"cid": ContainerId
 //"e":  ViewCounter
 //"vid": ViewId
 //"pid": VisitorId
-//
-//// Optional
+
+
+// Optional
 //"cc":  CurrencyCode
 //"lc" : LocaleCode
 //"uid" : UserId
@@ -92,6 +93,7 @@ import Foundation
 //"cp.xyz" : Custom Property xyz
 
 struct RequestQueryParams {
+    
     var containerId: String!   // ContainerId (mandatory)
     var viewCounter: Int!       // ViewCounter (mandatory)
     var viewId: String!  // ViewId (mandatory)
@@ -105,7 +107,9 @@ struct RequestQueryParams {
     var customProperties: [String: String]?  // Custom Properties (optional)
     var pageUrl: String?   // ViewController Name
     var referrerUrl: String?   // ViewController Name
+  
     var errorQueryParams: ErrorQueryParams?
+    var clickQueryParams: ClickQueryParams?
 }
 
 /*
@@ -229,9 +233,47 @@ struct ErrorQueryParams {
     var name: String?
     var message: String?
     var file: String?
-    var line: String?
-    var devicePixelRatio: String?
+    var line: Int?
+    var devicePixelRatio: Double?
     var deviceLanguage: String?
     var viewPortSize: String?
     var screenResolutionSize: String?
+}
+
+
+/*
+ The following arguments are applicable for click events( where t=click ). They are all optional
+
+ ProductId
+ Type: String
+ Description: Identifier of a product.
+ Example: pi=abcd-123
+
+ Category
+ Type: String
+ Description: Category of a product.
+ Example: cat=mens_shoes
+
+ Price
+ Type: Double
+ Description: Numeric digits separated by comma or dot
+ Example: price=123,456 or 123.456
+
+ Quantity
+ Type: Int
+ Description: Numeric integer indicating the number of products
+ Example: qty=2
+ 
+ */
+
+//"pi" : ProductId
+//"cat" : Category
+//"price" :  Price
+//"qty": Quantity
+
+struct ClickQueryParams {
+    var productId: String?
+    var category: String?
+    var price: Double?
+    var quantity: Int?
 }
