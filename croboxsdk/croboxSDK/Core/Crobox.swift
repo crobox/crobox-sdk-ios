@@ -31,6 +31,7 @@ class Crobox {
     {
         var queryParams = RequestQueryParams()
         queryParams.localeCode = .af_ZA
+        queryParams.errorQueryParams?.name = ""
         
         pageView(eventType: .CustomEvent, queryParams: queryParams) { isSuccess, promotionResponse in
             print(promotionResponse!)

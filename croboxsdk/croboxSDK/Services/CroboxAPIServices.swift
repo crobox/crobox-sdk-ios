@@ -110,6 +110,8 @@ class CroboxAPIServices {
             parameters["lh"] = customProperties
         }
         
+        checkEventType(eventType:eventType, queryParams:queryParams, parameters: &parameters)
+        
         APIRequests.shared.request(method: .post, url: Constant.Socket_Path , parameters: parameters ) {
             (jsonObject, success) in
             
@@ -134,5 +136,88 @@ class CroboxAPIServices {
             }
         }
     }
+    
 }
 
+
+
+// check for event type
+extension CroboxAPIServices
+{
+    func checkEventType(eventType:EventType!, queryParams:RequestQueryParams, parameters: inout [String : Any])
+    {
+        switch eventType {
+        case .Click:
+            //TODO
+            break
+        case .AddCart:
+            //TODO
+            break
+        case .RemoveCart:
+            //TODO
+            break
+        case .Transaction:
+            //TODO
+            break
+        case .PageView:
+            //TODO
+            break
+        case .Error:
+            errorEvent(queryParams: queryParams, parameters: &parameters)
+            break
+        case .CustomEvent:
+            //TODO
+            break
+        case .Product:
+            //TODO
+            break
+        case .ProductFinder:
+            //TODO
+            break
+        default:
+            print("none")
+        }
+    }
+    
+}
+
+
+/*
+ 
+ The following arguments are applicable for error events( where t=error ). They are all optional.
+ 
+ */
+
+extension CroboxAPIServices
+{
+    func errorEvent(queryParams:RequestQueryParams, parameters: inout [String : Any])
+    {
+        if let tag = queryParams.errorQueryParams?.tag {
+            parameters["tg"] = tag
+        }
+        if let name = queryParams.errorQueryParams?.name {
+            parameters["nm"] = name
+        }
+        if let message = queryParams.errorQueryParams?.message {
+            parameters["msg"] = message
+        }
+        if let file = queryParams.errorQueryParams?.file {
+            parameters["f"] = file
+        }
+        if let line = queryParams.errorQueryParams?.line {
+            parameters["l"] = line
+        }
+        if let devicePixelRatio = queryParams.errorQueryParams?.devicePixelRatio {
+            parameters["dpr"] = devicePixelRatio
+        }
+        if let deviceLanguage = queryParams.errorQueryParams?.deviceLanguage {
+            parameters["ul"] = deviceLanguage
+        }
+        if let viewPortSize = queryParams.errorQueryParams?.viewPortSize {
+            parameters["vp"] = viewPortSize
+        }
+        if let screenResolutionSize = queryParams.errorQueryParams?.screenResolutionSize {
+            parameters["sr"] = screenResolutionSize
+        }
+    }
+}
