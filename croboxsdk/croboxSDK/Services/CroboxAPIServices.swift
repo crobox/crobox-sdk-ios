@@ -111,7 +111,6 @@ class CroboxAPIServices {
         }
         
         checkEventType(eventType:eventType,
-                       queryParams:queryParams,
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
@@ -146,7 +145,7 @@ class CroboxAPIServices {
 // check for event type
 extension CroboxAPIServices
 {
-    func checkEventType(eventType:EventType!, queryParams:RequestQueryParams, additionalParams: Any?, parameters: inout [String : Any])
+    func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : Any])
     {
         switch eventType {
         case .Click:
@@ -164,9 +163,6 @@ extension CroboxAPIServices
                 removeFromCartEvent(removeFromCartQueryParams: removeFromCartQueryParams, parameters: &parameters)
             }
             break
-        case .Transaction:
-            //TODO
-            break
         case .PageView:
             //TODO
             break
@@ -176,13 +172,9 @@ extension CroboxAPIServices
             }
             break
         case .CustomEvent:
-            //TODO
-            break
-        case .Product:
-            //TODO
-            break
-        case .ProductFinder:
-            //TODO
+            if let customQueryParams = additionalParams as? CustomQueryParams {
+                customEvent(customQueryParams: customQueryParams, parameters: &parameters)
+            }
             break
         default:
             print("none")
@@ -309,3 +301,35 @@ extension CroboxAPIServices
         }
     }
 }
+
+
+/*
+ 
+ The following arguments are applicable for click events( where t=event ). They are all optional
+
+ */
+
+extension CroboxAPIServices
+{
+    func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : Any])
+    {
+        if let name = customQueryParams.name {
+            parameters["nm"] = name
+        }
+        if let promotionID = customQueryParams.promotionID {
+            parameters["promoId"] = promotionID
+        }
+        if let productID = customQueryParams.productID {
+            parameters["pi"] = productID
+        }
+        if let price = customQueryParams.price {
+            parameters["price"] = price
+        }
+        if let quantity = customQueryParams.quantity {
+            parameters["qty"] = quantity
+        }
+    }
+}
+
+
+

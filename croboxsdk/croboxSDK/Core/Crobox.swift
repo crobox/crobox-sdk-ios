@@ -15,7 +15,7 @@ class Crobox {
      croboxSDK instance
      */
     public static let shared = Crobox()
-   
+    
     /*
      enable or disable debug
      */
@@ -28,7 +28,6 @@ class Crobox {
         CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, promotionResponse in
             closure(isSuccess, promotionResponse)
         }
-        
     }
     
     func testfunc()
@@ -36,8 +35,8 @@ class Crobox {
         var queryParams = RequestQueryParams()
         queryParams.localeCode = .af_ZA
         //.....
-
-
+        
+        
         //example event additionalParams
         let clickParams = ClickQueryParams(
             productId: "123",
@@ -46,10 +45,11 @@ class Crobox {
             quantity: 1
         )
         
-        pageView(eventType: .CustomEvent, queryParams: queryParams, additionalParams: clickParams ) { isSuccess, promotionResponse in
+        pageView(eventType: .CustomEvent, queryParams: queryParams, additionalParams: clickParams) { isSuccess, promotionResponse in
+          
             print(promotionResponse!)
-      
+            
         }
     }
-   
+    
 }

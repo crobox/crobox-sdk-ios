@@ -147,14 +147,10 @@ public enum EventType:String{
     case Click = "click" // Click
     case AddCart = "cart" // Add to Shopping Cart
     case RemoveCart = "rmcart" // Remove from Shopping Cart
-    case Transaction = "transaction" // Transaction
     case PageView = "pageview" // PageView
     case Error = "error" // Error
     case CustomEvent = "event" // CustomEvent
-    case Product = "product" // Product
-    case ProductFinder = "pf" // ProductFinder
 }
-
 
 
 /*
@@ -283,6 +279,59 @@ struct AddCartQueryParams {
 struct RemoveFromCartQueryParams {
     var productId: String?
     var category: String?
+    var price: Double?
+    var quantity: Int?
+}
+
+
+/*
+ 
+ The following arguments are applicable for click events( where t=event ). They are all optional
+
+ Name
+ Type: String
+ Description: Custom event name
+ Example: nm=banner-click
+
+ Promotion ID
+ Type: UUID
+ Description: Promotion identifier
+ Example: promoId=c97c02c0-1f5a-11ef-81c0-cd67b451d09e
+
+ Product ID
+ Type: String
+ Description: Identifier of a product.
+ Example: pi=abcd-123
+
+ Category
+ Type: String
+ Description: Category of a product.
+ Example: cat=mens_shoes
+
+ Price
+ Type: Double
+ Description: Numeric digits separated by comma or dot
+ Example: price=123,456 or 123.456
+
+ Quantity
+ Type: Int
+ Description: Numeric integer indicating the number of products
+ Example: qty=2
+
+ */
+
+//"nm" : Name
+//"promoId" : Promotion ID
+//"pi" : Product ID
+//"cat" : Category
+//"price" : Price
+//"qty" : Quantity
+
+struct CustomQueryParams {
+    var name: String?
+    var promotionID: UUID?
+    var productID: Double?
+    var category: Int?
     var price: Double?
     var quantity: Int?
 }
