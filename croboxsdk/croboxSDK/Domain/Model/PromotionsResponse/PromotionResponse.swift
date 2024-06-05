@@ -9,7 +9,7 @@ import Foundation
 import SwiftyJSON
 
 // MARK: - PromotionResponse
-class PromotionResponse: NSObject {
+public class PromotionResponse: NSObject {
   
     var context: PromotionContext?
     var promotions = [Promotion]()

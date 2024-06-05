@@ -16,10 +16,10 @@ class CroboxAPIServices {
         
         //Mandatory
         var parameters = [
-            "cid": queryParams.containerId!,
-            "e": queryParams.viewCounter!,
-            "vid": queryParams.viewId!,
-            "pid": queryParams.visitorId!,
+            "cid": queryParams.containerId,
+            "e": queryParams.viewCounter,
+            "vid": queryParams.viewId,
+            "pid": queryParams.visitorId,
         ] as [String : Any]
         
         //Optional
@@ -77,10 +77,10 @@ class CroboxAPIServices {
         
         //Mandatory
         var parameters = [
-            "cid": queryParams.containerId!,
-            "e": queryParams.viewCounter!,
-            "vid": queryParams.viewId!,
-            "pid": queryParams.visitorId!,
+            "cid": queryParams.containerId,
+            "e": queryParams.viewCounter,
+            "vid": queryParams.viewId,
+            "pid": queryParams.visitorId,
             "t": eventType.rawValue
         ] as [String : Any]
         

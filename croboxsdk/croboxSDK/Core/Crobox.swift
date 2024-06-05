@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-class Crobox {
+public class Crobox {
     
     /*
      croboxSDK instance
@@ -19,9 +19,9 @@ class Crobox {
     /*
      enable or disable debug
      */
-    var isDebug = false
+    public var isDebug = false
     
-    func pageView(eventType:EventType!, queryParams: RequestQueryParams,
+    public func pageView(eventType:EventType!, queryParams: RequestQueryParams,
                   additionalParams:Any?,
                   closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
         
@@ -29,27 +29,4 @@ class Crobox {
             closure(isSuccess, promotionResponse)
         }
     }
-    
-    func testfunc()
-    {
-        var queryParams = RequestQueryParams()
-        queryParams.localeCode = .af_ZA
-        //.....
-        
-        
-        //example event additionalParams
-        let clickParams = ClickQueryParams(
-            productId: "123",
-            category: "books",
-            price: 12.99,
-            quantity: 1
-        )
-        
-        pageView(eventType: .CustomEvent, queryParams: queryParams, additionalParams: clickParams) { isSuccess, promotionResponse in
-          
-            print(promotionResponse!)
-            
-        }
-    }
-    
 }
