@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftyJSON
+import Alamofire
 
 class CroboxAPIServices {
     
@@ -316,10 +318,10 @@ extension CroboxAPIServices
         if let name = customQueryParams.name {
             parameters["nm"] = name
         }
-        if let promotionID = customQueryParams.promotionID {
+        if let promotionID = customQueryParams.promotionId {
             parameters["promoId"] = promotionID
         }
-        if let productID = customQueryParams.productID {
+        if let productID = customQueryParams.productId {
             parameters["pi"] = productID
         }
         if let price = customQueryParams.price {

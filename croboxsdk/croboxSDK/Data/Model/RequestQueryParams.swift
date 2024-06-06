@@ -284,6 +284,18 @@ public struct ClickQueryParams {
     public var category: String?
     public var price: Double?
     public var quantity: Int?
+    
+    // Public initializer
+    public init(productId: String? = nil,
+                category: String? = nil,
+                price: Double? = nil,
+                quantity: Int? = nil) {
+        
+        self.productId = productId
+        self.category = category
+        self.price = price
+        self.quantity = quantity
+    }
 }
 
 public struct AddCartQueryParams {
@@ -291,6 +303,18 @@ public struct AddCartQueryParams {
     public var category: String?
     public var price: Double?
     public var quantity: Int?
+    
+    // Public initializer
+    public init(productId: String? = nil,
+                category: String? = nil,
+                price: Double? = nil,
+                quantity: Int? = nil) {
+        
+        self.productId = productId
+        self.category = category
+        self.price = price
+        self.quantity = quantity
+    }
 }
 
 public struct RemoveFromCartQueryParams {
@@ -298,6 +322,18 @@ public struct RemoveFromCartQueryParams {
     public var category: String?
     public var price: Double?
     public var quantity: Int?
+    
+    // Public initializer
+    public init(productId: String? = nil,
+                category: String? = nil,
+                price: Double? = nil,
+                quantity: Int? = nil) {
+        
+        self.productId = productId
+        self.category = category
+        self.price = price
+        self.quantity = quantity
+    }
 }
 
 
@@ -346,9 +382,25 @@ public struct RemoveFromCartQueryParams {
 
 public struct CustomQueryParams {
     var name: String?
-    var promotionID: UUID?
-    var productID: Double?
+    var promotionId: UUID?
+    var productId: Double?
     var category: Int?
     var price: Double?
     var quantity: Int?
+    
+    // Public initializer
+    public init(name: String? = nil,
+                promotionId: UUID? = nil,
+                productId: Double? = nil,
+                category: Int? = nil,
+                price: Double? = nil,
+                quantity: Int? = nil) {
+        
+        self.name = name
+        self.promotionId = promotionId
+        self.productId = productId
+        self.category = category
+        self.price = price
+        self.quantity = quantity
+    }
 }

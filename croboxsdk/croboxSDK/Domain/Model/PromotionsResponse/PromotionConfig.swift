@@ -8,7 +8,7 @@
 import Foundation
 import SwiftyJSON
 
-// MARK: - Config
+// MARK: - PromotionConfig
 class PromotionConfig: NSObject {
     
     var data: [String: String] = [:]
@@ -20,13 +20,11 @@ class PromotionConfig: NSObject {
             }
         }
     }
-    
-    // İsteğe bağlı: Belirli bir anahtar için değer döndürme işlevi
+
     func getValue(forKey key: String) -> String? {
         return data[key]
     }
-    
-    // İsteğe bağlı: Belirli bir anahtar için varsayılan değerle birlikte değer döndürme işlevi
+
     func getValue(forKey key: String, default defaultValue: String) -> String {
         return data[key] ?? defaultValue
     }
