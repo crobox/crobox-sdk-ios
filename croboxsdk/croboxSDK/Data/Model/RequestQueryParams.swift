@@ -93,7 +93,6 @@ import Foundation
 //"cp.xyz" : Custom Property xyz
 
 public struct RequestQueryParams {
-    public var containerId: String   // ContainerId (mandatory)
     public var viewCounter: Int      // ViewCounter (mandatory)
     public var viewId: String        // ViewId (mandatory)
     public var visitorId: String     // VisitorId (mandatory)
@@ -108,8 +107,7 @@ public struct RequestQueryParams {
     public var referrerUrl: String?  // ViewController Name
     
     // Public initializer
-    public init(containerId: String, viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
-        self.containerId = containerId
+    public init(viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
         self.viewCounter = viewCounter
         self.viewId = viewId
         self.visitorId = visitorId

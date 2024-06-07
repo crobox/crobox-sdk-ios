@@ -75,11 +75,11 @@ class CroboxAPIServices {
         }
     }
     
-    func socket(eventType:EventType!, additionalParams:Any?, queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
+    func socket(eventType:EventType!, additionalParams:Any?, queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
         
         //Mandatory
         var parameters = [
-            "cid": queryParams.containerId,
+            "cid": Crobox.shared.containerId,
             "e": queryParams.viewCounter,
             "vid": queryParams.viewId,
             "pid": queryParams.visitorId,
@@ -119,24 +119,20 @@ class CroboxAPIServices {
         APIRequests.shared.request(method: .post, url: Constant.Socket_Path , parameters: parameters ) {
             (jsonObject, success) in
             
-            var promotionResponse:PromotionResponse?
-            
             if success {
                 
                 if jsonObject == nil && !(jsonObject?.isEmpty ?? false) {
                     
-                    promotionResponse = PromotionResponse(jsonData: jsonObject!)
-                    
-                    closure(true, promotionResponse)
+                    closure(true, jsonObject)
                     
                 } else {
                     
-                    closure(false, promotionResponse)
+                    closure(false, jsonObject)
                 }
                 
             } else {
                 
-                closure(false, promotionResponse)
+                closure(false, jsonObject)
             }
         }
     }

@@ -20,13 +20,17 @@ public class Crobox {
      enable or disable debug
      */
     public var isDebug = false
+    public var containerId = ""
+    
+    public func setContainerId(containerId:String) {
+        self.containerId =  containerId
+    }
     
     public func pageView(eventType:EventType!, queryParams: RequestQueryParams,
                   additionalParams:Any?,
-                  closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
-        
-        CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, promotionResponse in
-            closure(isSuccess, promotionResponse)
+                  closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, jsonObject in
+            closure(isSuccess, jsonObject)
         }
     }
 }
