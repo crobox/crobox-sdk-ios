@@ -18,7 +18,7 @@ class CroboxAPIServices {
         
         //Mandatory
         var parameters = [
-            "cid": queryParams.containerId,
+            "cid": Crobox.shared.containerId,
             "e": queryParams.viewCounter,
             "vid": queryParams.viewId,
             "pid": queryParams.visitorId,

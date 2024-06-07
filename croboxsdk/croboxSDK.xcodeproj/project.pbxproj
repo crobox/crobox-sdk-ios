@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		050DB28A2C049A0B00116646 /* RequestQueryParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050DB2892C049A0B00116646 /* RequestQueryParams.swift */; };
+		0535E2492C131D3200A40910 /* croboxSDK.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 0535E2482C131D3200A40910 /* croboxSDK.podspec */; };
 		054180262BFF65B2006BEF60 /* CroboxAPIServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054180252BFF65B2006BEF60 /* CroboxAPIServices.swift */; };
 		054180292BFF65E7006BEF60 /* APIRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054180282BFF65E7006BEF60 /* APIRequests.swift */; };
 		0541803E2BFF833E006BEF60 /* CroboxDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541803D2BFF833E006BEF60 /* CroboxDebug.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		050DB2892C049A0B00116646 /* RequestQueryParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestQueryParams.swift; sourceTree = "<group>"; };
+		0535E2482C131D3200A40910 /* croboxSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = croboxSDK.podspec; path = ../croboxSDK.podspec; sourceTree = "<group>"; };
 		054180252BFF65B2006BEF60 /* CroboxAPIServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroboxAPIServices.swift; sourceTree = "<group>"; };
 		054180282BFF65E7006BEF60 /* APIRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequests.swift; sourceTree = "<group>"; };
 		0541803D2BFF833E006BEF60 /* CroboxDebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroboxDebug.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		057861192BFCE87300C90824 = {
 			isa = PBXGroup;
 			children = (
+				0535E2482C131D3200A40910 /* croboxSDK.podspec */,
 				057861252BFCE87300C90824 /* croboxSDK */,
 				057861242BFCE87300C90824 /* Products */,
 				44142FFD4A6E8FC50EDD7489 /* Pods */,
@@ -270,6 +273,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0535E2492C131D3200A40910 /* croboxSDK.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
