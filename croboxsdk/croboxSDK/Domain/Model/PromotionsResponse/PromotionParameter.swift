@@ -6,8 +6,6 @@
 //
 
 import Foundation
-<<<<<<< HEAD
-=======
 import SwiftyJSON
 
 public class PromotionParameter: NSObject {
@@ -30,4 +28,3 @@ public class PromotionParameter: NSObject {
         return data[key] ?? defaultValue
     }
 }
->>>>>>> ee1dd3e (promotion endpoint: Request / Response model)
