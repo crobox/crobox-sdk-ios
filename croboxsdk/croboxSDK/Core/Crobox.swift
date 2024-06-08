@@ -20,6 +20,10 @@ public class Crobox {
      enable or disable debug
      */
     public var isDebug = false
+    
+    /*
+     have to setted when init SDK on app, it is
+     */
     public var containerId = ""
     
     public func setContainerId(containerId:String) {

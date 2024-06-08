@@ -8,7 +8,7 @@
 import Foundation
 
 /*
- 
+
  The list of query parameters that are applicable for mobile clients are below. These are applicable for both socket and promotions endpoints. Further details of each parameter are at the bottom. :
  
  User-Agent header for web
@@ -74,6 +74,12 @@ import Foundation
  
  User-Agent header
  Description: This header is applicable for web clients but I wonder if it can be re-used for mobile clients as well, in order to distinguish between mobile devices / operating systems.
+ 
+ Placeholder Id (Mandatory) --- request parameters are applicable for /promotions endpoint
+ Type: Int
+ Description: Identifier of the placeholder. A Placeholder represents a predesignated point on the user interface, where the promotion will be located and displayed. Placeholders are linked with campaigns which has all promotion attributes, UI components, messages and time frame. These are all managed via the Crobox Admin application.
+ Example: vpid=1
+ 
  */
 
 //Mandatory
@@ -93,6 +99,7 @@ import Foundation
 //"cp.xyz" : Custom Property xyz
 
 public struct RequestQueryParams {
+   
     public var viewCounter: Int      // ViewCounter (mandatory)
     public var viewId: String        // ViewId (mandatory)
     public var visitorId: String     // VisitorId (mandatory)
@@ -103,11 +110,12 @@ public struct RequestQueryParams {
     public var timezone: Int?        // Timezone (optional)
     public var pageType: PageType?   // PageType (optional)
     public var customProperties: [String: String]? // Custom Properties (optional)
-    public var pageUrl: String?      // ViewController Name
-    public var referrerUrl: String?  // ViewController Name
+    public var pageUrl: String?      // ViewController (optional)
+    public var referrerUrl: String?  // referrerUrl (optional)
+    public var placeholderId: String?  // placeholderId (optional only for promotions) TODO: discuss
     
     // Public initializer
-    public init(viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
+    public init(viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil, placeholderId: String? = nil) {
         self.viewCounter = viewCounter
         self.viewId = viewId
         self.visitorId = visitorId
@@ -120,6 +128,7 @@ public struct RequestQueryParams {
         self.customProperties = customProperties
         self.pageUrl = pageUrl
         self.referrerUrl = referrerUrl
+        self.placeholderId = placeholderId
     }
 }
 

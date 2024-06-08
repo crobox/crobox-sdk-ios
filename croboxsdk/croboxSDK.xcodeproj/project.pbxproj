@@ -16,6 +16,7 @@
 		055047E42BFDEB6E000D5DD4 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055047E32BFDEB6E000D5DD4 /* Preferences.swift */; };
 		055047E62BFDEBC1000D5DD4 /* Crobox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055047E52BFDEBC1000D5DD4 /* Crobox.swift */; };
 		057861272BFCE87300C90824 /* croboxsdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 057861262BFCE87300C90824 /* croboxsdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		058E2E4F2C145E3F003DEFA7 /* PromotionParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */; };
 		05CA6B712C00916E00257E41 /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B702C00916E00257E41 /* ItemModel.swift */; };
 		05CA6B752C00B65200257E41 /* LocaleCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B742C00B65200257E41 /* LocaleCode.swift */; };
 		05CA6B782C00DD2900257E41 /* PromotionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B772C00DD2900257E41 /* PromotionResponse.swift */; };
@@ -38,6 +39,7 @@
 		055047E52BFDEBC1000D5DD4 /* Crobox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crobox.swift; sourceTree = "<group>"; };
 		057861232BFCE87300C90824 /* croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		057861262BFCE87300C90824 /* croboxsdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = croboxsdk.h; sourceTree = "<group>"; };
+		058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionParameter.swift; sourceTree = "<group>"; };
 		05CA6B702C00916E00257E41 /* ItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
 		05CA6B742C00B65200257E41 /* LocaleCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocaleCode.swift; sourceTree = "<group>"; };
 		05CA6B772C00DD2900257E41 /* PromotionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionResponse.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				05CA6B7D2C00DD5900257E41 /* Promotion.swift */,
 				05CA6B802C00DD8600257E41 /* PromotionContent.swift */,
 				05CA6B822C00DD9300257E41 /* PromotionConfig.swift */,
+				058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */,
 			);
 			path = PromotionsResponse;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				055047E62BFDEBC1000D5DD4 /* Crobox.swift in Sources */,
 				05CA6B812C00DD8600257E41 /* PromotionContent.swift in Sources */,
 				055047E42BFDEB6E000D5DD4 /* Preferences.swift in Sources */,
+				058E2E4F2C145E3F003DEFA7 /* PromotionParameter.swift in Sources */,
 				054180262BFF65B2006BEF60 /* CroboxAPIServices.swift in Sources */,
 				05CA6B7C2C00DD4B00257E41 /* Experiment.swift in Sources */,
 				05CA6B7A2C00DD3D00257E41 /* PromotionContext.swift in Sources */,

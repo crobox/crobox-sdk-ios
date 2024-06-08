@@ -49,6 +49,9 @@ class CroboxAPIServices {
         if let customProperties = queryParams.customProperties {
             parameters["lh"] = customProperties
         }
+        if let customProperties = queryParams.placeholderId {
+            parameters["vpid"] = customProperties
+        }
         
         APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
             (jsonObject, success) in
@@ -75,7 +78,9 @@ class CroboxAPIServices {
         }
     }
     
-    func socket(eventType:EventType!, additionalParams:Any?, queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
+    func socket(eventType:EventType!,
+                additionalParams:Any?,
+                queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
         
         //Mandatory
         var parameters = [

@@ -8,30 +8,48 @@
 import Foundation
 import SwiftyJSON
 
-// MARK: - Promotion
-class Promotion: NSObject {
+/*
+ id:
+ type: string
+ description: UUID. Unique id for this promotion (e.g. promoId)
+ 
+ productId:
+ type: string
+ description: >-
+ Product ID that this promotion was requested for (needed for
+ overview requests)
+ 
+ experimentId:
+ type: integer
+ description: The campaign this promotions belongs to
+ 
+ variantId:
+ type: integer
+ description: The variant this promotions belongs to
+ parameters.[key]: // TODO : parameters will be DEPRECATED soon. Ignore this for now!
+ type: string
+ description: Additional parameters that are used for the trigger values (like {{trigger}} used for XX% discount
+ 
+ */
 
+// MARK: - Promotion
+public class Promotion: NSObject {
+    
     var id: String?
     var productId: String?
     var experimentId: Int?
     var variantId: Int?
+    var campaignId: Int?
     var content: PromotionContent?
-    //var parameters: [String: String]?
+    var parameters: PromotionParameter?
     
     init(jsonData: JSON) {
         self.id = jsonData["id"].stringValue
         self.productId = jsonData["productId"].stringValue
         self.experimentId = jsonData["experimentId"].intValue
         self.variantId = jsonData["variantId"].intValue
+        self.campaignId = jsonData["campaignId"].intValue
         self.content = PromotionContent(jsonData:jsonData["content"])
-        //self.parameters = PromotionParameters(jsonData["parameters"])
-    }
-}
-
-
-class PromotionParameters: NSObject {
-    var id: String?
-    init(jsonData: JSON) {
-        self.id = jsonData["id"].stringValue
+        self.parameters = PromotionParameter(jsonData:jsonData["parameters"])
     }
 }

@@ -8,8 +8,22 @@
 import Foundation
 import SwiftyJSON
 
+/*
+ 
+ id:
+ type: string
+ format: uuid
+ description: Message ID of this promotion
+ 
+ config.[key]:
+ type: string
+ description: Configuration of each individual configuration item
+ 
+ */
+
+
 // MARK: - Content
-class PromotionContent: NSObject {
+public class PromotionContent: NSObject {
     
     let id: String?
     let config: PromotionConfig?

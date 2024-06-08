@@ -9,7 +9,7 @@ import Foundation
 import SwiftyJSON
 
 // MARK: - PromotionConfig
-class PromotionConfig: NSObject {
+public class PromotionConfig: NSObject {
     
     var data: [String: String] = [:]
     
