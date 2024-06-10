@@ -2,7 +2,7 @@
 //  croboxsdk.h
 //  croboxsdk
 //
-//  Created by idris yıldız on 21.05.2024.
+//  Created by crobox team on 21.05.2024.
 //
 
 #import <Foundation/Foundation.h>

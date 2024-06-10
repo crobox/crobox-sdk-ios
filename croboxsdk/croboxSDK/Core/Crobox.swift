@@ -2,7 +2,7 @@
 //  Crobox.swift
 //  croboxsdk
 //
-//  Created by idris yıldız on 22.05.2024.
+//  Created by crobox team on 22.05.2024.
 //
 
 import Foundation
@@ -26,15 +26,27 @@ public class Crobox {
      */
     public var containerId = ""
     
+    
     public func setContainerId(containerId:String) {
         self.containerId =  containerId
     }
+    
     
     public func pageView(eventType:EventType!, queryParams: RequestQueryParams!,
                   additionalParams:Any? = nil,
                   closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, jsonObject in
             closure(isSuccess, jsonObject)
+        }
+    }
+    
+    
+    
+    public func promotions(eventType:EventType!, queryParams: RequestQueryParams!,
+                  additionalParams:Any? = nil,
+                  closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
+        CroboxAPIServices.shared.promotions(queryParams: queryParams) { isSuccess, promotionResponse in
+            closure(isSuccess, promotionResponse)
         }
     }
 }
