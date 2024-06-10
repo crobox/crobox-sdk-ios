@@ -30,8 +30,8 @@ public class Crobox {
         self.containerId =  containerId
     }
     
-    public func pageView(eventType:EventType!, queryParams: RequestQueryParams,
-                  additionalParams:Any?,
+    public func pageView(eventType:EventType!, queryParams: RequestQueryParams!,
+                  additionalParams:Any? = nil,
                   closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, jsonObject in
             closure(isSuccess, jsonObject)

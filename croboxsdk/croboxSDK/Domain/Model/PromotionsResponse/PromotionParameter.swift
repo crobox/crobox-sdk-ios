@@ -8,6 +8,7 @@
 import Foundation
 import SwiftyJSON
 
+// MARK: - PromotionParameter
 public class PromotionParameter: NSObject {
     
     var data: [String: String] = [:]
