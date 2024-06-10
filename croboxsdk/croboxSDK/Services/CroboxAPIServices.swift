@@ -2,7 +2,7 @@
 //  CroboxAPIServices.swift
 //  croboxsdk
 //
-//  Created by crobox team on 23.05.2024.
+//  Created by idris yıldız on 23.05.2024.
 //
 
 import Foundation
@@ -60,10 +60,10 @@ class CroboxAPIServices {
             
             if success {
                 
-                if jsonObject == nil && !(jsonObject?.isEmpty ?? false) {
+                if !jsonObject.isEmpty && !jsonObject["error"].exists() {
                     
-                    promotionResponse = PromotionResponse(jsonData: jsonObject!)
-                    
+                    promotionResponse = PromotionResponse(jsonData: jsonObject)
+
                     closure(true, promotionResponse)
                     
                 } else {
@@ -126,7 +126,7 @@ class CroboxAPIServices {
             
             if success {
                 
-                if jsonObject == nil && !(jsonObject?.isEmpty ?? false) {
+                if !jsonObject.isEmpty && !jsonObject["error"].exists() {
                     
                     closure(true, jsonObject)
                     

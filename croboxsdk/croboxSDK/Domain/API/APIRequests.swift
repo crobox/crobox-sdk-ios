@@ -23,7 +23,7 @@ class APIRequests: NSObject {
         ]
     }
     
-    func request(method:HTTPMethod, url: String, parameters:[String: Any], completion: @escaping (_ jsonObject: JSON?, _ isSuccess:Bool) -> Void)
+    func request(method:HTTPMethod, url: String, parameters:[String: Any], completion: @escaping (_ jsonObject: JSON, _ isSuccess:Bool) -> Void)
     {
         header()
         
@@ -39,19 +39,26 @@ class APIRequests: NSObject {
                         
                         CroboxDebug.shared.printText(text: value.description)
                         
-                        completion(JSON(value),true)
+                        completion(JSON(value), true)
                         
                     case .failure(let error):
                         
                         CroboxDebug.shared.printText(text:error.localizedDescription)
                     
-                        completion(nil, false)
+                        completion(JSON(error), false)
                         
                     }
                 }
         }else
         {
-            completion(nil, false)
+            do {
+                let dictionary: [String: Any] = ["error": "true", "message": "can not get any response from server"]
+                let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
+                completion(JSON(jsonData), false)
+            } catch {
+                completion(JSON(), false)
+                print("Error converting dictionary to JSON: \(error.localizedDescription)")
+            }
         }
     }
 }
