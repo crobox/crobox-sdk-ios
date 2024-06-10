@@ -37,7 +37,7 @@ class APIRequests: NSObject {
                     switch response.result {
                     case .success(let value):
                         
-                        CroboxDebug.shared.printText(text: value.description)
+                        CroboxDebug.shared.printText(text: value.debugDescription)
                         
                         completion(JSON(value), true)
                         

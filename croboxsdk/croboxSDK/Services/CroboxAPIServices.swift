@@ -29,7 +29,7 @@ class CroboxAPIServices {
             parameters["cc"] = currencyCode
         }
         if let localeCode = queryParams.localeCode {
-            parameters["lc"] = localeCode
+            parameters["lc"] = localeCode.rawValue
         }
         if let userId = queryParams.userId {
             parameters["uid"] = userId
@@ -41,7 +41,7 @@ class CroboxAPIServices {
             parameters["tz"] = timezone
         }
         if let pageType = queryParams.pageType {
-            parameters["pt"] = pageType
+            parameters["pt"] = pageType.rawValue
         }
         if let customProperties = queryParams.customProperties {
             parameters["cp"] = customProperties
