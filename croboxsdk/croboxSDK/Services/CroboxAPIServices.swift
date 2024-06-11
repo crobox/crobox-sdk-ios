@@ -13,7 +13,8 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
     
-    func promotions(placeholderId:String!, queryParams:RequestQueryParams,
+    func promotions(placeholderId:String!,
+                    queryParams:RequestQueryParams,
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
         //Mandatory

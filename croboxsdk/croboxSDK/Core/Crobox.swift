@@ -43,10 +43,8 @@ public class Crobox {
     }
     
     
-    public func promotions(eventType:EventType!,
-                           placeholderId:String!,
+    public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
-                           additionalParams:Any? = nil,
                            closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
         
         CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams) { isSuccess, promotionResponse in

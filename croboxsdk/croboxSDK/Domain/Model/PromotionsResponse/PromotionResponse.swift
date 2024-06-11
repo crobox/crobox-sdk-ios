@@ -25,7 +25,9 @@ public class PromotionResponse: NSObject {
     public var promotions = [Promotion]()
     
     public init(jsonData: JSON) {
+        
         self.context = PromotionContext(jsonData:jsonData["context"])
+      
         if  let arr = jsonData["promotions"].array {
             for item in arr {
                 self.promotions.append(Promotion(jsonData: item))

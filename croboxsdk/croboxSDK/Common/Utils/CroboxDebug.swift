@@ -8,7 +8,7 @@
 import Foundation
 class CroboxDebug: NSObject {
     static let shared = CroboxDebug()
-    func printText(text:String)
+    func printText(text:Any)
     {
         if(Crobox.shared.isDebug){
             print(text)

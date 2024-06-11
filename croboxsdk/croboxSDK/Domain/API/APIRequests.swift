@@ -36,17 +36,11 @@ class APIRequests: NSObject {
                     response in
                     switch response.result {
                     case .success(let value):
-                        
-                        CroboxDebug.shared.printText(text: value.debugDescription)
-                        
+                        CroboxDebug.shared.printText(text: JSON(value))
                         completion(JSON(value), true)
-                        
                     case .failure(let error):
-                        
-                        CroboxDebug.shared.printText(text:error.localizedDescription)
-                    
+                        CroboxDebug.shared.printText(text:JSON(error))
                         completion(JSON(error), false)
-                        
                     }
                 }
         }else
@@ -54,6 +48,7 @@ class APIRequests: NSObject {
             do {
                 let dictionary: [String: Any] = ["error": "true", "message": "can not get any response from server"]
                 let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
+                CroboxDebug.shared.printText(text: JSON(jsonData))
                 completion(JSON(jsonData), false)
             } catch {
                 completion(JSON(), false)
