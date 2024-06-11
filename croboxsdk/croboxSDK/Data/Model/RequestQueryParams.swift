@@ -112,10 +112,9 @@ public struct RequestQueryParams {
     public var customProperties: [String: String]? // Custom Properties (optional)
     public var pageUrl: String?      // ViewController (optional)
     public var referrerUrl: String?  // referrerUrl (optional)
-    public var placeholderId: String?  // placeholderId (optional only for promotions) TODO: discuss
     
     // Public initializer
-    public init(viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil, placeholderId: String? = nil) {
+    public init(viewCounter: Int, viewId: String, visitorId: String, placeholderId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
         self.viewCounter = viewCounter
         self.viewId = viewId
         self.visitorId = visitorId
@@ -128,7 +127,6 @@ public struct RequestQueryParams {
         self.customProperties = customProperties
         self.pageUrl = pageUrl
         self.referrerUrl = referrerUrl
-        self.placeholderId = placeholderId
     }
 }
 

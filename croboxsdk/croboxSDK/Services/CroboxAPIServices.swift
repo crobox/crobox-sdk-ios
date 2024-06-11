@@ -13,7 +13,7 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
     
-    func promotions(queryParams:RequestQueryParams,
+    func promotions(placeholderId:String!, queryParams:RequestQueryParams,
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
         //Mandatory
@@ -22,6 +22,7 @@ class CroboxAPIServices {
             "e": queryParams.viewCounter,
             "vid": queryParams.viewId,
             "pid": queryParams.visitorId,
+            "vpid": placeholderId!
         ] as [String : Any]
         
         //Optional
@@ -48,9 +49,6 @@ class CroboxAPIServices {
         }
         if let customProperties = queryParams.customProperties {
             parameters["lh"] = customProperties
-        }
-        if let customProperties = queryParams.placeholderId {
-            parameters["vpid"] = customProperties
         }
         
         APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
@@ -96,7 +94,7 @@ class CroboxAPIServices {
             parameters["cc"] = currencyCode
         }
         if let localeCode = queryParams.localeCode {
-            parameters["lc"] = localeCode
+            parameters["lc"] = localeCode.rawValue
         }
         if let userId = queryParams.userId {
             parameters["uid"] = userId
@@ -108,7 +106,7 @@ class CroboxAPIServices {
             parameters["tz"] = timezone
         }
         if let pageType = queryParams.pageType {
-            parameters["pt"] = pageType
+            parameters["pt"] = pageType.rawValue
         }
         if let customProperties = queryParams.pageUrl {
             parameters["cp"] = customProperties
