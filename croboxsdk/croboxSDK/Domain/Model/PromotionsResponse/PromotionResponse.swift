@@ -21,10 +21,10 @@ import SwiftyJSON
 // MARK: - PromotionResponse
 public class PromotionResponse: NSObject {
   
-    var context: PromotionContext?
-    var promotions = [Promotion]()
+    public var context: PromotionContext?
+    public var promotions = [Promotion]()
     
-    init(jsonData: JSON) {
+    public init(jsonData: JSON) {
         self.context = PromotionContext(jsonData:jsonData["context"])
         if  let arr = jsonData["promotions"].array {
             for item in arr {

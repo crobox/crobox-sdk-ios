@@ -11,7 +11,7 @@ import SwiftyJSON
 // MARK: - PromotionParameter
 public class PromotionParameter: NSObject {
     
-    var data: [String: String] = [:]
+    public var data: [String: String] = [:]
     
     init(jsonData: JSON) {
         for (key, subJson):(String, JSON) in jsonData {

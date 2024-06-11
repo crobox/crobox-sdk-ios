@@ -31,11 +31,11 @@ import SwiftyJSON
 // MARK: - Experiment
 public class Experiment: Codable {
    
-    var id: Int?
-    var name: String?
-    var variantId: Int?
-    var variantName: String?
-    var control: Bool?
+    public var id: Int?
+    public var name: String?
+    public var variantId: Int?
+    public var variantName: String?
+    public var control: Bool?
     
     init(jsonData: JSON) {
         self.id = jsonData["groupName"].intValue

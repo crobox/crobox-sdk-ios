@@ -32,12 +32,12 @@ import SwiftyJSON
 // MARK: - PromotionContext
 public class PromotionContext: NSObject {
    
-    var groupName: String?
-    var pid: String?
-    var sid: String?
-    var experiments = [Experiment]()
+    public var groupName: String?
+    public var pid: String?
+    public var sid: String?
+    public var experiments = [Experiment]()
     
-    init(jsonData: JSON) {
+    public init(jsonData: JSON) {
         
         self.groupName = jsonData["groupName"].stringValue
         self.pid = jsonData["pid"].stringValue

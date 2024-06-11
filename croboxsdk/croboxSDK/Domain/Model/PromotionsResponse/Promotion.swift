@@ -35,15 +35,15 @@ import SwiftyJSON
 // MARK: - Promotion
 public class Promotion: NSObject {
     
-    var id: String?
-    var productId: String?
-    var experimentId: Int?
-    var variantId: Int?
-    var campaignId: Int?
-    var content: PromotionContent?
-    var parameters: PromotionParameter?
+    public var id: String?
+    public var productId: String?
+    public var experimentId: Int?
+    public var variantId: Int?
+    public var campaignId: Int?
+    public var content: PromotionContent?
+    public var parameters: PromotionParameter?
     
-    init(jsonData: JSON) {
+    public init(jsonData: JSON) {
         self.id = jsonData["id"].stringValue
         self.productId = jsonData["productId"].stringValue
         self.experimentId = jsonData["experimentId"].intValue

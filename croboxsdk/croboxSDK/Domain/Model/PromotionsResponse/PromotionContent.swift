@@ -25,8 +25,8 @@ import SwiftyJSON
 // MARK: - Content
 public class PromotionContent: NSObject {
     
-    let id: String?
-    let config: PromotionConfig?
+    public let id: String?
+    public let config: PromotionConfig?
     
     init(jsonData: JSON) {
         self.id = jsonData["id"].stringValue
