@@ -74,12 +74,6 @@ import Foundation
  
  User-Agent header
  Description: This header is applicable for web clients but I wonder if it can be re-used for mobile clients as well, in order to distinguish between mobile devices / operating systems.
- 
- Placeholder Id (Mandatory) --- request parameters are applicable for /promotions endpoint
- Type: Int
- Description: Identifier of the placeholder. A Placeholder represents a predesignated point on the user interface, where the promotion will be located and displayed. Placeholders are linked with campaigns which has all promotion attributes, UI components, messages and time frame. These are all managed via the Crobox Admin application.
- Example: vpid=1
- 
  */
 
 //Mandatory
@@ -114,7 +108,7 @@ public struct RequestQueryParams {
     public var referrerUrl: String?  // referrerUrl (optional)
     
     // Public initializer
-    public init(viewCounter: Int, viewId: String, visitorId: String, placeholderId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
+    public init(viewCounter: Int, viewId: String, visitorId: String, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timestamp: String? = nil, timezone: Int? = nil, pageType: PageType? = nil, customProperties: [String: String]? = nil, pageUrl: String? = nil, referrerUrl: String? = nil) {
         self.viewCounter = viewCounter
         self.viewId = viewId
         self.visitorId = visitorId
