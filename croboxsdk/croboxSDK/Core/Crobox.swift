@@ -32,20 +32,24 @@ public class Crobox {
     }
     
     
-    public func pageView(eventType:EventType!, queryParams: RequestQueryParams!,
-                  additionalParams:Any? = nil,
-                  closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+    public func pageView(eventType:EventType!,
+                         queryParams: RequestQueryParams!,
+                         additionalParams:Any? = nil,
+                         closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        
         CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, jsonObject in
             closure(isSuccess, jsonObject)
         }
     }
     
     
-    
-    public func promotions(eventType:EventType!, queryParams: RequestQueryParams!,
-                  additionalParams:Any? = nil,
-                  closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
-        CroboxAPIServices.shared.promotions(queryParams: queryParams) { isSuccess, promotionResponse in
+    public func promotions(eventType:EventType!,
+                           placeholderId:String!,
+                           queryParams: RequestQueryParams!,
+                           additionalParams:Any? = nil,
+                           closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
+        
+        CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams) { isSuccess, promotionResponse in
             closure(isSuccess, promotionResponse)
         }
     }
