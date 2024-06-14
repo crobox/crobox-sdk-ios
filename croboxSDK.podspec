@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "croboxSDK"
-  spec.version      = "1.0.11"
+  spec.version      = "1.0.12"
   spec.summary      = "croboxSDK"
 
   # This description is used to generate tags and improve search results.
