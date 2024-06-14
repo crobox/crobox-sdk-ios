@@ -31,17 +31,51 @@ public class Crobox {
         self.containerId =  containerId
     }
     
-    
-    public func pageView(eventType:EventType!,
-                         queryParams: RequestQueryParams!,
-                         additionalParams:Any? = nil,
-                         closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+    public func pageViewClick(queryParams: RequestQueryParams!,
+                              clickQueryParams:ClickQueryParams? = nil,
+                              closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
-        CroboxAPIServices.shared.socket(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams) { isSuccess, jsonObject in
+        CroboxAPIServices.shared.socket(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
             closure(isSuccess, jsonObject)
         }
     }
     
+    public func pageViewAddCart(queryParams: RequestQueryParams!,
+                                addCartQueryParams:AddCartQueryParams? = nil,
+                              closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        
+        CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
+            closure(isSuccess, jsonObject)
+        }
+    }
+    
+    public func pageViewRemoveCart(queryParams: RequestQueryParams!,
+                                   removeFromCartQueryParams:RemoveFromCartQueryParams? = nil,
+                              closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        
+        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: removeFromCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
+            closure(isSuccess, jsonObject)
+        }
+    }
+    
+    
+    public func pageViewError(queryParams: RequestQueryParams!,
+                              errorQueryParams:ErrorQueryParams? = nil,
+                              closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        
+        CroboxAPIServices.shared.socket(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
+            closure(isSuccess, jsonObject)
+        }
+    }
+    
+    public func pageViewEvent(queryParams: RequestQueryParams!,
+                              customQueryParams:CustomQueryParams? = nil,
+                              closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
+        
+        CroboxAPIServices.shared.socket(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
+            closure(isSuccess, jsonObject)
+        }
+    }
     
     public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
