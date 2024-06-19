@@ -94,9 +94,9 @@ import Foundation
 
 public struct RequestQueryParams {
    
-    private var viewCounter: Int      // ViewCounter (mandatory)
-    private var viewId: String        // ViewId (mandatory)
-    private var visitorId: String     // VisitorId (mandatory)
+    public var viewCounter: Int      // ViewCounter (mandatory)
+    public var viewId: String        // ViewId (mandatory)
+    public var visitorId: String     // VisitorId (mandatory)
     public var currencyCode: String? // CurrencyCode (optional)
     public var localeCode: LocaleCode? // LocaleCode (optional)
     public var userId: String?       // UserId (optional)
