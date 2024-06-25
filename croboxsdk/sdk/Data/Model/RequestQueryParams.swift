@@ -403,3 +403,55 @@ public struct CustomQueryParams {
         self.quantity = quantity
     }
 }
+
+
+
+
+
+struct ClickEvent {
+    var pageType: String?
+    var pageTitle: String?
+    var productId: ProductId?
+    var impressions: Int?
+    var clientLoadStartTime: Date?
+    var clientLoadDuration: TimeInterval?
+    var referrerUrl: URL?
+    var pageUrl: URL?
+    var searchTerms: String?
+    var historyLength: Int?
+    var step: Step?
+    var transactionId: TransactionId?
+
+    struct ProductId {
+        var id: String
+        var category: String?
+        var productList: [String]?
+        
+        init(id: String, category: String? = nil, productList: [String]? = nil) {
+            self.id = id
+            self.category = category
+            self.productList = productList
+        }
+    }
+
+    struct Step {
+        var choice: String?
+        init(choice: String? = nil) {
+            self.choice = choice
+        }
+    }
+
+    struct TransactionId {
+        var id: String
+        var revenue: Double?
+        var coupon: String?
+        var affiliation: String?
+        
+        init(id: String, revenue: Double? = nil, coupon: String? = nil, affiliation: String? = nil) {
+            self.id = id
+            self.revenue = revenue
+            self.coupon = coupon
+            self.affiliation = affiliation
+        }
+    }
+}
