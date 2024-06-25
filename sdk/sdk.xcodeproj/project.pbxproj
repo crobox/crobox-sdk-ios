@@ -25,7 +25,7 @@
 		05CA6B7E2C00DD5900257E41 /* Promotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B7D2C00DD5900257E41 /* Promotion.swift */; };
 		05CA6B812C00DD8600257E41 /* PromotionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B802C00DD8600257E41 /* PromotionContent.swift */; };
 		05CA6B832C00DD9300257E41 /* PromotionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CA6B822C00DD9300257E41 /* PromotionConfig.swift */; };
-		BA86D95F18DE9730FCFA5015 /* Pods_croboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF6ABC54CC061594F2CC1C11 /* Pods_croboxSDK.framework */; };
+		EDA1F3F6CA39CB2BE75F6802 /* Pods_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE67A56A53A7245FE0688D6E /* Pods_sdk.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 		055047E12BFDEB4F000D5DD4 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		055047E32BFDEB6E000D5DD4 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		055047E52BFDEBC1000D5DD4 /* Crobox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crobox.swift; sourceTree = "<group>"; };
-		057861232BFCE87300C90824 /* croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		057861232BFCE87300C90824 /* sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		057861262BFCE87300C90824 /* croboxsdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = croboxsdk.h; sourceTree = "<group>"; };
 		058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionParameter.swift; sourceTree = "<group>"; };
 		05CA6B702C00916E00257E41 /* ItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
@@ -48,9 +48,11 @@
 		05CA6B7D2C00DD5900257E41 /* Promotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promotion.swift; sourceTree = "<group>"; };
 		05CA6B802C00DD8600257E41 /* PromotionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionContent.swift; sourceTree = "<group>"; };
 		05CA6B822C00DD9300257E41 /* PromotionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionConfig.swift; sourceTree = "<group>"; };
+		6CDAAAE10E127129BAB4AA6D /* Pods-sdk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sdk.release.xcconfig"; path = "Target Support Files/Pods-sdk/Pods-sdk.release.xcconfig"; sourceTree = "<group>"; };
 		A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.debug.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.release.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.release.xcconfig"; sourceTree = "<group>"; };
-		BF6ABC54CC061594F2CC1C11 /* Pods_croboxSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_croboxSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAD33024826736FFBCC70C31 /* Pods-sdk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sdk.debug.xcconfig"; path = "Target Support Files/Pods-sdk/Pods-sdk.debug.xcconfig"; sourceTree = "<group>"; };
+		EE67A56A53A7245FE0688D6E /* Pods_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA86D95F18DE9730FCFA5015 /* Pods_croboxSDK.framework in Frameworks */,
+				EDA1F3F6CA39CB2BE75F6802 /* Pods_sdk.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				0535E2482C131D3200A40910 /* croboxSDK.podspec */,
-				057861252BFCE87300C90824 /* croboxSDK */,
+				057861252BFCE87300C90824 /* sdk */,
 				057861242BFCE87300C90824 /* Products */,
 				44142FFD4A6E8FC50EDD7489 /* Pods */,
 				66A1948233B454AB0F78E49F /* Frameworks */,
@@ -156,12 +158,12 @@
 		057861242BFCE87300C90824 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				057861232BFCE87300C90824 /* croboxSDK.framework */,
+				057861232BFCE87300C90824 /* sdk.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		057861252BFCE87300C90824 /* croboxSDK */ = {
+		057861252BFCE87300C90824 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
 				055047E02BFDEAFD000D5DD4 /* Services */,
@@ -171,7 +173,7 @@
 				055047DC2BFDEAD4000D5DD4 /* Common */,
 				057861262BFCE87300C90824 /* croboxsdk.h */,
 			);
-			path = croboxSDK;
+			path = sdk;
 			sourceTree = "<group>";
 		};
 		05CA6B762C00DA5400257E41 /* PromotionsResponse */ = {
@@ -193,6 +195,8 @@
 			children = (
 				A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */,
 				AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */,
+				CAD33024826736FFBCC70C31 /* Pods-sdk.debug.xcconfig */,
+				6CDAAAE10E127129BAB4AA6D /* Pods-sdk.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -200,7 +204,7 @@
 		66A1948233B454AB0F78E49F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BF6ABC54CC061594F2CC1C11 /* Pods_croboxSDK.framework */,
+				EE67A56A53A7245FE0688D6E /* Pods_sdk.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -219,9 +223,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		057861222BFCE87300C90824 /* croboxSDK */ = {
+		057861222BFCE87300C90824 /* sdk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0578612A2BFCE87300C90824 /* Build configuration list for PBXNativeTarget "croboxSDK" */;
+			buildConfigurationList = 0578612A2BFCE87300C90824 /* Build configuration list for PBXNativeTarget "sdk" */;
 			buildPhases = (
 				FB85B3E4C0487856CA50C03A /* [CP] Check Pods Manifest.lock */,
 				0578611E2BFCE87300C90824 /* Headers */,
@@ -233,9 +237,9 @@
 			);
 			dependencies = (
 			);
-			name = croboxSDK;
+			name = sdk;
 			productName = croboxsdk;
-			productReference = 057861232BFCE87300C90824 /* croboxSDK.framework */;
+			productReference = 057861232BFCE87300C90824 /* sdk.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -253,7 +257,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0578611D2BFCE87300C90824 /* Build configuration list for PBXProject "croboxSDK" */;
+			buildConfigurationList = 0578611D2BFCE87300C90824 /* Build configuration list for PBXProject "sdk" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -266,7 +270,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				057861222BFCE87300C90824 /* croboxSDK */,
+				057861222BFCE87300C90824 /* sdk */,
 			);
 		};
 /* End PBXProject section */
@@ -298,7 +302,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-croboxSDK-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-sdk-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -461,7 +465,7 @@
 		};
 		0578612B2BFCE87300C90824 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */;
+			baseConfigurationReference = CAD33024826736FFBCC70C31 /* Pods-sdk.debug.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -501,7 +505,7 @@
 		};
 		0578612C2BFCE87300C90824 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */;
+			baseConfigurationReference = 6CDAAAE10E127129BAB4AA6D /* Pods-sdk.release.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -541,7 +545,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0578611D2BFCE87300C90824 /* Build configuration list for PBXProject "croboxSDK" */ = {
+		0578611D2BFCE87300C90824 /* Build configuration list for PBXProject "sdk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				057861282BFCE87300C90824 /* Debug */,
@@ -550,7 +554,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0578612A2BFCE87300C90824 /* Build configuration list for PBXNativeTarget "croboxSDK" */ = {
+		0578612A2BFCE87300C90824 /* Build configuration list for PBXNativeTarget "sdk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0578612B2BFCE87300C90824 /* Debug */,

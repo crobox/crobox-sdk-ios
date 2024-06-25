@@ -93,7 +93,7 @@ if spec.respond_to? 'swift_versions'
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files = "croboxsdk/croboxSDK/**/*.{h,m,swift}"
+  spec.source_files = "sdk/sdk/**/*.{h,m,swift}"
 
   # spec.public_header_files = "Classes/**/*.h"
 
