@@ -1,14 +1,7 @@
-//
-//  PromotionConfig.swift
-//  croboxSDK
-//
-//  Created by crobox team on 24.05.2024.
-//
 
 import Foundation
 import SwiftyJSON
 
-// MARK: - PromotionConfig
 public class PromotionConfig: NSObject {
     
     public var data: [String: String] = [:]

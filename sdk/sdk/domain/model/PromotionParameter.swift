@@ -1,14 +1,7 @@
-//
-//  PromotionParameter.swift
-//  croboxSDK
-//
-//  Created by crobox team on 8.06.2024.
-//
 
 import Foundation
 import SwiftyJSON
 
-// MARK: - PromotionParameter
 public class PromotionParameter: NSObject {
     
     public var data: [String: String] = [:]
