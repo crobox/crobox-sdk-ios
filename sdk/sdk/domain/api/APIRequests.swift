@@ -1,9 +1,3 @@
-//
-//  APIRequests.swift
-//  croboxsdk
-//
-//  Created by crobox team on 23.05.2024.
-//
 
 import Foundation
 import SwiftyJSON

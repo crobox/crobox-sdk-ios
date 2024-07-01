@@ -1,9 +1,3 @@
-//
-//  Constant.swift
-//  croboxsdk
-//
-//  Created by crobox team on 22.05.2024.
-//
 
 import Foundation
 struct Constant {

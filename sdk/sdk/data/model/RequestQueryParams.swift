@@ -1,9 +1,3 @@
-//
-//  RequestQueryParams.swift
-//  croboxSDK
-//
-//  Created by crobox team on 27.05.2024.
-//
 
 import Foundation
 

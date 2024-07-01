@@ -1,9 +1,3 @@
-//
-//  ItemModel.swift
-//  croboxSDK
-//
-//  Created by crobox team on 24.05.2024.
-//
 
 import Foundation
 public struct ItemModel {
