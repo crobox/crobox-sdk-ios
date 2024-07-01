@@ -25,7 +25,7 @@ public class Crobox {
         self.config =  config
     }
     
-    public func pageViewClick(queryParams: RequestQueryParams!,
+    public func clickEvent(queryParams: RequestQueryParams!,
                               clickQueryParams:ClickQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
@@ -34,7 +34,7 @@ public class Crobox {
         }
     }
     
-    public func pageViewAddCart(queryParams: RequestQueryParams!,
+    public func addCartEvent(queryParams: RequestQueryParams!,
                                 addCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
@@ -43,7 +43,7 @@ public class Crobox {
         }
     }
     
-    public func pageViewRemoveCart(queryParams: RequestQueryParams!,
+    public func removeCartEvent(queryParams: RequestQueryParams!,
                                    removeFromCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
@@ -53,7 +53,7 @@ public class Crobox {
     }
     
     
-    public func pageViewError(queryParams: RequestQueryParams!,
+    public func errorEvent(queryParams: RequestQueryParams!,
                               errorQueryParams:ErrorQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         

@@ -15,15 +15,18 @@ class ViewController: UIViewController {
         
         Crobox.shared.isDebug = true
         
-        Crobox.shared.setContainerId(containerId: "xlhvci")// Mandatory
         
-        var params = RequestQueryParams(viewCounter: 28, viewId: "An0N-dq0ThWeiUJX12cpVA", visitorId: "H9O1I0kYSaekKFrzS_JWCg")
+        var config = CroboxConfig(containerId: "xlhvci", visitorId: UUID.init())
+        
+        Crobox.shared.initConfig(config: config)
+        
+        var params = RequestQueryParams(viewId: "An0N-dq0ThWeiUJX12cpVA")
         params.pageType = .PageDetail
         params.localeCode = .en_US
         //................
         
         //example pageview with AddCart Event and with additionalParams as AddCartQueryParams
-        var addCartQueryParams = AddCartQueryParams(productId: "")// All Optional
+        var addCartQueryParams = CartQueryParams(productId: "")// All Optional
         addCartQueryParams.category = "1"
         addCartQueryParams.price = 2.0
         addCartQueryParams.quantity = 3

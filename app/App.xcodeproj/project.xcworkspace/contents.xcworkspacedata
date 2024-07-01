@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/idrisyildiz/Documents/Gidysoft Projects/crobox-sdk-ios/app/App.xcodeproj">
    </FileRef>
 </Workspace>

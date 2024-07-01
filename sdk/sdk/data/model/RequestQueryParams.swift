@@ -230,11 +230,21 @@ struct ClickEvent {
  */
 
 public struct CroboxConfig {
-    let containerId: String
-    let visitorId: UUID
-    var currencyCode: String? = nil
-    var localeCode: LocaleCode? = nil
-    var userId: String? = nil
-    var timezone: Int? = nil
-    var customProperties: [String: String]? = nil
+    public let containerId: String
+    public let visitorId: UUID
+    public var currencyCode: String?
+    public var localeCode: LocaleCode?
+    public var userId: String?
+    public var timezone: Int?
+    public var customProperties: [String: String]?
+    
+    public init(containerId: String, visitorId: UUID, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: Int? = nil, customProperties: [String: String]? = nil) {
+        self.containerId = containerId
+        self.visitorId = visitorId
+        self.currencyCode = currencyCode
+        self.localeCode = localeCode
+        self.userId = userId
+        self.timezone = timezone
+        self.customProperties = customProperties
+    }
 }
