@@ -77,7 +77,13 @@
 		054180202BFF34D7006BEF60 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				05CA6B762C00DA5400257E41 /* promotionsResponse */,
+				05CA6B772C00DD2900257E41 /* PromotionResponse.swift */,
+				05CA6B792C00DD3D00257E41 /* PromotionContext.swift */,
+				05CA6B7B2C00DD4B00257E41 /* Experiment.swift */,
+				05CA6B7D2C00DD5900257E41 /* Promotion.swift */,
+				05CA6B802C00DD8600257E41 /* PromotionContent.swift */,
+				05CA6B822C00DD9300257E41 /* PromotionConfig.swift */,
+				058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -172,20 +178,6 @@
 				057861262BFCE87300C90824 /* croboxsdk.h */,
 			);
 			path = sdk;
-			sourceTree = "<group>";
-		};
-		05CA6B762C00DA5400257E41 /* promotionsResponse */ = {
-			isa = PBXGroup;
-			children = (
-				05CA6B772C00DD2900257E41 /* PromotionResponse.swift */,
-				05CA6B792C00DD3D00257E41 /* PromotionContext.swift */,
-				05CA6B7B2C00DD4B00257E41 /* Experiment.swift */,
-				05CA6B7D2C00DD5900257E41 /* Promotion.swift */,
-				05CA6B802C00DD8600257E41 /* PromotionContent.swift */,
-				05CA6B822C00DD9300257E41 /* PromotionConfig.swift */,
-				058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */,
-			);
-			path = promotionsResponse;
 			sourceTree = "<group>";
 		};
 		44142FFD4A6E8FC50EDD7489 /* Pods */ = {
