@@ -1,4 +1,4 @@
-# crobox-sdk-android
+# crobox-sdk-ios
 Crobox SDK for iOS
 
 [![Official Crobox project](https://img.shields.io/badge/project-official-green.svg?colorA=303033&colorB=ff8a2c&label=Crobox)](https://crobox.com/)
