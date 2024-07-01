@@ -49,8 +49,6 @@
 		05CA6B802C00DD8600257E41 /* PromotionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionContent.swift; sourceTree = "<group>"; };
 		05CA6B822C00DD9300257E41 /* PromotionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionConfig.swift; sourceTree = "<group>"; };
 		6CDAAAE10E127129BAB4AA6D /* Pods-sdk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sdk.release.xcconfig"; path = "Target Support Files/Pods-sdk/Pods-sdk.release.xcconfig"; sourceTree = "<group>"; };
-		A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.debug.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.debug.xcconfig"; sourceTree = "<group>"; };
-		AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-croboxSDK.release.xcconfig"; path = "Target Support Files/Pods-croboxSDK/Pods-croboxSDK.release.xcconfig"; sourceTree = "<group>"; };
 		CAD33024826736FFBCC70C31 /* Pods-sdk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sdk.debug.xcconfig"; path = "Target Support Files/Pods-sdk/Pods-sdk.debug.xcconfig"; sourceTree = "<group>"; };
 		EE67A56A53A7245FE0688D6E /* Pods_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -67,81 +65,81 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0541801F2BFF34CD006BEF60 /* Model */ = {
+		0541801F2BFF34CD006BEF60 /* model */ = {
 			isa = PBXGroup;
 			children = (
 				050DB2892C049A0B00116646 /* RequestQueryParams.swift */,
 				05CA6B702C00916E00257E41 /* ItemModel.swift */,
 			);
-			path = Model;
+			path = model;
 			sourceTree = "<group>";
 		};
-		054180202BFF34D7006BEF60 /* Model */ = {
+		054180202BFF34D7006BEF60 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				05CA6B762C00DA5400257E41 /* PromotionsResponse */,
+				05CA6B762C00DA5400257E41 /* promotionsResponse */,
 			);
-			path = Model;
+			path = model;
 			sourceTree = "<group>";
 		};
-		054180272BFF65CD006BEF60 /* API */ = {
+		054180272BFF65CD006BEF60 /* api */ = {
 			isa = PBXGroup;
 			children = (
 				054180282BFF65E7006BEF60 /* APIRequests.swift */,
 			);
-			path = API;
+			path = api;
 			sourceTree = "<group>";
 		};
-		0541803C2BFF8328006BEF60 /* Utils */ = {
+		0541803C2BFF8328006BEF60 /* utils */ = {
 			isa = PBXGroup;
 			children = (
 				0541803D2BFF833E006BEF60 /* CroboxDebug.swift */,
 				05CA6B742C00B65200257E41 /* LocaleCode.swift */,
 			);
-			path = Utils;
+			path = utils;
 			sourceTree = "<group>";
 		};
-		055047DC2BFDEAD4000D5DD4 /* Common */ = {
+		055047DC2BFDEAD4000D5DD4 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				0541803C2BFF8328006BEF60 /* Utils */,
+				0541803C2BFF8328006BEF60 /* utils */,
 				055047E12BFDEB4F000D5DD4 /* Constant.swift */,
 				055047E32BFDEB6E000D5DD4 /* Preferences.swift */,
 			);
-			path = Common;
+			path = common;
 			sourceTree = "<group>";
 		};
-		055047DD2BFDEAE1000D5DD4 /* Core */ = {
+		055047DD2BFDEAE1000D5DD4 /* core */ = {
 			isa = PBXGroup;
 			children = (
 				055047E52BFDEBC1000D5DD4 /* Crobox.swift */,
 			);
-			path = Core;
+			path = core;
 			sourceTree = "<group>";
 		};
-		055047DE2BFDEAE9000D5DD4 /* Data */ = {
+		055047DE2BFDEAE9000D5DD4 /* data */ = {
 			isa = PBXGroup;
 			children = (
-				0541801F2BFF34CD006BEF60 /* Model */,
+				0541801F2BFF34CD006BEF60 /* model */,
 			);
-			path = Data;
+			path = data;
 			sourceTree = "<group>";
 		};
-		055047DF2BFDEAF6000D5DD4 /* Domain */ = {
+		055047DF2BFDEAF6000D5DD4 /* domain */ = {
 			isa = PBXGroup;
 			children = (
-				054180272BFF65CD006BEF60 /* API */,
-				054180202BFF34D7006BEF60 /* Model */,
+				054180272BFF65CD006BEF60 /* api */,
+				054180202BFF34D7006BEF60 /* model */,
 			);
-			path = Domain;
+			path = domain;
 			sourceTree = "<group>";
 		};
-		055047E02BFDEAFD000D5DD4 /* Services */ = {
+		055047E02BFDEAFD000D5DD4 /* services */ = {
 			isa = PBXGroup;
 			children = (
 				054180252BFF65B2006BEF60 /* CroboxAPIServices.swift */,
 			);
-			path = Services;
+			path = services;
 			sourceTree = "<group>";
 		};
 		057861192BFCE87300C90824 = {
@@ -166,17 +164,17 @@
 		057861252BFCE87300C90824 /* sdk */ = {
 			isa = PBXGroup;
 			children = (
-				055047E02BFDEAFD000D5DD4 /* Services */,
-				055047DF2BFDEAF6000D5DD4 /* Domain */,
-				055047DE2BFDEAE9000D5DD4 /* Data */,
-				055047DD2BFDEAE1000D5DD4 /* Core */,
-				055047DC2BFDEAD4000D5DD4 /* Common */,
+				055047E02BFDEAFD000D5DD4 /* services */,
+				055047DF2BFDEAF6000D5DD4 /* domain */,
+				055047DE2BFDEAE9000D5DD4 /* data */,
+				055047DD2BFDEAE1000D5DD4 /* core */,
+				055047DC2BFDEAD4000D5DD4 /* common */,
 				057861262BFCE87300C90824 /* croboxsdk.h */,
 			);
 			path = sdk;
 			sourceTree = "<group>";
 		};
-		05CA6B762C00DA5400257E41 /* PromotionsResponse */ = {
+		05CA6B762C00DA5400257E41 /* promotionsResponse */ = {
 			isa = PBXGroup;
 			children = (
 				05CA6B772C00DD2900257E41 /* PromotionResponse.swift */,
@@ -187,14 +185,12 @@
 				05CA6B822C00DD9300257E41 /* PromotionConfig.swift */,
 				058E2E4E2C145E3F003DEFA7 /* PromotionParameter.swift */,
 			);
-			path = PromotionsResponse;
+			path = promotionsResponse;
 			sourceTree = "<group>";
 		};
 		44142FFD4A6E8FC50EDD7489 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A2837CB91856F3F567B03E97 /* Pods-croboxSDK.debug.xcconfig */,
-				AC2B7C76247CF12A4E3658BC /* Pods-croboxSDK.release.xcconfig */,
 				CAD33024826736FFBCC70C31 /* Pods-sdk.debug.xcconfig */,
 				6CDAAAE10E127129BAB4AA6D /* Pods-sdk.release.xcconfig */,
 			);

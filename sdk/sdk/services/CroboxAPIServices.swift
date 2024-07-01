@@ -19,37 +19,34 @@ class CroboxAPIServices {
         
         //Mandatory
         var parameters = [
-            "cid": Crobox.shared.containerId,
-            "e": queryParams.viewCounter,
+            "cid": Crobox.shared.config.containerId,
+            "e": queryParams.viewCounter(),
             "vid": queryParams.viewId,
-            "pid": queryParams.visitorId,
+            "pid": Crobox.shared.config.visitorId,
             "vpid": placeholderId!
         ] as [String : Any]
         
         //Optional
-        if let currencyCode = queryParams.currencyCode {
+        if let currencyCode = Crobox.shared.config.currencyCode {
             parameters["cc"] = currencyCode
         }
-        if let localeCode = queryParams.localeCode {
+        if let localeCode = Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
         }
-        if let userId = queryParams.userId {
+        if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
-        if let timestamp = queryParams.timestamp {
-            parameters["ts"] = timestamp
-        }
-        if let timezone = queryParams.timezone {
+        if let timezone = Crobox.shared.config.timezone {
             parameters["tz"] = timezone
         }
         if let pageType = queryParams.pageType {
             parameters["pt"] = pageType.rawValue
         }
-        if let customProperties = queryParams.customProperties {
-            parameters["cp"] = customProperties
+        if let pageName = queryParams.pageName {
+            parameters["lh"] = pageName
         }
         if let customProperties = queryParams.customProperties {
-            parameters["lh"] = customProperties
+            parameters["cp"] = customProperties
         }
         
         APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
@@ -83,37 +80,34 @@ class CroboxAPIServices {
         
         //Mandatory
         var parameters = [
-            "cid": Crobox.shared.containerId,
-            "e": queryParams.viewCounter,
+            "cid":  Crobox.shared.config.containerId,
+            "e": queryParams.viewCounter(),
             "vid": queryParams.viewId,
-            "pid": queryParams.visitorId,
+            "pid":  Crobox.shared.config.visitorId,
             "t": eventType.rawValue
         ] as [String : Any]
         
         //Optional
-        if let currencyCode = queryParams.currencyCode {
+        if let currencyCode =  Crobox.shared.config.currencyCode {
             parameters["cc"] = currencyCode
         }
-        if let localeCode = queryParams.localeCode {
+        if let localeCode =  Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
         }
-        if let userId = queryParams.userId {
+        if let userId =  Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
-        if let timestamp = queryParams.timestamp {
-            parameters["ts"] = timestamp
-        }
-        if let timezone = queryParams.timezone {
+        if let timezone =  Crobox.shared.config.timezone {
             parameters["tz"] = timezone
         }
         if let pageType = queryParams.pageType {
             parameters["pt"] = pageType.rawValue
         }
-        if let customProperties = queryParams.pageUrl {
-            parameters["cp"] = customProperties
+        if let pageName = queryParams.pageName {
+            parameters["lh"] = pageName
         }
         if let customProperties = queryParams.customProperties {
-            parameters["lh"] = customProperties
+            parameters["cp"] = customProperties
         }
         
         checkEventType(eventType:eventType,
@@ -155,14 +149,9 @@ extension CroboxAPIServices
                 clickEvent(clickParams: clickParams, parameters: &parameters)
             }
             break
-        case .AddCart:
-            if let addCartQueryParams = additionalParams as? AddCartQueryParams {
-                addToCartEvent(addCartQueryParams: addCartQueryParams, parameters: &parameters)
-            }
-            break
-        case .RemoveCart:
-            if let removeFromCartQueryParams = additionalParams as? RemoveFromCartQueryParams {
-                removeFromCartEvent(removeFromCartQueryParams: removeFromCartQueryParams, parameters: &parameters)
+        case .AddCart, .RemoveCart:
+            if let addCartQueryParams = additionalParams as? CartQueryParams {
+                cartEvent(cartQueryParams: addCartQueryParams, parameters: &parameters)
             }
             break
         case .PageView:
@@ -261,49 +250,22 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func addToCartEvent(addCartQueryParams:AddCartQueryParams, parameters: inout [String : Any])
+    func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : Any])
     {
-        if let productId = addCartQueryParams.productId {
+        if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
         }
-        if let category = addCartQueryParams.category {
+        if let category = cartQueryParams.category {
             parameters["cat"] = category
         }
-        if let price = addCartQueryParams.price {
+        if let price = cartQueryParams.price {
             parameters["price"] = price
         }
-        if let quantity = addCartQueryParams.quantity {
+        if let quantity = cartQueryParams.quantity {
             parameters["qty"] = quantity
         }
     }
 }
-
-
-/*
- 
- The following arguments are applicable for RemoveFromCart events( where t=rmcart ). They are all optional
- 
- */
-
-extension CroboxAPIServices
-{
-    func removeFromCartEvent(removeFromCartQueryParams:RemoveFromCartQueryParams, parameters: inout [String : Any])
-    {
-        if let productId = removeFromCartQueryParams.productId {
-            parameters["pi"] = productId
-        }
-        if let category = removeFromCartQueryParams.category {
-            parameters["cat"] = category
-        }
-        if let price = removeFromCartQueryParams.price {
-            parameters["price"] = price
-        }
-        if let quantity = removeFromCartQueryParams.quantity {
-            parameters["qty"] = quantity
-        }
-    }
-}
-
 
 /*
  

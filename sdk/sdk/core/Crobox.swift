@@ -24,11 +24,11 @@ public class Crobox {
     /*
      have to setted when init SDK on app, it is
      */
-    public var containerId = ""
+    public var config:CroboxConfig!
     
     
-    public func setContainerId(containerId:String) {
-        self.containerId =  containerId
+    public func initConfig(config:CroboxConfig) {
+        self.config =  config
     }
     
     public func pageViewClick(queryParams: RequestQueryParams!,
@@ -41,7 +41,7 @@ public class Crobox {
     }
     
     public func pageViewAddCart(queryParams: RequestQueryParams!,
-                                addCartQueryParams:AddCartQueryParams? = nil,
+                                addCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
         CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
@@ -50,7 +50,7 @@ public class Crobox {
     }
     
     public func pageViewRemoveCart(queryParams: RequestQueryParams!,
-                                   removeFromCartQueryParams:RemoveFromCartQueryParams? = nil,
+                                   removeFromCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
         
         CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: removeFromCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
