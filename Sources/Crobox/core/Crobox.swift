@@ -28,7 +28,7 @@ public class Crobox {
 
     /// For sending a Click Event, to track the ratio of visits on impressions.
     ///
-    /// Click events forms the measurement data for Click-through rate (CTR) for campaigns.
+    /// - Note: Click events forms the measurement data for Click-through rate (CTR) for campaigns.
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter clickQueryParams: Event specific query parameters for Click Events
@@ -98,9 +98,7 @@ public class Crobox {
     }
     /// For retrieval of Promotions
     ///
-    ///  A Placeholder represent a predesignated point on the user interface, where the promotion will be located and displayed.
-    ///  Placeholders are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc.
-    ///  These are all managed via the Crobox Admin application.
+    ///  - Note A Placeholder represent a predesignated point on the user interface, where the promotion will be located and displayed. Placeholders are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc. These are all managed via the Crobox Admin application.
     ///
     /// - Parameter placeholderId: Identifier of the placeholder
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view

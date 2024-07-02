@@ -1,6 +1,14 @@
 
 import Foundation
 
+/**
+ Common parameters for all requests sent from the same page view.
+ 
+ - parameter viewId: Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
+ - parameter pageType: One of the values in predefined list of types of pages of the whole e-commerce funnel
+ - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
+ - parameter pageName: Free format Page Name if exists
+ */
 public class RequestQueryParams {
     public let viewId: UUID
     public var pageType: PageType
@@ -9,14 +17,6 @@ public class RequestQueryParams {
     
     private var counter: Int = 0
 
-    /**
-     Common parameters for all requests sent from the same page view.
-     
-     - parameter viewId: Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
-     - parameter pageType: One of the values in predefined list of types of pages of the whole e-commerce funnel
-     - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
-     - parameter pageName: Free format Page Name if exists
-     */
     public init(viewId: UUID,
                 pageType: PageType,
                 customProperties: [String: String]? = nil,
@@ -71,18 +71,18 @@ public struct ErrorQueryParams {
     public var line: Int?
 }
 
+/**
+ Type specific parameters for click events
+ 
+ - parameter productId: Unique identifier for a product
+ - parameter price: Product price, if available
+ - parameter quantity: Quantity, if available
+ */
 public struct ClickQueryParams {
     public var productId: String?
     public var price: Double?
     public var quantity: Int?
     
-    /**
-     Type specific parameters for click events
-     
-     - parameter productId: Unique identifier for a product
-     - parameter price: Product price, if available
-     - parameter quantity: Quantity, if available
-     */
     public init(productId: String? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
@@ -92,7 +92,6 @@ public struct ClickQueryParams {
         self.quantity = quantity
     }
 }
-
 
 /**
  Type specific parameters for Add/Remove Cart events
@@ -106,7 +105,7 @@ public struct CartQueryParams {
     public var price: Double?
     public var quantity: Int?
     
-    // Public initializer
+    
     public init(productId: String? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
@@ -117,6 +116,15 @@ public struct CartQueryParams {
     }
 }
 
+/**
+ Type specific parameters for general-purpose Custom events
+ 
+ - parameter name: Event name
+ - parameter promotionId: Promotion Id, if available
+ - parameter productId: Unique identifier for a product
+ - parameter price: Product price, if available
+ - parameter quantity: Quantity, if available
+ */
 public struct CustomQueryParams {
     var name: String?
     var promotionId: UUID?
@@ -124,15 +132,6 @@ public struct CustomQueryParams {
     var price: Double?
     var quantity: Int?
     
-    /**
-     Type specific parameters for general-purpose Custom events
-     
-     - parameter name: Event name
-     - parameter promotionId: Promotion Id, if available
-     - parameter productId: Unique identifier for a product
-     - parameter price: Product price, if available
-     - parameter quantity: Quantity, if available
-     */
     public init(name: String? = nil,
                 promotionId: UUID? = nil,
                 productId: Double? = nil,
@@ -196,6 +195,18 @@ struct ClickEvent {
     }
 }
 
+
+/**
+ Common Configuration parameters for all requests
+ 
+ - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
+ - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must be the same across the user session (or even longer when possible).
+ - parameter currencyCode: Contains information about the valid currency. It must be uppercase, three-letter form of ISO 4217 currency codes. It is useful if there are more than one currency configured in the Crobox Container.
+ - parameter localeCode: Locale code combination for the localization,
+ - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
+ - parameter timezone: Timezone
+ - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints with each request, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
+ */
 public struct CroboxConfig {
     public let containerId: String
     public let visitorId: UUID
@@ -205,17 +216,6 @@ public struct CroboxConfig {
     public var timezone: Int?
     public var customProperties: [String: String]?
 
-    /**
-     Common Configuration parameters for all requests
-     
-     - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
-     - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must be the same across the user session (or even longer when possible).
-     - parameter currencyCode: Contains information about the valid currency. It must be uppercase, three-letter form of ISO 4217 currency codes. It is useful if there are more than one currency configured in the Crobox Container.
-     - parameter localeCode: Locale code combination for the localization,
-     - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
-     - parameter timezone: Timezone
-     - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints with each request, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
-     */
     public init(containerId: String, visitorId: UUID, currencyCode: String? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: Int? = nil, customProperties: [String: String]? = nil) {
         self.containerId = containerId
         self.visitorId = visitorId
