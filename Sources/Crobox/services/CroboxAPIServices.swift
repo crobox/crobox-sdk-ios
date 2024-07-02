@@ -193,18 +193,6 @@ extension CroboxAPIServices
         if let line = errorQueryParams.line {
             parameters["l"] = line
         }
-        if let devicePixelRatio = errorQueryParams.devicePixelRatio {
-            parameters["dpr"] = devicePixelRatio
-        }
-        if let deviceLanguage = errorQueryParams.deviceLanguage {
-            parameters["ul"] = deviceLanguage
-        }
-        if let viewPortSize = errorQueryParams.viewPortSize {
-            parameters["vp"] = viewPortSize
-        }
-        if let screenResolutionSize = errorQueryParams.screenResolutionSize {
-            parameters["sr"] = screenResolutionSize
-        }
     }
 }
 

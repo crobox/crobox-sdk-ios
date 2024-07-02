@@ -69,10 +69,6 @@ public struct ErrorQueryParams {
     public var message: String?
     public var file: String?
     public var line: Int?
-    public var devicePixelRatio: Double?
-    public var deviceLanguage: String?
-    public var viewPortSize: String?
-    public var screenResolutionSize: String?
 }
 
 public struct ClickQueryParams {
