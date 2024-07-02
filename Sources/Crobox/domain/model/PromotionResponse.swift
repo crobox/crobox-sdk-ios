@@ -2,6 +2,13 @@
 import Foundation
 import SwiftyJSON
 
+/**
+ Promotion Result
+
+ - Parameters
+    - context: The context about campaigns
+    - promotions: The promotions calculated
+ */
 public class PromotionResponse: NSObject {
   
     public var context: PromotionContext?

@@ -2,6 +2,19 @@
 import Foundation
 import SwiftyJSON
 
+/**
+ Visual configuration elements.
+ 
+ Example:
+    ```
+    Map(
+        "Text1_text" : "Best Seller",
+        "Text1_color" : "#0e1111"
+    )
+    ```
+ 
+ - Parameter data: Map of all visual configuration items, managed via Crobox Admin app
+*/
 public class PromotionConfig: NSObject {
     
     public var data: [String: String] = [:]
