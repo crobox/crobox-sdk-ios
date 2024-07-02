@@ -9,6 +9,11 @@ This is an asynchronous SDK kit for consuming Crobox API for iOS applications, w
 
 First add the dependency to your project:
 
+
+## Installation
+
+### Swift Package Manager
+
 ```swift
 // swift-tools-version:4.0
 import PackageDescription
@@ -19,6 +24,15 @@ let package = Package(
         .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.0.20"),
     ]
 )
+```
+
+### CocoaPods
+
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website.
+ To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+ pod 'croboxSDK', '~> 1.0.20'
 ```
 
 ## Start using Crobox SDK

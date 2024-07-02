@@ -8,5 +8,5 @@ target 'CroboxTestApp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   # Pods for CroboxTestApp
-  pod 'croboxSDK', '~> 1.0.18'
+  pod 'croboxSDK', '~> 1.0.20'
 end
