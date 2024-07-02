@@ -16,13 +16,11 @@ class ViewController: UIViewController {
         Crobox.shared.isDebug = true
         
         
-        var config = CroboxConfig(containerId: "xlhvci", visitorId: UUID.init())
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
         
-        Crobox.shared.initConfig(config: config)
-        
-        var params = RequestQueryParams(viewId: "An0N-dq0ThWeiUJX12cpVA")
+        let params = RequestQueryParams(viewId: UUID())
         params.pageType = .PageDetail
-        params.localeCode = .en_US
+        params.customProperties = ["test":"test"]
         //................
         
         //example pageview with AddCart Event and with additionalParams as AddCartQueryParams
@@ -31,7 +29,7 @@ class ViewController: UIViewController {
         addCartQueryParams.price = 2.0
         addCartQueryParams.quantity = 3
         
-        Crobox.shared.pageViewAddCart(queryParams: params,
+        Crobox.shared.addCartEvent(queryParams: params,
                                       addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in
             
         }
@@ -44,18 +42,16 @@ class ViewController: UIViewController {
         clickQueryParams.price = 2.0
         clickQueryParams.quantity = 3
         
-        Crobox.shared.pageViewClick(queryParams: params,
+        Crobox.shared.clickEvent(queryParams: params,
                                     clickQueryParams: clickQueryParams) { isSuccess, jsonObject in
             
         }
         
         
         //example pageview with Click Event and without additionalParams
-        Crobox.shared.pageViewClick(queryParams: params) { isSuccess, jsonObject in
+        Crobox.shared.clickEvent(queryParams: params) { isSuccess, jsonObject in
             
         }
-        
-        
         
         
         //*****************PROMOTIONS*********************
