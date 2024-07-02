@@ -1,11 +1,11 @@
 
 Pod::Spec.new do |spec|
 
-  spec.name         = "croboxSDK"
+  spec.name         = "Crobox"
 
   spec.version      = "1.0.19"
 
-  spec.summary      = "croboxSDK"
+  spec.summary      = "Crobox SDK for iOS"
 
   spec.description  = "croboxSDK is a powerful SDK for integrating advanced analytics into your iOS applications. It provides seamless integration with minimal setup and offers a range of features to enhance your app's capabilities."
 
@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
  
   spec.license      = { :type => "MIT", :file => "LICENSE" }
 
-  spec.author             = { "idrisyildiz" => "idrisyildiz7@gmail.com" }
+  spec.authors      = { "Crobox" => "info@crobox.com" }
 
 if spec.respond_to? 'swift_versions'
     spec.swift_versions = ['5.0']
@@ -27,7 +27,7 @@ if spec.respond_to? 'swift_versions'
 
   spec.source       = { :git => "https://github.com/crobox/crobox-sdk-ios.git", :tag => "#{spec.version}" }
 
-  spec.source_files = "sdk/sdk/**/*.{h,m,swift}"
+  spec.source_files = "Sources/**/*.{h,m,swift}"
 
   spec.dependency       'Alamofire'
   
