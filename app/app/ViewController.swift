@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import croboxSDK
+import Crobox
 
 class ViewController: UIViewController {
     
@@ -18,12 +18,12 @@ class ViewController: UIViewController {
         
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
         
-        let params = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties = ["test":"test"])
+        let params = RequestQueryParams.init(viewId: UUID(), pageType: .PageCart, customProperties: ["test":"test"])
         
         //................
         
         //example pageview with AddCart Event and with additionalParams as AddCartQueryParams
-        var addCartQueryParams = CartQueryParams(productId: "abc123", price = 2.0, quantity = 3  )// All Optional
+        var addCartQueryParams = CartQueryParams(productId: "", price: 1.0, quantity: 12)// All Optional
         
         Crobox.shared.addCartEvent(queryParams: params,
                                       addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in
@@ -34,7 +34,6 @@ class ViewController: UIViewController {
         //example pageview with Click Event and with additionalParams as additionalClickParams
         var clickQueryParams = ClickQueryParams() // All Optional
         clickQueryParams.productId = "4"
-        clickQueryParams.category = "1"
         clickQueryParams.price = 2.0
         clickQueryParams.quantity = 3
         

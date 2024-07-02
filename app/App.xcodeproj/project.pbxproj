@@ -13,6 +13,7 @@
 		054051842C1094F300338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051832C1094F300338217 /* Base */; };
 		054051862C1094F800338217 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 054051852C1094F800338217 /* Assets.xcassets */; };
 		054051892C1094F800338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051882C1094F800338217 /* Base */; };
+		057E65972C345A220071231D /* Crobox in Frameworks */ = {isa = PBXBuildFile; productRef = 057E65962C345A220071231D /* Crobox */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				057E65972C345A220071231D /* Crobox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +119,9 @@
 			dependencies = (
 			);
 			name = CroboxTestApp;
+			packageProductDependencies = (
+				057E65962C345A220071231D /* Crobox */,
+			);
 			productName = CroboxTestApp;
 			productReference = 054051792C1094F300338217 /* CroboxTestApp.app */;
 			productType = "com.apple.product-type.application";
@@ -145,6 +150,9 @@
 				Base,
 			);
 			mainGroup = 054051702C1094F300338217;
+			packageReferences = (
+				057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */,
+			);
 			productRefGroup = 0540517A2C1094F300338217 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -409,6 +417,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/crobox/crobox-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.20;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		057E65962C345A220071231D /* Crobox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */;
+			productName = Crobox;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 054051712C1094F300338217 /* Project object */;
 }

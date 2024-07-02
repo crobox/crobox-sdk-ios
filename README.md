@@ -46,7 +46,7 @@ Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: 
 RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
 It must be recreated when the page/view is displayed.
 ```swift
-let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties = ["test":"test"])
+let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties: ["test":"test"])
 ```
 
 For sending events, use the `xyzEvent` APIs exposed by the Crobox instance.
@@ -54,7 +54,6 @@ Events might also take event specific parameters:
 
 ```swift
 var addCartQueryParams = CartQueryParams(productId: "abc")
-addCartQueryParams.category = "1"
 addCartQueryParams.price = 2.0
 addCartQueryParams.quantity = 3
 
