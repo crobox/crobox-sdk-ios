@@ -32,7 +32,7 @@ public class Crobox {
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter clickQueryParams: Event specific query parameters for Click Events
-    /// - Parameter eventCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func clickEvent(queryParams: RequestQueryParams!,
                               clickQueryParams:ClickQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
@@ -45,8 +45,8 @@ public class Crobox {
     /// For sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
-    /// - Parameter cartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
-    /// - Parameter eventCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - Parameter addCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func addCartEvent(queryParams: RequestQueryParams!,
                                 addCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
@@ -59,8 +59,8 @@ public class Crobox {
     /// For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
-    /// - Parameter cartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
-    /// - Parameter eventCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - Parameter removeFromCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func removeCartEvent(queryParams: RequestQueryParams!,
                                    removeFromCartQueryParams:CartQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
@@ -74,7 +74,7 @@ public class Crobox {
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter errorQueryParams: Event specific query parameters for Error Events
-    /// - Parameter eventCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func errorEvent(queryParams: RequestQueryParams!,
                               errorQueryParams:ErrorQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
@@ -87,7 +87,7 @@ public class Crobox {
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter customQueryParams: Event specific query parameters for Custom Events
-    /// - Parameter eventCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func customEvent(queryParams: RequestQueryParams!,
                               customQueryParams:CustomQueryParams? = nil,
                               closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void){
@@ -104,8 +104,8 @@ public class Crobox {
     ///
     /// - Parameter placeholderId: Identifier of the placeholder
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
-    /// - Parameter impressions: List of product ID's which promotions are requested for. It may be empty for the pages where products are not involved. (e.g. Checkout page)
-    /// - Parameter promotionCallback: The callback to be notified for the response or if an error occurs before, during or after the request is sent
+    /// - TODO Parameter impressions: List of product ID's which promotions are requested for. It may be empty for the pages where products are not involved. (e.g. Checkout page)
+    /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
                            closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
