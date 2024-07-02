@@ -32,9 +32,7 @@ class CroboxAPIServices {
         if let timezone = Crobox.shared.config.timezone {
             parameters["tz"] = timezone
         }
-        if let pageType = queryParams.pageType {
-            parameters["pt"] = pageType.rawValue
-        }
+        parameters["pt"] = queryParams.pageType
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
@@ -93,9 +91,7 @@ class CroboxAPIServices {
         if let timezone =  Crobox.shared.config.timezone {
             parameters["tz"] = timezone
         }
-        if let pageType = queryParams.pageType {
-            parameters["pt"] = pageType.rawValue
-        }
+        parameters["pt"] = queryParams.pageType
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
@@ -210,9 +206,6 @@ extension CroboxAPIServices
         if let productId = clickParams.productId {
             parameters["pi"] = productId
         }
-        if let category = clickParams.category {
-            parameters["cat"] = category
-        }
         if let price = clickParams.price {
             parameters["price"] = price
         }
@@ -235,9 +228,6 @@ extension CroboxAPIServices
     {
         if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
-        }
-        if let category = cartQueryParams.category {
-            parameters["cat"] = category
         }
         if let price = cartQueryParams.price {
             parameters["price"] = price

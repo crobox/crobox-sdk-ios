@@ -18,16 +18,12 @@ class ViewController: UIViewController {
         
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
         
-        let params = RequestQueryParams(viewId: UUID())
-        params.pageType = .PageDetail
-        params.customProperties = ["test":"test"]
+        let params = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties = ["test":"test"])
+        
         //................
         
         //example pageview with AddCart Event and with additionalParams as AddCartQueryParams
-        var addCartQueryParams = CartQueryParams(productId: "")// All Optional
-        addCartQueryParams.category = "1"
-        addCartQueryParams.price = 2.0
-        addCartQueryParams.quantity = 3
+        var addCartQueryParams = CartQueryParams(productId: "abc123", price = 2.0, quantity = 3  )// All Optional
         
         Crobox.shared.addCartEvent(queryParams: params,
                                       addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in

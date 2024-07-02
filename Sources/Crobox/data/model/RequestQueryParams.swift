@@ -3,7 +3,7 @@ import Foundation
 
 public class RequestQueryParams {
     public let viewId: UUID
-    public var pageType: PageType?
+    public var pageType: PageType
     public var customProperties: [String: String]?
     public var pageName: String?
     
@@ -18,7 +18,7 @@ public class RequestQueryParams {
      - parameter pageName: Free format Page Name if exists
      */
     public init(viewId: UUID,
-                pageType: PageType? = nil,
+                pageType: PageType,
                 customProperties: [String: String]? = nil,
                 pageName: String? = nil) {
         self.viewId = viewId
@@ -73,7 +73,6 @@ public struct ErrorQueryParams {
 
 public struct ClickQueryParams {
     public var productId: String?
-    public var category: String?
     public var price: Double?
     public var quantity: Int?
     
@@ -85,12 +84,10 @@ public struct ClickQueryParams {
      - parameter quantity: Quantity, if available
      */
     public init(productId: String? = nil,
-                category: String? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.productId = productId
-        self.category = category
         self.price = price
         self.quantity = quantity
     }
@@ -106,18 +103,15 @@ public struct ClickQueryParams {
  */
 public struct CartQueryParams {
     public var productId: String?
-    public var category: String?
     public var price: Double?
     public var quantity: Int?
     
     // Public initializer
     public init(productId: String? = nil,
-                category: String? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.productId = productId
-        self.category = category
         self.price = price
         self.quantity = quantity
     }
@@ -127,7 +121,6 @@ public struct CustomQueryParams {
     var name: String?
     var promotionId: UUID?
     var productId: Double?
-    var category: Int?
     var price: Double?
     var quantity: Int?
     
@@ -143,14 +136,12 @@ public struct CustomQueryParams {
     public init(name: String? = nil,
                 promotionId: UUID? = nil,
                 productId: Double? = nil,
-                category: Int? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.name = name
         self.promotionId = promotionId
         self.productId = productId
-        self.category = category
         self.price = price
         self.quantity = quantity
     }

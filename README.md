@@ -10,7 +10,15 @@ This is an asynchronous SDK kit for consuming Crobox API for iOS applications, w
 First add the dependency to your project:
 
 ```swift
+// swift-tools-version:4.0
+import PackageDescription
 
+let package = Package(
+    name: "YOUR_PROJECT_NAME",
+    dependencies: [
+        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.0.20"),
+    ]
+)
 ```
 
 ## Start using Crobox SDK
@@ -18,20 +26,28 @@ First add the dependency to your project:
 First configure and create a `Crobox` singleton as:
 
 ```swift
-
+Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
 ```
 
 RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
-It must be recreated when the page/view is displayed, and reused between all requests fired from the same page.
+It must be recreated when the page/view is displayed.
 ```swift
-
+let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties = ["test":"test"])
 ```
 
 For sending events, use the `xyzEvent` APIs exposed by the Crobox instance.
 Events might also take event specific parameters:
 
 ```swift
+var addCartQueryParams = CartQueryParams(productId: "abc")
+addCartQueryParams.category = "1"
+addCartQueryParams.price = 2.0
+addCartQueryParams.quantity = 3
 
+Crobox.shared.addCartEvent(queryParams: params,
+                              addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in
+    
+}
 ```
 
 For retrieving promotions for a single or more products, use the specific PlaceholderId that is configured with specific page types and linked to campaigns via Crobox Admin App.
