@@ -6,7 +6,7 @@ import SwiftyJSON
 public class Crobox {
     
     /*
-     croboxSDK instance
+     CroboxSDK instance
      */
     public static let shared = Crobox()
     
@@ -16,7 +16,7 @@ public class Crobox {
     public var isDebug = false
     
     /*
-     have to setted when init SDK on app, it is
+     mandatory for common configuration parameters
      */
     public var config:CroboxConfig!
     
