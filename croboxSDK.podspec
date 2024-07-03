@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
 
   spec.name         = "croboxSDK"
 
-  spec.version      = "1.0.21"
+  spec.version      = "1.0.23"
 
   spec.summary      = "Crobox SDK for iOS"
 

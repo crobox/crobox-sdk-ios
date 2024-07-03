@@ -59,7 +59,6 @@
 			children = (
 				0540517B2C1094F300338217 /* app */,
 				0540517A2C1094F300338217 /* Products */,
-				1A2D88D7698E5A94E74AEE00 /* Pods */,
 				8E04D79AE395D93D7B07F7F7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -84,13 +83,6 @@
 				0540518A2C1094F800338217 /* Info.plist */,
 			);
 			path = app;
-			sourceTree = "<group>";
-		};
-		1A2D88D7698E5A94E74AEE00 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		8E04D79AE395D93D7B07F7F7 /* Frameworks */ = {

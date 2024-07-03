@@ -38,8 +38,8 @@ class ViewController: UIViewController {
         Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
         
         /// Sending Error events with optional event specific parameters
-        let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
+        //let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
+        //Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
         
         /// Sending general-purpose Custom event
         let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", price: 1.0, quantity: 1)

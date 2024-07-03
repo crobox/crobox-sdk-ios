@@ -45,9 +45,8 @@ class CroboxAPIServices {
             parameters["cp"] = customProperties
         }
         
-        
         // URL oluşturma ve query parametrelerini ekleme
-        guard var urlComponents = URLComponents(string:  Constant.Promotions_Path) else {
+        guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
             closure(false, nil)
             return
         }
@@ -71,7 +70,9 @@ class CroboxAPIServices {
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
+           
             case .success(let data):
+                CroboxDebug.shared.printText(text: JSON(data))
                 do {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if jsonObject["error"] == nil {
@@ -86,7 +87,8 @@ class CroboxAPIServices {
                 } catch {
                     closure(false, promotionResponse)
                 }
-            case .failure(_):
+            case .failure(let error):
+                CroboxDebug.shared.printText(text:JSON(error))
                 closure(false, promotionResponse)
             }
         }
