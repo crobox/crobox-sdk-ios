@@ -46,7 +46,7 @@ class APIRequests: NSObject {
                 completion(JSON(jsonData), false)
             } catch {
                 completion(JSON(), false)
-                print("Error converting dictionary to JSON: \(error.localizedDescription)")
+                CroboxDebug.shared.printError(error: "Error converting dictionary to JSON: \(error.localizedDescription)")
             }
         }
     }

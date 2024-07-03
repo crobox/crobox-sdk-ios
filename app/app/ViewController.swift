@@ -25,10 +25,7 @@ class ViewController: UIViewController {
         //example pageview with AddCart Event and with additionalParams as AddCartQueryParams
         var addCartQueryParams = CartQueryParams(productId: "", price: 1.0, quantity: 12)// All Optional
         
-        Crobox.shared.addCartEvent(queryParams: params,
-                                      addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in
-            
-        }
+        Crobox.shared.addCartEvent(queryParams: params, addCartQueryParams:addCartQueryParams )
         
         
         //example pageview with Click Event and with additionalParams as additionalClickParams
@@ -37,16 +34,11 @@ class ViewController: UIViewController {
         clickQueryParams.price = 2.0
         clickQueryParams.quantity = 3
         
-        Crobox.shared.clickEvent(queryParams: params,
-                                    clickQueryParams: clickQueryParams) { isSuccess, jsonObject in
-            
-        }
+        Crobox.shared.clickEvent(queryParams: params, clickQueryParams: clickQueryParams)
         
         
         //example pageview with Click Event and without additionalParams
-        Crobox.shared.clickEvent(queryParams: params) { isSuccess, jsonObject in
-            
-        }
+        Crobox.shared.clickEvent(queryParams: params)
         
         
         //*****************PROMOTIONS*********************

@@ -67,7 +67,8 @@ class CroboxAPIServices {
     
     func socket(eventType:EventType!,
                 additionalParams:Any?,
-                queryParams:RequestQueryParams, closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
+                queryParams:RequestQueryParams, 
+                closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
         
         //Mandatory
         var parameters = [
@@ -157,7 +158,7 @@ extension CroboxAPIServices
             }
             break
         default:
-            print("none")
+            CroboxDebug.shared.eventError(error: "Unknown event type")
         }
     }
     
