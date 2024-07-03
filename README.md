@@ -1,9 +1,9 @@
 # crobox-sdk-ios
 Crobox SDK for iOS
 
+[![Build Status](https://github.com/crobox/crobox-sdk-ios/actions/workflows/ci.yml/badge.svg)](https://github.com/crobox/crobox-sdk-ios/actions?query=main)
 [![Official Crobox project](https://img.shields.io/badge/project-official-green.svg?colorA=303033&colorB=ff8a2c&label=Crobox)](https://crobox.com/)
-[![Crobox](https://img.shields.io/badge/Crobox-ios-white)](http://docs.crobox.com)
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
+![GitHub Release](https://img.shields.io/github/v/release/crobox/crobox-sdk-ios?include_prereleases)
 
 This is an asynchronous SDK kit for consuming Crobox API for iOS applications, written in Swift.
 
