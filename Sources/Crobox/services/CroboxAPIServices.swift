@@ -45,6 +45,7 @@ class CroboxAPIServices {
             parameters["cp"] = customProperties
         }
         
+        
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
             closure(false, nil)
