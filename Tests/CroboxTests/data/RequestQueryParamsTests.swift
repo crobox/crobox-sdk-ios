@@ -8,11 +8,4 @@ final class ConstantTests: XCTestCase {
         XCTAssertEqual(uuid, RequestQueryParams(viewId: uuid, pageType: PageType.PageCart).viewId)
     }
 
-    func testAll() throws {
-        
-                
-                
-
-
-    }
 }

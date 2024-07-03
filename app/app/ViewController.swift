@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /// Crobox.shared is the single point of all interactions, keeping the configuration and providing all functionality
+        /// Crobox.shared is the single point of contact for all interactions, keeping the configuration and providing all functionality
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
         
         /// Enable/Disable debugging
@@ -52,7 +52,6 @@ class ViewController: UIViewController {
                                  queryParams: overviewPageParams,
                                  productIds: ["1", "2", "3"]) { isSuccess, promotionResponse in
             /// process PromotionResponse
-            ///
             if let items = promotionResponse?.promotions
             {
                 for item in items
