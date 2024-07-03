@@ -9,9 +9,8 @@ class CroboxAPIServices {
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
                     productIds: Set<String>? = Set(),
-                    closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
-        
-        
+                    closure: @escaping (_ result: Either<CroboxError, PromotionResponse>) -> Void) {
+
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
@@ -44,14 +43,14 @@ class CroboxAPIServices {
         
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
-            closure(false, nil)
+            closure(.error(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
         }
         
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
         guard let url = urlComponents.url else {
-            closure(false, nil)
+            closure(.error(CroboxError.internalError(msg: "Failed to form promotions parameters")))
             return
         }
         
@@ -77,19 +76,20 @@ class CroboxAPIServices {
                             let jsonData = JSON(jsonObject)
                             CroboxDebug.shared.printText(text: jsonData)
                             promotionResponse = PromotionResponse(jsonData: jsonData)
-                            closure(true, promotionResponse)
+                            closure(.success(promotionResponse))
                         } else {
-                            closure(false, promotionResponse)
+                            closure(.error(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
+
                         }
                     } else {
-                        closure(false, promotionResponse)
+                        closure(.error(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(false, promotionResponse)
+                    closure(.error(CroboxError.internalError(msg: "Internal Error parsing response \(response)")))
                 }
             case .failure(let error):
                 CroboxDebug.shared.printText(text: error)
-                closure(false, promotionResponse)
+                closure(.error(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, msg: "Http Error in \(response)")))
             }
         }
     }
