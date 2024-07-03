@@ -11,18 +11,15 @@ class CroboxAPIServices {
                     productIds: Set<String>? = Set(),
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
-        
-        
+                
         //Mandatory
         var parameters = [
             "cid": Crobox.shared.config.containerId,
-            "e": queryParams.viewCounter(),
-            "vid": queryParams.viewId,
-            "pid": Crobox.shared.config.visitorId,
+            "e": "\(queryParams.viewCounter())",
+            "vid": "\(queryParams.viewId)",
+            "pid": "\(Crobox.shared.config.visitorId)",
             "vpid": placeholderId!
-        ] as [String : Any]
-        
-        
+        ] as [String : String]
         
         //Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
@@ -34,17 +31,21 @@ class CroboxAPIServices {
         if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
+        
         if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = timezone
+            parameters["tz"] = "\(timezone)"
         }
-        parameters["pt"] = queryParams.pageType
+        
+        parameters["pt"] = "\(queryParams.pageType.rawValue)"
+       
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
-        if let customProperties = queryParams.customProperties {
-            parameters["cp"] = customProperties
-        }
         
+        //TODO
+//        if let customProperties = queryParams.customProperties {
+//            parameters["cp"] = customProperties
+//        }
         
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
@@ -52,7 +53,7 @@ class CroboxAPIServices {
             return
         }
         
-        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value as? String) }
+        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
         guard let url = urlComponents.url else {
             closure(false, nil)
@@ -66,6 +67,8 @@ class CroboxAPIServices {
         urlRequest.method = .post
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
+        
+        CroboxDebug.shared.printText(text: urlRequest.httpBody!)
         
         var promotionResponse:PromotionResponse!
         
@@ -126,9 +129,11 @@ class CroboxAPIServices {
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
-        if let customProperties = queryParams.customProperties {
-            parameters["cp"] = customProperties
-        }
+        
+        //TODO
+//        if let customProperties = queryParams.customProperties {
+//            parameters["cp"] = customProperties
+//        }
         
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
