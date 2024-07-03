@@ -54,7 +54,7 @@ class CroboxAPIServices {
         }
         
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
-        
+
         guard let url = urlComponents.url else {
             closure(false, nil)
             return
@@ -68,19 +68,20 @@ class CroboxAPIServices {
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
-        CroboxDebug.shared.printText(text: urlRequest.httpBody!)
-        
+        CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
+
         var promotionResponse:PromotionResponse!
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
            
             case .success(let data):
-                CroboxDebug.shared.printText(text: JSON(data))
                 do {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if jsonObject["error"] == nil {
-                            promotionResponse = PromotionResponse(jsonData: JSON(jsonObject))
+                            let jsonData = JSON(jsonObject)
+                            CroboxDebug.shared.printText(text: jsonData)
+                            promotionResponse = PromotionResponse(jsonData: jsonData)
                             closure(true, promotionResponse)
                         } else {
                             closure(false, promotionResponse)
@@ -92,7 +93,7 @@ class CroboxAPIServices {
                     closure(false, promotionResponse)
                 }
             case .failure(let error):
-                CroboxDebug.shared.printText(text:JSON(error))
+                CroboxDebug.shared.printText(text: error)
                 closure(false, promotionResponse)
             }
         }
