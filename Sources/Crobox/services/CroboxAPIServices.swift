@@ -16,14 +16,12 @@ class CroboxAPIServices {
         //Mandatory
         var parameters = [
             "cid": Crobox.shared.config.containerId,
-            "e": queryParams.viewCounter(),
-            "vid": queryParams.viewId,
-            "pid": Crobox.shared.config.visitorId,
+            "e": "\(queryParams.viewCounter())",
+            "vid": "\(queryParams.viewId)",
+            "pid": "\(Crobox.shared.config.visitorId)",
             "vpid": placeholderId!
-        ] as [String : Any]
-        
-        
-        
+        ] as [String : String]
+
         //Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
             parameters["cc"] = currencyCode
@@ -35,16 +33,12 @@ class CroboxAPIServices {
             parameters["uid"] = userId
         }
         if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = timezone
+            parameters["tz"] = "\(timezone)"
         }
-        parameters["pt"] = queryParams.pageType
+        parameters["pt"] = "\(queryParams.pageType.rawValue)"
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
-        if let customProperties = queryParams.customProperties {
-            parameters["cp"] = customProperties
-        }
-        
         
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
@@ -64,7 +58,7 @@ class CroboxAPIServices {
         // Alamofire Request
         var urlRequest = URLRequest(url: url)
         urlRequest.method = .post
-        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("text/plain", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
         var promotionResponse:PromotionResponse!
