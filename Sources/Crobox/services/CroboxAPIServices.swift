@@ -8,7 +8,10 @@ class CroboxAPIServices {
     
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
+                    productIds: Set<String>? = Set(),
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
+        
+        
         
         //Mandatory
         var parameters = [
@@ -18,6 +21,8 @@ class CroboxAPIServices {
             "pid": Crobox.shared.config.visitorId,
             "vpid": placeholderId!
         ] as [String : Any]
+        
+        
         
         //Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
@@ -40,26 +45,48 @@ class CroboxAPIServices {
             parameters["cp"] = customProperties
         }
         
-        APIRequests.shared.request(method: .post, url: Constant.Promotions_Path , parameters: parameters ) {
-            (jsonObject, success) in
-            
-            var promotionResponse:PromotionResponse?
-            
-            if success {
-                
-                if !jsonObject.isEmpty && !jsonObject["error"].exists() {
-                    
-                    promotionResponse = PromotionResponse(jsonData: jsonObject)
-
-                    closure(true, promotionResponse)
-                    
-                } else {
-                    
+        
+        // URL oluşturma ve query parametrelerini ekleme
+        guard var urlComponents = URLComponents(string:  Constant.Promotions_Path) else {
+            closure(false, nil)
+            return
+        }
+        
+        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value as? String) }
+        
+        guard let url = urlComponents.url else {
+            closure(false, nil)
+            return
+        }
+        
+        let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
+        
+        // Alamofire Request
+        var urlRequest = URLRequest(url: url)
+        urlRequest.method = .post
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpBody = bodyString.data(using: .utf8)
+        
+        var promotionResponse:PromotionResponse!
+        
+        AF.request(urlRequest).responseData { response in
+            switch response.result {
+            case .success(let data):
+                do {
+                    if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        if jsonObject["error"] == nil {
+                            promotionResponse = PromotionResponse(jsonData: JSON(jsonObject))
+                            closure(true, promotionResponse)
+                        } else {
+                            closure(false, promotionResponse)
+                        }
+                    } else {
+                        closure(false, promotionResponse)
+                    }
+                } catch {
                     closure(false, promotionResponse)
                 }
-                
-            } else {
-                
+            case .failure(_):
                 closure(false, promotionResponse)
             }
         }
@@ -67,7 +94,7 @@ class CroboxAPIServices {
     
     func socket(eventType:EventType!,
                 additionalParams:Any?,
-                queryParams:RequestQueryParams, 
+                queryParams:RequestQueryParams,
                 closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
         
         //Mandatory
@@ -242,7 +269,7 @@ extension CroboxAPIServices
 /*
  
  The following arguments are applicable for click events( where t=event ). They are all optional
-
+ 
  */
 
 extension CroboxAPIServices

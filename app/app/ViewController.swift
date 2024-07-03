@@ -78,8 +78,6 @@ class ViewController: UIViewController {
         Crobox.shared.promotions(placeholderId: "2", queryParams: checkoutPageParams) { isSuccess, promotionResponse in
             /// process PromotionResponse
         }
-        
-        
     }
 }
 

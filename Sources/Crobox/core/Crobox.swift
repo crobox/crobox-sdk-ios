@@ -101,8 +101,7 @@ public class Crobox {
                            productIds: Set<String>? = Set(),
                            closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
         
-        CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams) { isSuccess, promotionResponse in
-
+        CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds) { isSuccess, promotionResponse in
             closure(isSuccess, promotionResponse)
         }
     }
