@@ -128,13 +128,13 @@ public struct CartQueryParams {
 public struct CustomQueryParams {
     var name: String?
     var promotionId: UUID?
-    var productId: Double?
+    var productId: String?
     var price: Double?
     var quantity: Int?
     
     public init(name: String? = nil,
                 promotionId: UUID? = nil,
-                productId: Double? = nil,
+                productId: String? = nil,
                 price: Double? = nil,
                 quantity: Int? = nil) {
         

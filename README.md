@@ -21,7 +21,7 @@ import PackageDescription
 let package = Package(
     name: "YOUR_PROJECT_NAME",
     dependencies: [
-        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.0.20"),
+        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.0.22"),
     ]
 )
 ```
@@ -32,7 +32,7 @@ let package = Package(
  To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
- pod 'croboxSDK', '~> 1.0.20'
+ pod 'croboxSDK', '~> 1.0.22'
 ```
 
 ## Start using Crobox SDK
@@ -43,7 +43,7 @@ First configure and create a `Crobox` singleton as:
 Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
 ```
 
-RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
+`RequestQueryParams` contains page specific parameters, shared by all requests sent from the same page/view.
 It must be recreated when the page/view is displayed.
 ```swift
 let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties: ["test":"test"])
@@ -56,20 +56,31 @@ Events might also take event specific parameters:
 var addCartQueryParams = CartQueryParams(productId: "abc")
 addCartQueryParams.price = 2.0
 addCartQueryParams.quantity = 3
-
-Crobox.shared.addCartEvent(queryParams: params,
-                              addCartQueryParams:addCartQueryParams ) { isSuccess, jsonObject in
-    
-}
+Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
 ```
 
-For retrieving promotions for a single or more products, use the specific PlaceholderId that is configured with specific page types and linked to campaigns via Crobox Admin App.
+For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```swift
+        Crobox.shared.promotions(placeholderId: "1",
+                                 queryParams: overviewPageParams,
+                                 productIds: ["1", "2", "3"]) { isSuccess, promotionResponse in
+            /// process PromotionResponse
+            if let items = promotionResponse?.promotions
+            {
+                for item in items
+                {
+                    print(item.content?.config?.data ?? "no data")
+                    print(item.campaignId!)
+                    print(item.id!)
+                    print(item.productId! )
+                }
+            }
+        }
 
 ```
 
 ## Samples
 
-See [test app](app/CroboxTestApp/ViewController.swift) for various samples
+See [test snippet](app/app/ViewController.swift) for various samples
 

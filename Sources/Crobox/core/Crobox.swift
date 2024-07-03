@@ -55,9 +55,9 @@ public class Crobox {
     /// For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
     ///
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
-    /// - Parameter removeFromCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
-    public func removeCartEvent(queryParams: RequestQueryParams!, removeFromCartQueryParams:CartQueryParams? = nil){
-        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: removeFromCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
+    /// - Parameter rmCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
+    public func removeCartEvent(queryParams: RequestQueryParams!, rmCartQueryParams:CartQueryParams? = nil){
+        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
             if !isSuccess {
                 CroboxDebug.shared.eventError(error: "RmCart event: \(jsonObject ?? "")")
             }
@@ -98,6 +98,7 @@ public class Crobox {
     /// - Parameter closure: The callback to be notified for the response or if an error occurs before, during or after the request is sent
     public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
+                           productIds: Set<String>? = Set(),
                            closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void){
         
         CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams) { isSuccess, promotionResponse in
