@@ -49,7 +49,7 @@ class CroboxAPIServices {
         }
         
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
-
+        
         guard let url = urlComponents.url else {
             closure(false, nil)
             return
@@ -64,6 +64,7 @@ class CroboxAPIServices {
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
         CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
+
         var promotionResponse:PromotionResponse!
         
         AF.request(urlRequest).responseData { response in
