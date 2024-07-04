@@ -11,7 +11,7 @@ class CroboxAPIServices {
                     productIds: Set<String>? = Set(),
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
-                
+        
         //Mandatory
         var parameters = [
             "cid": Crobox.shared.config.containerId,
@@ -38,14 +38,18 @@ class CroboxAPIServices {
         
         parameters["pt"] = "\(queryParams.pageType.rawValue)"
        
+        let millis = Int64(Date().timeIntervalSince1970 * 1000)
+        parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
+
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
         
-        //TODO
-//        if let customProperties = queryParams.customProperties {
-//            parameters["cp"] = customProperties
-//        }
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
         
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
@@ -74,7 +78,7 @@ class CroboxAPIServices {
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
-           
+                
             case .success(let data):
                 CroboxDebug.shared.printText(text: JSON(data))
                 do {
@@ -130,10 +134,11 @@ class CroboxAPIServices {
             parameters["lh"] = pageName
         }
         
-        //TODO
-//        if let customProperties = queryParams.customProperties {
-//            parameters["cp"] = customProperties
-//        }
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
         
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
