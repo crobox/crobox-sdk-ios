@@ -10,7 +10,7 @@ class CroboxAPIServices {
                     queryParams:RequestQueryParams,
                     productIds: Set<String>? = Set(),
                     closure: @escaping (_ result: Either<CroboxError, PromotionResponse>) -> Void) {
-
+        
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
@@ -63,7 +63,7 @@ class CroboxAPIServices {
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
         CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
-
+        
         var promotionResponse:PromotionResponse!
         
         AF.request(urlRequest).responseData { response in
@@ -79,14 +79,14 @@ class CroboxAPIServices {
                             closure(.success(promotionResponse))
                         } else {
                             closure(.error(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
-
+                            
                         }
                     } else {
                         closure(.error(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
                     closure(.error(CroboxError.internalError(msg: "\(response.result)")))
-        
+                    
                 }
             case .failure(let error):
                 CroboxDebug.shared.printText(text: error)
@@ -94,19 +94,19 @@ class CroboxAPIServices {
             }
         }
         .responseString { response in
-          print("String:\(response.result)")
-          switch(response.result) {
-          case .success(_):
-             if let data = response.value {
-                print(data)
-               }
-                   
-          case .failure(_):
-              print("Error message:\(response)")
-              break
-           }
-       }
-
+            print("String:\(response.result)")
+            switch(response.result) {
+            case .success(_):
+                if let data = response.value {
+                    print(data)
+                }
+                
+            case .failure(_):
+                print("Error message:\(response)")
+                break
+            }
+        }
+        
     }
     
     func socket(eventType:EventType!,

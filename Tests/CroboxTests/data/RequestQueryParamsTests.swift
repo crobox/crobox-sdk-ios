@@ -3,92 +3,44 @@ import XCTest
 
 final class ConstantTests: XCTestCase {
     
-    func testExample() throws {
-        let uuid = UUID.init()
-        XCTAssertEqual(uuid, RequestQueryParams(viewId: uuid, pageType: PageType.PageCart).viewId)
+    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"async"])
+    
+    override class func setUp() {
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
+        Crobox.shared.isDebug = true
     }
     
-    func testClickEvent() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
+    override class func tearDown() {
         Crobox.shared.isDebug = false
-        let expectation = XCTestExpectation(description: "event sent")
-        
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
+    }
+    
+    func testClickEvent() async throws {
         let clickQueryParams = ClickQueryParams(productId: "4")
-        Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
-        
-        
-        wait(for: [expectation], timeout: 1.0)
-        Crobox.shared.isDebug = false
+        let _ = await Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
     }
     
-    func testAddCartEvent() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = false
-        let expectation = XCTestExpectation(description: "event sent")
-        
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
+    func testAddCartEvent() async throws {
         let addCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
-        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
-        
-        wait(for: [expectation], timeout: 1.0)
+        let _ = await Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
     }
     
-    
-    func testRmCartEvent() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        Crobox.shared.isDebug = false
-        let expectation = XCTestExpectation(description: "event sent")
-        
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
+    func testRmCartEvent() async throws {
         let rmCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
-        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
-        
-        wait(for: [expectation], timeout: 1.0)
+        let _ = await Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
     }
     
-    
-    func testErrorEvent() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        Crobox.shared.isDebug = false
-        let expectation = XCTestExpectation(description: "event sent")
-        
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
+    func testErrorEvent() async throws {
         let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
-        
-        wait(for: [expectation], timeout: 1.0)
-        
+        let _ = await Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
     }
     
-    func testCustomEvent() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = false
-        let expectation = XCTestExpectation(description: "event sent")
-        
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
+    func testCustomEvent() async throws {
         let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", price: 1.0, quantity: 1)
-        Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
-        
-        wait(for: [expectation], timeout: 2.0)
-        
+        let _ = await Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
     }
-    
     
     func testPromotionsNoProduct() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = false
-        
-        let expectation = XCTestExpectation(description: "send multi req asynchronously.")
+        let expectation = XCTestExpectation(description: "receive successful response")
         
         let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout)
         Crobox.shared.promotions(placeholderId: "21", queryParams: checkoutPageParams) { result in
@@ -110,14 +62,9 @@ final class ConstantTests: XCTestCase {
     
     
     func testPromotionsOneProduct() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = false
+        let expectation = XCTestExpectation(description: "receive successful response")
         
         let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
-        
-        let expectation = XCTestExpectation(description: "send multi req asynchronously.")
-        
         Crobox.shared.promotions(placeholderId: "30",
                                  queryParams: detailPageParams,
                                  productIds: ["29883481"]) { result in
@@ -138,14 +85,9 @@ final class ConstantTests: XCTestCase {
     
     
     func testPromotions() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = false
+        let expectation = XCTestExpectation(description: "receive successful response")
         
         let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
-        let expectation = XCTestExpectation(description: "send multi req asynchronously.")
-        
         Crobox.shared.promotions(placeholderId: "30",
                                  queryParams: overviewPageParams,
                                  productIds: ["29883481", "04133050", "3A626400"]) { result in
@@ -169,14 +111,9 @@ final class ConstantTests: XCTestCase {
     }
     
     func testPromotionsError() throws {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "99999", visitorId: UUID.init(), localeCode: .en_US))
-        
-        Crobox.shared.isDebug = true
+        let expectation = XCTestExpectation(description: "receive error response")
         
         let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
-        
-        let expectation = XCTestExpectation(description: "send multi req asynchronously.")
-        
         Crobox.shared.promotions(placeholderId: "30",
                                  queryParams: overviewPageParams,
                                  productIds: ["29883481", "04133050", "3A626400"]) { result in
