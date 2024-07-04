@@ -21,7 +21,7 @@ public class Experiment: Codable {
     public var control: Bool?
     
     init(jsonData: JSON) {
-        self.id = jsonData["groupName"].intValue
+        self.id = jsonData["id"].intValue
         self.name = jsonData["name"].stringValue
         self.variantId = jsonData["variantId"].intValue
         self.variantName = jsonData["variantName"].stringValue

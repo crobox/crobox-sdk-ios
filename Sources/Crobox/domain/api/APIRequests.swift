@@ -21,7 +21,7 @@ class APIRequests: NSObject {
     {
         header()
         
-        CroboxDebug.shared.printParams(params: parameters)
+        CroboxDebug.shared.printText(text: "\(Constant.BASE_URL)\(url) \(parameters)")
         
         if NetworkReachabilityManager()!.isReachable {
             AF.request("\(Constant.BASE_URL)\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
@@ -30,10 +30,10 @@ class APIRequests: NSObject {
                     response in
                     switch response.result {
                     case .success(let value):
-                        CroboxDebug.shared.printText(text: JSON(value))
+                        CroboxDebug.shared.printText(text: "Status: \(response.response?.statusCode ?? -1)")
                         completion(JSON(value), true)
                     case .failure(let error):
-                        CroboxDebug.shared.printText(text:JSON(error))
+                        CroboxDebug.shared.printText(text:error.localizedDescription)
                         completion(JSON(error), false)
                     }
                 }
@@ -42,7 +42,7 @@ class APIRequests: NSObject {
             do {
                 let dictionary: [String: Any] = ["error": "true", "message": "can not get any response from server"]
                 let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-                CroboxDebug.shared.printText(text: JSON(jsonData))
+                CroboxDebug.shared.printText(text: jsonData)
                 completion(JSON(jsonData), false)
             } catch {
                 completion(JSON(), false)
