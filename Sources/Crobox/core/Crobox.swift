@@ -98,7 +98,7 @@ public class Crobox {
     public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
                            productIds: Set<String>? = Set(),
-                           closure: @escaping (_ result: Either<CroboxError, PromotionResponse>) -> Void) {
+                           closure: @escaping (_ result: Result<PromotionResponse, CroboxError>) -> Void) async {
         CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds) { result in
             closure(result)
         }
