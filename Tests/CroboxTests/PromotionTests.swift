@@ -24,11 +24,9 @@ final class PromotionTests: XCTestCase {
                 if let p = response.context?.visitorId {
                     CroboxDebug.shared.printText(text: "id: \(p)")
                 }
-                expectation.fulfill()
             case let .failure(error):
                 print(error)
             }
-            
             expectation.fulfill()
         }
         
@@ -46,19 +44,18 @@ final class PromotionTests: XCTestCase {
             case let .success(response):
                 if let p = response.context?.visitorId {
                     CroboxDebug.shared.printText(text: "id: \(p)")
-                    expectation.fulfill()
                 }
             case let .failure(error):
                 print(error)
             }
-            
+            expectation.fulfill()
         }
         await fulfillment(of: [expectation], timeout: 5.0)
         
     }
     
     
-    func testPromotions() async throws {
+    func testPromotionsMultiProducts() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let _ = await Crobox.shared.promotions(placeholderId: "30",
@@ -72,13 +69,11 @@ final class PromotionTests: XCTestCase {
                 CroboxDebug.shared.printText(text: "variantId: \(p.promotions[2].variantId ?? -1)")
                 CroboxDebug.shared.printText(text: "content.id: \(p.promotions[2].content?.id ?? "")")
                 CroboxDebug.shared.printText(text: "content.config: \(p.promotions[2].content?.config?.data ?? [:])")
-                
-                expectation.fulfill()
-                
+    
             case let .failure(error):
                 print(error)
             }
-            
+            expectation.fulfill()
         }
         await fulfillment(of: [expectation], timeout: 2.0)
     }
@@ -97,9 +92,8 @@ final class PromotionTests: XCTestCase {
                 print(p)
             case let .failure(error):
                 print(error)
-                expectation.fulfill()
             }
-            
+            expectation.fulfill()
         }
         await fulfillment(of: [expectation], timeout: 2.0)
     }

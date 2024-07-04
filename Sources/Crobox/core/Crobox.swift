@@ -34,7 +34,7 @@ public class Crobox {
     public func clickEvent(queryParams: RequestQueryParams!, clickQueryParams:ClickQueryParams? = nil) async {
         CroboxAPIServices.shared.socket(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams){result in
             switch result {
-            case let .success(response):
+            case .success(_):
                 ()
             case let .failure(error):
                 CroboxDebug.shared.eventError(.Click, error)
@@ -49,7 +49,7 @@ public class Crobox {
     public func addCartEvent(queryParams: RequestQueryParams!, addCartQueryParams:CartQueryParams? = nil) async {
         CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) {result in
             switch result {
-            case let .success(response):
+            case .success(_):
                 ()
             case let .failure(error):
                 CroboxDebug.shared.eventError(.AddCart, error)
@@ -64,7 +64,7 @@ public class Crobox {
     public func removeCartEvent(queryParams: RequestQueryParams!, rmCartQueryParams:CartQueryParams? = nil) async {
         CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { result in
             switch result {
-            case let .success(response):
+            case .success(_):
                 ()
             case let .failure(error):
                 CroboxDebug.shared.eventError(.RemoveCart, error)
@@ -79,7 +79,7 @@ public class Crobox {
     public func errorEvent(queryParams: RequestQueryParams!, errorQueryParams:ErrorQueryParams? = nil) async {
         CroboxAPIServices.shared.socket(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) {result in
             switch result {
-            case let .success(response):
+            case .success(_):
                 ()
             case let .failure(error):
                 CroboxDebug.shared.eventError(.Error, error)
@@ -94,7 +94,7 @@ public class Crobox {
     public func customEvent(queryParams: RequestQueryParams!, customQueryParams:CustomQueryParams? = nil) async {
         CroboxAPIServices.shared.socket(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { result in
             switch result {
-            case let .success(response):
+            case .success(_):
                 ()
             case let .failure(error):
                 CroboxDebug.shared.eventError(.CustomEvent, error)            }
