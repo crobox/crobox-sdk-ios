@@ -85,13 +85,28 @@ class CroboxAPIServices {
                         closure(.error(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(.error(CroboxError.internalError(msg: "Internal Error parsing response \(response)")))
+                    closure(.error(CroboxError.internalError(msg: "\(response.result)")))
+        
                 }
             case .failure(let error):
                 CroboxDebug.shared.printText(text: error)
                 closure(.error(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, msg: "Http Error in \(response)")))
             }
         }
+        .responseString { response in
+          print("String:\(response.result)")
+          switch(response.result) {
+          case .success(_):
+             if let data = response.value {
+                print(data)
+               }
+                   
+          case .failure(_):
+              print("Error message:\(response.error)")
+              break
+           }
+       }
+
     }
     
     func socket(eventType:EventType!,
