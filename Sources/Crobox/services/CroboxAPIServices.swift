@@ -23,7 +23,7 @@ class CroboxAPIServices {
         
         //Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode
+            parameters["cc"] = currencyCode.rawValue
         }
         if let localeCode = Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
