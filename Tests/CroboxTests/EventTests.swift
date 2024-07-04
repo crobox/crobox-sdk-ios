@@ -3,7 +3,7 @@ import XCTest
 
 final class EventTests: XCTestCase {
     
-    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"async"])
+    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["ios":"yes"])
     
     override class func setUp() {
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))

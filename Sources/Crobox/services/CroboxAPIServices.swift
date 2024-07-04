@@ -36,13 +36,12 @@ class CroboxAPIServices {
             parameters["lh"] = pageName
         }
         
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
         
-        //TODO
-        //        if let customProperties = queryParams.customProperties {
-        //            parameters["cp"] = customProperties
-        //        }
-        
-        // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
@@ -64,9 +63,7 @@ class CroboxAPIServices {
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
         CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
-        
-        var promotionResponse:PromotionResponse!
-        
+                
         AF.request(urlRequest).responseData { response in
             switch response.result {
                 
@@ -76,7 +73,7 @@ class CroboxAPIServices {
                         if jsonObject["error"] == nil {
                             let jsonData = JSON(jsonObject)
                             CroboxDebug.shared.printText(text: jsonData)
-                            promotionResponse = PromotionResponse(jsonData: jsonData)
+                            let promotionResponse:PromotionResponse = PromotionResponse(jsonData: jsonData)
                             closure(.success(promotionResponse))
                         } else {
                             closure(.failure(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
@@ -140,11 +137,12 @@ class CroboxAPIServices {
             parameters["lh"] = pageName
         }
         
-        //TODO
-        //        if let customProperties = queryParams.customProperties {
-        //            parameters["cp"] = customProperties
-        //        }
-        
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
+
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
