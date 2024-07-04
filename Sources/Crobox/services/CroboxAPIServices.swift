@@ -9,49 +9,22 @@ class CroboxAPIServices {
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
                     productIds: Set<String>? = Set(),
-                    closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
-        
+                    closure: @escaping (_ result: Result<PromotionResponse, CroboxError>) -> Void) {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
+        parameters["lh"] = "https%3A%2F%2Fwww.footlocker.com%2Fen%2Fcategory%2Fmens.html"
         
-        //Optional
-        if let currencyCode = Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode
-        }
-        if let localeCode = Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
-        }
-        if let userId = Crobox.shared.config.userId {
-            parameters["uid"] = userId
-        }
-        
-        if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        
-        parameters["pt"] = "\(queryParams.pageType.rawValue)"
-        
-        if let pageName = queryParams.pageName {
-            parameters["lh"] = pageName
-        }
-        
-        //TODO
-        //        if let customProperties = queryParams.customProperties {
-        //            parameters["cp"] = customProperties
-        //        }
-        
-        // URL oluşturma ve query parametrelerini ekleme
-        guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
-            closure(false, nil)
+        guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
+            closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
         }
         
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
         guard let url = urlComponents.url else {
-            closure(false, nil)
+            closure(.failure(CroboxError.internalError(msg: "Failed to form promotions parameters")))
             return
         }
         
@@ -63,9 +36,7 @@ class CroboxAPIServices {
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
-        CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
-        
-        var promotionResponse:PromotionResponse!
+        CroboxDebug.shared.printText(text: "POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
@@ -75,80 +46,86 @@ class CroboxAPIServices {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if jsonObject["error"] == nil {
                             let jsonData = JSON(jsonObject)
-                            CroboxDebug.shared.printText(text: jsonData)
-                            promotionResponse = PromotionResponse(jsonData: jsonData)
-                            closure(true, promotionResponse)
+                            let promotionResponse:PromotionResponse = PromotionResponse(jsonData: jsonData)
+                            closure(.success(promotionResponse))
                         } else {
-                            closure(false, promotionResponse)
+                            closure(.failure(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
+                            
                         }
                     } else {
-                        closure(false, promotionResponse)
+                        closure(.failure(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(false, promotionResponse)
+                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, data: response.data)))
                 }
             case .failure(let error):
-                CroboxDebug.shared.printText(text: error)
-                closure(false, promotionResponse)
+                closure(.failure(CroboxError.otherError(msg: "Error in \(response)", cause: error)))
             }
         }
+        .validate(statusCode: 400..<599)
+        .responseString { response in
+            switch(response.result) {
+            case .success(_):
+                if let data = response.value {
+                    CroboxDebug.shared.printText(text: data)
+                }
+            case .failure(let err):
+                CroboxDebug.shared.promotionError(error: "\(err), \(response)")
+                break
+            }
+        }
+        
     }
     
     func socket(eventType:EventType!,
                 additionalParams:Any?,
                 queryParams:RequestQueryParams,
-                closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
+                closure: @escaping (_ result: Result<Void, CroboxError>) -> Void) {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["t"] = eventType.rawValue
         
-        //Optional
-        if let currencyCode =  Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode
-        }
-        if let localeCode =  Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
-        }
-        if let userId =  Crobox.shared.config.userId {
-            parameters["uid"] = userId
-        }
-        if let timezone =  Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        
-        parameters["pt"] = "\(queryParams.pageType.rawValue)"
-        
-        if let pageName = queryParams.pageName {
-            parameters["lh"] = pageName
-        }
-        
-        //TODO
-        //        if let customProperties = queryParams.customProperties {
-        //            parameters["cp"] = customProperties
-        //        }
-        
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters ) {
-            (jsonObject, success) in
-            if success {
-                closure(true, jsonObject)
-            } else {
-                closure(false, jsonObject)
-            }
-        }
+        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters, closure: closure)
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
-        return [
+        // Mandatory
+        var parameters = [
             "cid": Crobox.shared.config.containerId,
             "pid": "\(Crobox.shared.config.visitorId)",
             "e": "\(queryParams.viewCounter())",
             "vid": "\(queryParams.viewId)",
+            "pt" : "\(queryParams.pageType.rawValue)"
         ]
+        // Optional
+        if let currencyCode =  Crobox.shared.config.currencyCode {
+            parameters["cc"] = currencyCode
+        }
+        if let localeCode = Crobox.shared.config.localeCode {
+            parameters["lc"] = localeCode.rawValue
+        }
+        if let userId = Crobox.shared.config.userId {
+            parameters["uid"] = userId
+        }
+        if let timezone = Crobox.shared.config.timezone {
+            parameters["tz"] = "\(timezone)"
+        }
+        if let pageName = queryParams.pageName {
+            parameters["lh"] = pageName
+        }
+        
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
+
+        return parameters
     }
 }
 
@@ -184,7 +161,7 @@ extension CroboxAPIServices
             }
             break
         default:
-            CroboxDebug.shared.eventError(error: "Unknown event type")
+            CroboxDebug.shared.printError(error: "Unknown event type")
         }
     }
     

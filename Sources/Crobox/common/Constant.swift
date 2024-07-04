@@ -1,7 +1,7 @@
 
 import Foundation
 struct Constant {
-    static let BASE_URL = "https://api.crobox.com"
-    static let Promotions_Path = "/promotions"
-    static let Socket_Path = "/socket.gif"
+    private static let BASE_URL = "https://api.crobox.com"
+    static let Promotions_Path = "\(BASE_URL)/promotions"
+    static let Socket_Path = "\(BASE_URL)/socket.gif"
 }
