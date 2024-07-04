@@ -6,7 +6,7 @@ import Alamofire
 class APIRequests: NSObject {
     
     static let shared = APIRequests()
-   
+    
     var headers: HTTPHeaders!
     
     func header()
@@ -17,36 +17,28 @@ class APIRequests: NSObject {
         ]
     }
     
-    func request(method:HTTPMethod, url: String, parameters:[String: String], completion: @escaping (_ jsonObject: JSON, _ isSuccess:Bool) -> Void)
+    func request(method:HTTPMethod, url: String, parameters:[String: String], closure: @escaping (_ result: Result<Void, CroboxError>) -> Void)
     {
         header()
         
         CroboxDebug.shared.printText(text: "\(url) \(parameters)")
-                
+        
         if NetworkReachabilityManager()!.isReachable {
             AF.request("\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
                 .validate(statusCode: 200..<501)
                 .responseData {
                     response in
                     switch response.result {
-                    case .success(let value):
-                        completion(JSON(value), true)
+                    case .success(_):
+                        closure(.success(()))
                     case .failure(let error):
                         CroboxDebug.shared.printText(text:error.localizedDescription)
-                        completion(JSON(error), false)
+                        closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, data: response.data)))
+                        
                     }
                 }
-        }else
-        {
-            do {
-                let dictionary: [String: Any] = ["error": "true", "message": "can not get any response from server"]
-                let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-                CroboxDebug.shared.printText(text: jsonData)
-                completion(JSON(jsonData), false)
-            } catch {
-                completion(JSON(), false)
-                CroboxDebug.shared.printError(error: "Error converting dictionary to JSON: \(error.localizedDescription)")
-            }
+        } else {
+            closure(.failure(CroboxError.internalError(msg: "can not get any response from server")))
         }
     }
 }

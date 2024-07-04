@@ -32,9 +32,12 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter clickQueryParams: Event specific query parameters for Click Events
     public func clickEvent(queryParams: RequestQueryParams!, clickQueryParams:ClickQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
-            if !isSuccess {
-                CroboxDebug.shared.eventError(error: "Click event: \(jsonObject ?? "")")
+        CroboxAPIServices.shared.socket(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams){result in
+            switch result {
+            case let .success(response):
+                ()
+            case let .failure(error):
+                CroboxDebug.shared.eventError(.Click, error)
             }
         }
     }
@@ -44,9 +47,12 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter addCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func addCartEvent(queryParams: RequestQueryParams!, addCartQueryParams:CartQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
-            if !isSuccess {
-                CroboxDebug.shared.eventError(error: "AddCart event: \(jsonObject ?? "")")
+        CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) {result in
+            switch result {
+            case let .success(response):
+                ()
+            case let .failure(error):
+                CroboxDebug.shared.eventError(.AddCart, error)
             }
         }
     }
@@ -56,9 +62,12 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter rmCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func removeCartEvent(queryParams: RequestQueryParams!, rmCartQueryParams:CartQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
-            if !isSuccess {
-                CroboxDebug.shared.eventError(error: "RmCart event: \(jsonObject ?? "")")
+        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { result in
+            switch result {
+            case let .success(response):
+                ()
+            case let .failure(error):
+                CroboxDebug.shared.eventError(.RemoveCart, error)
             }
         }
     }
@@ -68,9 +77,12 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter errorQueryParams: Event specific query parameters for Error Events
     public func errorEvent(queryParams: RequestQueryParams!, errorQueryParams:ErrorQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
-            if !isSuccess {
-                CroboxDebug.shared.eventError(error: "Error event: \(jsonObject ?? "")")
+        CroboxAPIServices.shared.socket(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) {result in
+            switch result {
+            case let .success(response):
+                ()
+            case let .failure(error):
+                CroboxDebug.shared.eventError(.Error, error)
             }
         }
     }
@@ -80,10 +92,12 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter customQueryParams: Event specific query parameters for Custom Events
     public func customEvent(queryParams: RequestQueryParams!, customQueryParams:CustomQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { isSuccess, jsonObject in
-            if !isSuccess {
-                CroboxDebug.shared.eventError(error: "Custom event: \(jsonObject ?? "")")
-            }
+        CroboxAPIServices.shared.socket(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { result in
+            switch result {
+            case let .success(response):
+                ()
+            case let .failure(error):
+                CroboxDebug.shared.eventError(.CustomEvent, error)            }
         }
     }
     

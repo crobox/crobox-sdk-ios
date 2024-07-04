@@ -77,11 +77,10 @@ class CroboxAPIServices {
         
     }
     
-    // TODO use Result<_, CroboxError>
     func socket(eventType:EventType!,
                 additionalParams:Any?,
                 queryParams:RequestQueryParams,
-                closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
+                closure: @escaping (_ result: Result<Void, CroboxError>) -> Void) {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -91,14 +90,7 @@ class CroboxAPIServices {
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters) {
-            (jsonObject, success) in
-            if success {
-                closure(true, jsonObject)
-            } else {
-                closure(false, jsonObject)
-            }
-        }
+        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters, closure: closure)
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
@@ -169,7 +161,7 @@ extension CroboxAPIServices
             }
             break
         default:
-            CroboxDebug.shared.eventError(error: "Unknown event type")
+            CroboxDebug.shared.printError(error: "Unknown event type")
         }
     }
     
