@@ -14,33 +14,7 @@ class CroboxAPIServices {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
-        
-        //Optional
-        if let currencyCode = Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode
-        }
-        if let localeCode = Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
-        }
-        if let userId = Crobox.shared.config.userId {
-            parameters["uid"] = userId
-        }
-        
-        if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        
-        parameters["pt"] = "\(queryParams.pageType.rawValue)"
-        
-        if let pageName = queryParams.pageName {
-            parameters["lh"] = pageName
-        }
-        
-        if let customProperties = queryParams.customProperties {
-            for (key, value) in customProperties {
-                parameters["cp.\(key)"] = value
-            }
-        }
+        parameters["lh"] = "https%3A%2F%2Fwww.footlocker.com%2Fen%2Fcategory%2Fmens.html"
         
         guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
@@ -62,8 +36,8 @@ class CroboxAPIServices {
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
-        CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
-                
+        CroboxDebug.shared.printText(text: "POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
+        
         AF.request(urlRequest).responseData { response in
             switch response.result {
                 
@@ -72,7 +46,6 @@ class CroboxAPIServices {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if jsonObject["error"] == nil {
                             let jsonData = JSON(jsonObject)
-                            CroboxDebug.shared.printText(text: jsonData)
                             let promotionResponse:PromotionResponse = PromotionResponse(jsonData: jsonData)
                             closure(.success(promotionResponse))
                         } else {
@@ -83,24 +56,21 @@ class CroboxAPIServices {
                         closure(.failure(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(.failure(CroboxError.internalError(msg: "\(response.result)")))
-                    
+                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, data: response.data)))
                 }
             case .failure(let error):
-                CroboxDebug.shared.printText(text: error)
-                closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, msg: "Http Error in \(response)")))
+                closure(.failure(CroboxError.otherError(msg: "Error in \(response)", cause: error)))
             }
         }
+        .validate(statusCode: 400..<599)
         .responseString { response in
-            print("String:\(response.result)")
             switch(response.result) {
             case .success(_):
                 if let data = response.value {
-                    print(data)
+                    CroboxDebug.shared.printText(text: data)
                 }
-                
-            case .failure(_):
-                print("Error message:\(response)")
+            case .failure(let err):
+                CroboxDebug.shared.promotionError(error: "\(err), \(response)")
                 break
             }
         }
@@ -117,32 +87,6 @@ class CroboxAPIServices {
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["t"] = eventType.rawValue
         
-        //Optional
-        if let currencyCode =  Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode
-        }
-        if let localeCode =  Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
-        }
-        if let userId =  Crobox.shared.config.userId {
-            parameters["uid"] = userId
-        }
-        if let timezone =  Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        
-        parameters["pt"] = "\(queryParams.pageType.rawValue)"
-        
-        if let pageName = queryParams.pageName {
-            parameters["lh"] = pageName
-        }
-        
-        if let customProperties = queryParams.customProperties {
-            for (key, value) in customProperties {
-                parameters["cp.\(key)"] = value
-            }
-        }
-
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
@@ -158,12 +102,38 @@ class CroboxAPIServices {
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
-        return [
+        // Mandatory
+        var parameters = [
             "cid": Crobox.shared.config.containerId,
             "pid": "\(Crobox.shared.config.visitorId)",
             "e": "\(queryParams.viewCounter())",
             "vid": "\(queryParams.viewId)",
+            "pt" : "\(queryParams.pageType.rawValue)"
         ]
+        // Optional
+        if let currencyCode =  Crobox.shared.config.currencyCode {
+            parameters["cc"] = currencyCode
+        }
+        if let localeCode = Crobox.shared.config.localeCode {
+            parameters["lc"] = localeCode.rawValue
+        }
+        if let userId = Crobox.shared.config.userId {
+            parameters["uid"] = userId
+        }
+        if let timezone = Crobox.shared.config.timezone {
+            parameters["tz"] = "\(timezone)"
+        }
+        if let pageName = queryParams.pageName {
+            parameters["lh"] = pageName
+        }
+        
+        if let customProperties = queryParams.customProperties {
+            for (key, value) in customProperties {
+                parameters["cp.\(key)"] = value
+            }
+        }
+
+        return parameters
     }
 }
 

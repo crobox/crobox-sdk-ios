@@ -17,12 +17,12 @@ class APIRequests: NSObject {
         ]
     }
     
-    func request(method:HTTPMethod, url: String, parameters:[String: Any], completion: @escaping (_ jsonObject: JSON, _ isSuccess:Bool) -> Void)
+    func request(method:HTTPMethod, url: String, parameters:[String: String], completion: @escaping (_ jsonObject: JSON, _ isSuccess:Bool) -> Void)
     {
         header()
         
         CroboxDebug.shared.printText(text: "\(url) \(parameters)")
-        
+                
         if NetworkReachabilityManager()!.isReachable {
             AF.request("\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
                 .validate(statusCode: 200..<501)
@@ -30,7 +30,6 @@ class APIRequests: NSObject {
                     response in
                     switch response.result {
                     case .success(let value):
-                        CroboxDebug.shared.printText(text: "Status: \(response.response?.statusCode ?? -1)")
                         completion(JSON(value), true)
                     case .failure(let error):
                         CroboxDebug.shared.printText(text:error.localizedDescription)

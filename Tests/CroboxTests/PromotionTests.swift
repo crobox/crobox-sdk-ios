@@ -23,8 +23,8 @@ final class PromotionTests: XCTestCase {
             case let .success(response):
                 if let p = response.context?.visitorId {
                     CroboxDebug.shared.printText(text: "id: \(p)")
-                    expectation.fulfill()
                 }
+                expectation.fulfill()
             case let .failure(error):
                 print(error)
             }
@@ -34,7 +34,6 @@ final class PromotionTests: XCTestCase {
         
         await fulfillment(of: [expectation], timeout: 2.0)
     }
-    
     
     func testPromotionsOneProduct() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
