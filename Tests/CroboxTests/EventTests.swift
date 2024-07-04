@@ -6,7 +6,7 @@ final class EventTests: XCTestCase {
     let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["ios":"yes"])
     
     override class func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "k8d303", visitorId: UUID.init(), localeCode: .en_US))
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
         Crobox.shared.isDebug = false
     }
     
