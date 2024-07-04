@@ -102,7 +102,7 @@ class CroboxAPIServices {
                }
                    
           case .failure(_):
-              print("Error message:\(response.error)")
+              print("Error message:\(response)")
               break
            }
        }
