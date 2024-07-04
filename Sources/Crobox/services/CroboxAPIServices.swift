@@ -11,15 +11,10 @@ class CroboxAPIServices {
                     productIds: Set<String>? = Set(),
                     closure: @escaping (_ isSuccess:Bool, _ promotionResponse: PromotionResponse?) -> Void) {
         
-                
+        
         //Mandatory
-        var parameters = [
-            "cid": Crobox.shared.config.containerId,
-            "e": "\(queryParams.viewCounter())",
-            "vid": "\(queryParams.viewId)",
-            "pid": "\(Crobox.shared.config.visitorId)",
-            "vpid": placeholderId!
-        ] as [String : String]
+        var parameters = requestQueryParams(queryParams: queryParams)
+        parameters["vpid"] = placeholderId!
         
         //Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
@@ -37,15 +32,15 @@ class CroboxAPIServices {
         }
         
         parameters["pt"] = "\(queryParams.pageType.rawValue)"
-       
+        
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
         
         //TODO
-//        if let customProperties = queryParams.customProperties {
-//            parameters["cp"] = customProperties
-//        }
+        //        if let customProperties = queryParams.customProperties {
+        //            parameters["cp"] = customProperties
+        //        }
         
         // URL oluşturma ve query parametrelerini ekleme
         guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
@@ -54,7 +49,7 @@ class CroboxAPIServices {
         }
         
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
-
+        
         guard let url = urlComponents.url else {
             closure(false, nil)
             return
@@ -69,12 +64,12 @@ class CroboxAPIServices {
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
         CroboxDebug.shared.printText(text: "POST \(url) - body: \(bodyString)")
-
+        
         var promotionResponse:PromotionResponse!
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
-           
+                
             case .success(let data):
                 do {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -105,13 +100,8 @@ class CroboxAPIServices {
                 closure: @escaping (_ isSuccess:Bool, _ jsonObject: JSON?) -> Void) {
         
         //Mandatory
-        var parameters = [
-            "cid":  Crobox.shared.config.containerId,
-            "e": queryParams.viewCounter(),
-            "vid": queryParams.viewId,
-            "pid":  Crobox.shared.config.visitorId,
-            "t": eventType.rawValue
-        ] as [String : Any]
+        var parameters = requestQueryParams(queryParams: queryParams)
+        parameters["t"] = eventType.rawValue
         
         //Optional
         if let currencyCode =  Crobox.shared.config.currencyCode {
@@ -124,41 +114,41 @@ class CroboxAPIServices {
             parameters["uid"] = userId
         }
         if let timezone =  Crobox.shared.config.timezone {
-            parameters["tz"] = timezone
+            parameters["tz"] = "\(timezone)"
         }
-        parameters["pt"] = queryParams.pageType
+        
+        parameters["pt"] = "\(queryParams.pageType.rawValue)"
+        
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
         
         //TODO
-//        if let customProperties = queryParams.customProperties {
-//            parameters["cp"] = customProperties
-//        }
+        //        if let customProperties = queryParams.customProperties {
+        //            parameters["cp"] = customProperties
+        //        }
         
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.request(method: .post, url: Constant.Socket_Path , parameters: parameters ) {
+        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters ) {
             (jsonObject, success) in
-            
             if success {
-                
-                if !jsonObject.isEmpty && !jsonObject["error"].exists() {
-                    
-                    closure(true, jsonObject)
-                    
-                } else {
-                    
-                    closure(false, jsonObject)
-                }
-                
+                closure(true, jsonObject)
             } else {
-                
                 closure(false, jsonObject)
             }
         }
+    }
+    
+    private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
+        return [
+            "cid": Crobox.shared.config.containerId,
+            "pid": "\(Crobox.shared.config.visitorId)",
+            "e": "\(queryParams.viewCounter())",
+            "vid": "\(queryParams.viewId)",
+        ]
     }
 }
 
@@ -167,7 +157,7 @@ class CroboxAPIServices {
 // check for event type
 extension CroboxAPIServices
 {
-    func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : Any])
+    func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : String])
     {
         switch eventType {
         case .Click:
@@ -209,7 +199,7 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : Any])
+    func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : String])
     {
         if let tag = errorQueryParams.tag {
             parameters["tg"] = tag
@@ -224,7 +214,7 @@ extension CroboxAPIServices
             parameters["f"] = file
         }
         if let line = errorQueryParams.line {
-            parameters["l"] = line
+            parameters["l"] = "\(line)"
         }
     }
 }
@@ -238,16 +228,16 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : Any])
+    func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : String])
     {
         if let productId = clickParams.productId {
             parameters["pi"] = productId
         }
         if let price = clickParams.price {
-            parameters["price"] = price
+            parameters["price"] = "\(price)"
         }
         if let quantity = clickParams.quantity {
-            parameters["qty"] = quantity
+            parameters["qty"] = "\(quantity)"
         }
     }
 }
@@ -261,16 +251,16 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : Any])
+    func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : String])
     {
         if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
         }
         if let price = cartQueryParams.price {
-            parameters["price"] = price
+            parameters["price"] = "\(price)"
         }
         if let quantity = cartQueryParams.quantity {
-            parameters["qty"] = quantity
+            parameters["qty"] = "\(quantity)"
         }
     }
 }
@@ -283,22 +273,22 @@ extension CroboxAPIServices
 
 extension CroboxAPIServices
 {
-    func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : Any])
+    func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : String])
     {
         if let name = customQueryParams.name {
             parameters["nm"] = name
         }
         if let promotionID = customQueryParams.promotionId {
-            parameters["promoId"] = promotionID
+            parameters["promoId"] = "\(promotionID)"
         }
         if let productID = customQueryParams.productId {
             parameters["pi"] = productID
         }
         if let price = customQueryParams.price {
-            parameters["price"] = price
+            parameters["price"] = "\(price)"
         }
         if let quantity = customQueryParams.quantity {
-            parameters["qty"] = quantity
+            parameters["qty"] = "\(quantity)"
         }
     }
 }
