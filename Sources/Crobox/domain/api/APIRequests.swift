@@ -21,10 +21,10 @@ class APIRequests: NSObject {
     {
         header()
         
-        CroboxDebug.shared.printText(text: "\(Constant.BASE_URL)\(url) \(parameters)")
+        CroboxDebug.shared.printText(text: "\(url) \(parameters)")
         
         if NetworkReachabilityManager()!.isReachable {
-            AF.request("\(Constant.BASE_URL)\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
+            AF.request("\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
                 .validate(statusCode: 200..<501)
                 .responseData {
                     response in

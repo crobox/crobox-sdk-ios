@@ -99,8 +99,6 @@ public class Crobox {
                            queryParams: RequestQueryParams!,
                            productIds: Set<String>? = Set(),
                            closure: @escaping (_ result: Result<PromotionResponse, CroboxError>) -> Void) async {
-        CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds) { result in
-            closure(result)
-        }
+        CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds, closure: closure)
     }
 }

@@ -36,13 +36,14 @@ class CroboxAPIServices {
             parameters["lh"] = pageName
         }
         
+        
         //TODO
         //        if let customProperties = queryParams.customProperties {
         //            parameters["cp"] = customProperties
         //        }
         
         // URL oluşturma ve query parametrelerini ekleme
-        guard var urlComponents = URLComponents(string:  "\(Constant.BASE_URL)\(Constant.Promotions_Path)") else {
+        guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
         }
@@ -109,6 +110,7 @@ class CroboxAPIServices {
         
     }
     
+    // TODO use Result<_, CroboxError>
     func socket(eventType:EventType!,
                 additionalParams:Any?,
                 queryParams:RequestQueryParams,
@@ -147,7 +149,7 @@ class CroboxAPIServices {
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters ) {
+        APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters) {
             (jsonObject, success) in
             if success {
                 closure(true, jsonObject)
