@@ -21,7 +21,7 @@ import PackageDescription
 let package = Package(
     name: "YOUR_PROJECT_NAME",
     dependencies: [
-        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.0.22"),
+        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "{{ latest_version }}"),
     ]
 )
 ```
@@ -62,19 +62,19 @@ Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: ad
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```swift
-        Crobox.shared.promotions(placeholderId: "1",
-                                 queryParams: overviewPageParams,
-                                 productIds: ["1", "2", "3"]) { isSuccess, promotionResponse in
-            /// process PromotionResponse
-            if let items = promotionResponse?.promotions
-            {
-                for item in items
-                {
-                    print(item.content?.config?.data ?? "no data")
-                    print(item.campaignId!)
-                    print(item.id!)
-                    print(item.productId! )
-                }
+        await Crobox.shared.promotions(placeholderId: "1",
+                                       queryParams: overviewPageParams,
+                                       productIds: ["1", "2", "3"]) { result in
+            switch result {
+            case let .success(p):
+                print("id: \(p.promotions[2].id ?? "")")
+                print("campaignId: \(String(describing: p.promotions[2].campaignId))")
+                print("productId: \(p.promotions[2].productId ?? "")")
+                print("variantId: \(p.promotions[2].variantId ?? -1)")
+                print("content.id: \(p.promotions[2].content?.id ?? "")")
+                print("content.config: \(p.promotions[2].content?.config?.data ?? [:])")
+            case let .failure(error):
+                print(error)
             }
         }
 
