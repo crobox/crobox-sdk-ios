@@ -9,27 +9,19 @@ class CroboxDebug: NSObject {
             print(text)
         }
     }
-    func printParams(params:[String:Any])
-    {
-        if(Crobox.shared.isDebug){
-            print(params)
-        }
-    }
     func promotionError(error:String)
     {
         printError(error: "[Promotion]: \(error)")
         
     }
-    func eventError(error: String)
+    func eventError(_ eventType: EventType, _ error: CroboxError)
     {
-        printError(error: "[Event]: \(error)")
+        printError(error: "[Event]: [\(eventType)]: \(error)")
         
     }
     func printError(error:String)
     {
-        if(Crobox.shared.isDebug){
-            print("[Error]: \(error)")
-        }
+        printText(text: "[Error]: \(error)")
     }
-
+    
 }
