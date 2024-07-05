@@ -56,13 +56,13 @@ Events might also take event specific parameters:
 var addCartQueryParams = CartQueryParams(productId: "abc")
 addCartQueryParams.price = 2.0
 addCartQueryParams.quantity = 3
-Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
+async let _ = Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
 ```
 
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```swift
-        await Crobox.shared.promotions(placeholderId: "1",
+        async let _ = Crobox.shared.promotions(placeholderId: "1",
                                        queryParams: overviewPageParams,
                                        productIds: ["1", "2", "3"]) { result in
             switch result {
