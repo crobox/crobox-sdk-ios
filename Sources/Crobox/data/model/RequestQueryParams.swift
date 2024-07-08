@@ -69,6 +69,18 @@ public struct ErrorQueryParams {
     public var message: String?
     public var file: String?
     public var line: Int?
+
+    public init(tag: String? = nil,
+                name: String? = nil,
+                message: String? = nil,
+                file: String? = nil,
+                line: Int? = 0) {
+        self.tag = tag
+        self.name = name
+        self.message = message
+        self.file = file
+        self.line = line
+    }
 }
 
 /**
