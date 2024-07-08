@@ -14,7 +14,6 @@ class CroboxAPIServices {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
-        parameters["lh"] = "https%3A%2F%2Fwww.footlocker.com%2Fen%2Fcategory%2Fmens.html"
         
         guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
