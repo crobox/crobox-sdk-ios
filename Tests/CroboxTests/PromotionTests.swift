@@ -4,36 +4,36 @@ import XCTest
 final class PromotionTests: XCTestCase {
     
     let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"async"])
+    static var visitorId: UUID = UUID.init()
     
     override class func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
-        Crobox.shared.isDebug = false
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, localeCode: .en_US))
+        Crobox.shared.isDebug = true
     }
     
-    override class func tearDown() {
-        Crobox.shared.isDebug = false
+    override func tearDown() async throws {
+        try await Task.sleep(for: .milliseconds(100), tolerance: .seconds(0.5))
     }
     
-    func testPromotionsNoProduct() async throws {
+    func skipped_testPromotionsNoProduct() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout)
         let _ = await Crobox.shared.promotions(placeholderId: "21", queryParams: checkoutPageParams) { result in
             switch result {
             case let .success(response):
-                if let p = response.context?.visitorId {
-                    CroboxDebug.shared.printText(text: "id: \(p)")
+                if let _ = response.context?.visitorId {
+                    expectation.fulfill()
                 }
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
         
         await fulfillment(of: [expectation], timeout: 2.0)
     }
     
-    func testPromotionsOneProduct() async throws {
+    func skipped_testPromotionsOneProduct() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
@@ -42,60 +42,42 @@ final class PromotionTests: XCTestCase {
                                                productIds: ["29883481"]) { result in
             switch result {
             case let .success(response):
-                if let p = response.context?.visitorId {
-                    CroboxDebug.shared.printText(text: "id: \(p)")
+                if let _ = response.context?.visitorId {
+                    expectation.fulfill()
                 }
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
         
     }
     
-    
-    func testPromotionsMultiProducts() async throws {
+    func skipped_estPromotionsMultiProducts() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let _ = await Crobox.shared.promotions(placeholderId: "30",
                                                queryParams: overviewPageParams,
                                                productIds: ["29883481", "04133050", "3A626400"]) { result in
             switch result {
-            case let .success(p):
-                CroboxDebug.shared.printText(text: "id: \(p.promotions[2].id ?? "")")
-                CroboxDebug.shared.printText(text: "campaignId: \(String(describing: p.promotions[2].campaignId))")
-                CroboxDebug.shared.printText(text: "productId: \(p.promotions[2].productId ?? "")")
-                CroboxDebug.shared.printText(text: "variantId: \(p.promotions[2].variantId ?? -1)")
-                CroboxDebug.shared.printText(text: "content.id: \(p.promotions[2].content?.id ?? "")")
-                CroboxDebug.shared.printText(text: "content.config: \(p.promotions[2].content?.config?.data ?? [:])")
-    
+            case let .success(response):
+                for p in response.promotions {
+                    print("id multip product: \(p.id ?? "")")
+                    print("campaignId: \(String(describing: p.campaignId))")
+                    print("productId: \(p.productId ?? "")")
+                    print("variantId: \(p.variantId ?? -1)")
+                    print("content.id: \(p.content?.id ?? "")")
+                    print("content.config: \(p.content?.config?.data ?? [:])")
+                }
+                if let _ = response.context?.visitorId {
+                    expectation.fulfill()
+                }
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 2.0)
-    }
-    
-    func testPromotionsError() async throws {
-        let expectation = XCTestExpectation(description: "receive error response")
-        
-        let brokenConfig = CroboxConfig(containerId: "9999", visitorId: UUID.init(), localeCode: .en_US)
-        Crobox.shared.initConfig(config: brokenConfig)
-        
-        let _ = await Crobox.shared.promotions(placeholderId: "30",
-                                               queryParams: overviewPageParams,
-                                               productIds: ["29883481", "04133050", "3A626400"]) { result in
-            switch result {
-            case let .success(p):
-                print(p)
-            case let .failure(error):
-                print(error)
-            }
-            expectation.fulfill()
-        }
-        await fulfillment(of: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
 }
+

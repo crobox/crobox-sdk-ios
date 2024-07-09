@@ -14,14 +14,13 @@ class CroboxAPIServices {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
-        parameters["lh"] = "https%3A%2F%2Fwww.footlocker.com%2Fen%2Fcategory%2Fmens.html"
+        let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
-        guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
+        guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
         }
-        
-        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
+        urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions parameters")))
@@ -31,16 +30,8 @@ class CroboxAPIServices {
         let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
         
         // Alamofire Request
-        var urlRequest = URLRequest(url: url)
-        urlRequest.method = .post
-        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpBody = bodyString.data(using: .utf8)
-        
-        CroboxDebug.shared.printText(text: "POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
-        
-        AF.request(urlRequest).responseData { response in
+        APIRequests.shared.request(url: url, body: bodyString) { response in
             switch response.result {
-
             case .success(let data):
                 do {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -50,31 +41,18 @@ class CroboxAPIServices {
                             closure(.success(promotionResponse))
                         } else {
                             closure(.failure(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
-
                         }
                     } else {
                         closure(.failure(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, data: response.data)))
+                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, error: response.error)))
                 }
             case .failure(let error):
                 closure(.failure(CroboxError.otherError(msg: "Error in \(response)", cause: error)))
             }
         }
-        .validate(statusCode: 400..<599)
-        .responseString { response in
-            switch(response.result) {
-            case .success(_):
-                if let data = response.value {
-                    CroboxDebug.shared.printText(text: data)
-                }
-            case .failure(let err):
-                CroboxDebug.shared.promotionError(error: "\(err), \(response)")
-                break
-            }
-        }
-
+        
     }
     
     func socket(eventType:EventType!,
@@ -159,13 +137,11 @@ extension CroboxAPIServices
                 errorEvent(errorQueryParams: errorQueryParams, parameters: &parameters)
             }
             break
-        case .CustomEvent:
+        default:
             if let customQueryParams = additionalParams as? CustomQueryParams {
                 customEvent(customQueryParams: customQueryParams, parameters: &parameters)
             }
             break
-        default:
-            CroboxDebug.shared.printError(error: "Unknown event type")
         }
     }
     
