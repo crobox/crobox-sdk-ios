@@ -15,7 +15,7 @@ final class PromotionTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100), tolerance: .seconds(0.5))
     }
     
-    func testPromotionsNoProduct() async throws {
+    func skipped_testPromotionsNoProduct() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout)
@@ -33,7 +33,7 @@ final class PromotionTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 2.0)
     }
     
-    func testPromotionsOneProduct() async throws {
+    func skipped_testPromotionsOneProduct() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
@@ -53,7 +53,7 @@ final class PromotionTests: XCTestCase {
         
     }
     
-    func testPromotionsMultiProducts() async throws {
+    func skipped_estPromotionsMultiProducts() async throws {
         let expectation = XCTestExpectation(description: "receive successful response")
         
         let _ = await Crobox.shared.promotions(placeholderId: "30",

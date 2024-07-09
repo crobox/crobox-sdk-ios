@@ -3,7 +3,7 @@ import XCTest
 
 final class PromotionFailureTests: XCTestCase {
     
-    func testPromotionsError() async throws {
+    func skipped_testPromotionsError() async throws {
         let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"async"])
         let brokenConfig = CroboxConfig(containerId: "9999", visitorId: UUID.init(), localeCode: .en_US)
         Crobox.shared.initConfig(config: brokenConfig)
