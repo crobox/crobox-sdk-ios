@@ -35,7 +35,7 @@ class CroboxAPIServices {
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
         
-        CroboxDebug.shared.printText(text: "POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
+        print("POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
         
         AF.request(urlRequest).responseData { response in
             switch response.result {
@@ -55,25 +55,24 @@ class CroboxAPIServices {
                         closure(.failure(CroboxError.invalidJSON(msg: "Error in \(data)")))
                     }
                 } catch {
-                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, data: response.data)))
+                    closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, error: response.error)))
                 }
             case .failure(let error):
                 closure(.failure(CroboxError.otherError(msg: "Error in \(response)", cause: error)))
             }
         }
-        .validate(statusCode: 400..<599)
+        .validate(statusCode: 200..<599)
         .responseString { response in
             switch(response.result) {
             case .success(_):
                 if let data = response.value {
-                    CroboxDebug.shared.printText(text: data)
+                    print(data)
                 }
             case .failure(let err):
-                CroboxDebug.shared.promotionError(error: "\(err), \(response)")
+                print("\(err), \(response)")
                 break
             }
         }
-
     }
     
     func socket(eventType:EventType!,
@@ -158,13 +157,11 @@ extension CroboxAPIServices
                 errorEvent(errorQueryParams: errorQueryParams, parameters: &parameters)
             }
             break
-        case .CustomEvent:
+        default:
             if let customQueryParams = additionalParams as? CustomQueryParams {
                 customEvent(customQueryParams: customQueryParams, parameters: &parameters)
             }
             break
-        default:
-            CroboxDebug.shared.printError(error: "Unknown event type")
         }
     }
     

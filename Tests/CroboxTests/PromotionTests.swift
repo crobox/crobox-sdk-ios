@@ -22,7 +22,7 @@ final class PromotionTests: XCTestCase {
             switch result {
             case let .success(response):
                 if let p = response.context?.visitorId {
-                    CroboxDebug.shared.printText(text: "id: \(p)")
+                    print("id: \(p)")
                 }
             case let .failure(error):
                 print(error)
@@ -43,7 +43,7 @@ final class PromotionTests: XCTestCase {
             switch result {
             case let .success(response):
                 if let p = response.context?.visitorId {
-                    CroboxDebug.shared.printText(text: "id: \(p)")
+                    print("id: \(p)")
                 }
             case let .failure(error):
                 print(error)
@@ -63,12 +63,12 @@ final class PromotionTests: XCTestCase {
                                                productIds: ["29883481", "04133050", "3A626400"]) { result in
             switch result {
             case let .success(p):
-                CroboxDebug.shared.printText(text: "id: \(p.promotions[2].id ?? "")")
-                CroboxDebug.shared.printText(text: "campaignId: \(String(describing: p.promotions[2].campaignId))")
-                CroboxDebug.shared.printText(text: "productId: \(p.promotions[2].productId ?? "")")
-                CroboxDebug.shared.printText(text: "variantId: \(p.promotions[2].variantId ?? -1)")
-                CroboxDebug.shared.printText(text: "content.id: \(p.promotions[2].content?.id ?? "")")
-                CroboxDebug.shared.printText(text: "content.config: \(p.promotions[2].content?.config?.data ?? [:])")
+                print("id: \(p.promotions[2].id ?? "")")
+                print("campaignId: \(String(describing: p.promotions[2].campaignId))")
+                print( "productId: \(p.promotions[2].productId ?? "")")
+                print( "variantId: \(p.promotions[2].variantId ?? -1)")
+                print( "content.id: \(p.promotions[2].content?.id ?? "")")
+                print( "content.config: \(p.promotions[2].content?.config?.data ?? [:])")
     
             case let .failure(error):
                 print(error)

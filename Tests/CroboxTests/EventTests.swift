@@ -4,16 +4,15 @@ import XCTest
 final class EventTests: XCTestCase {
     
     let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["ios":"yes"])
-    
+
     override class func setUp() {
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
-        Crobox.shared.isDebug = false
     }
     
-    override class func tearDown() {
-        Crobox.shared.isDebug = false
+    override func tearDown() async throws {
+        try await Task.sleep(for: .milliseconds(100), tolerance: .seconds(0.5))
     }
-    
+
     func testClickEvent() async throws {
         let clickQueryParams = ClickQueryParams(productId: "4")
         let _ = await Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)

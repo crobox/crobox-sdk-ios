@@ -11,7 +11,7 @@ public class Crobox {
     public static let shared = Crobox()
     
     /*
-     enable or disable debug
+     enable or disable debug. Prints errors if enabled
      */
     public var isDebug = false
     
@@ -37,8 +37,9 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                CroboxDebug.shared.eventError(.Click, error)
-            }
+                if self.isDebug {
+                    print(error)
+                }
         }
     }
     
@@ -52,7 +53,7 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                CroboxDebug.shared.eventError(.AddCart, error)
+                print(error)
             }
         }
     }
@@ -67,7 +68,7 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                CroboxDebug.shared.eventError(.RemoveCart, error)
+                print(error)
             }
         }
     }
@@ -82,7 +83,7 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                CroboxDebug.shared.eventError(.Error, error)
+                print(error)
             }
         }
     }
@@ -97,7 +98,8 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                CroboxDebug.shared.eventError(.CustomEvent, error)            }
+                print(error)
+            }
         }
     }
     
