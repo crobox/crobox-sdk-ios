@@ -54,7 +54,9 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                print(error)
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
             }
         }
     }
@@ -69,7 +71,9 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                print(error)
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
             }
         }
     }
@@ -84,7 +88,9 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                print(error)
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
             }
         }
     }
@@ -99,7 +105,9 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                print(error)
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
             }
         }
     }
