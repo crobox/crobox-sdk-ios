@@ -37,9 +37,10 @@ public class Crobox {
             case .success(_):
                 ()
             case let .failure(error):
-                if self.isDebug {
+                if (Crobox.shared.isDebug) {
                     print(error)
                 }
+            }
         }
     }
     

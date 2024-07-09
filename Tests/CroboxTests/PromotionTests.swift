@@ -7,11 +7,11 @@ final class PromotionTests: XCTestCase {
     
     override class func setUp() {
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
-        Crobox.shared.isDebug = false
+        Crobox.shared.isDebug = true
     }
     
-    override class func tearDown() {
-        Crobox.shared.isDebug = false
+    override func tearDown() async throws {
+        try await Task.sleep(for: .milliseconds(100), tolerance: .seconds(0.5))
     }
     
     func testPromotionsNoProduct() async throws {
@@ -22,15 +22,15 @@ final class PromotionTests: XCTestCase {
             switch result {
             case let .success(response):
                 if let p = response.context?.visitorId {
-                    print("id: \(p)")
+                    print("id no product: \(p)")
+                    expectation.fulfill()
                 }
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
         
-        await fulfillment(of: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
     func testPromotionsOneProduct() async throws {
@@ -43,14 +43,15 @@ final class PromotionTests: XCTestCase {
             switch result {
             case let .success(response):
                 if let p = response.context?.visitorId {
-                    print("id: \(p)")
+                    print("id one product: \(p)")
                 }
+                expectation.fulfill()
+
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
         
     }
     
@@ -62,20 +63,22 @@ final class PromotionTests: XCTestCase {
                                                queryParams: overviewPageParams,
                                                productIds: ["29883481", "04133050", "3A626400"]) { result in
             switch result {
-            case let .success(p):
-                print("id: \(p.promotions[2].id ?? "")")
-                print("campaignId: \(String(describing: p.promotions[2].campaignId))")
-                print( "productId: \(p.promotions[2].productId ?? "")")
-                print( "variantId: \(p.promotions[2].variantId ?? -1)")
-                print( "content.id: \(p.promotions[2].content?.id ?? "")")
-                print( "content.config: \(p.promotions[2].content?.config?.data ?? [:])")
-    
+            case let .success(response):
+                for p in response.promotions {
+                    print("id multip product: \(p.id ?? "")")
+                    print("campaignId: \(String(describing: p.campaignId))")
+                    print("productId: \(p.productId ?? "")")
+                    print("variantId: \(p.variantId ?? -1)")
+                    print("content.id: \(p.content?.id ?? "")")
+                    print("content.config: \(p.content?.config?.data ?? [:])")
+                }
+                expectation.fulfill()
+
             case let .failure(error):
                 print(error)
             }
-            expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
     func testPromotionsError() async throws {
@@ -92,10 +95,10 @@ final class PromotionTests: XCTestCase {
                 print(p)
             case let .failure(error):
                 print(error)
+                expectation.fulfill()
             }
-            expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 2.0)
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
 }

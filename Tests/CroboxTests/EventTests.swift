@@ -7,6 +7,7 @@ final class EventTests: XCTestCase {
 
     override class func setUp() {
         Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
+        Crobox.shared.isDebug = true
     }
     
     override func tearDown() async throws {

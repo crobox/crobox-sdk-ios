@@ -34,9 +34,7 @@ class CroboxAPIServices {
         urlRequest.method = .post
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = bodyString.data(using: .utf8)
-        
-        print("POST \(urlRequest.url?.absoluteString ?? "") - body: \(bodyString)")
-        
+                
         AF.request(urlRequest).responseData { response in
             switch response.result {
 
@@ -61,18 +59,7 @@ class CroboxAPIServices {
                 closure(.failure(CroboxError.otherError(msg: "Error in \(response)", cause: error)))
             }
         }
-        .validate(statusCode: 200..<599)
-        .responseString { response in
-            switch(response.result) {
-            case .success(_):
-                if let data = response.value {
-                    print(data)
-                }
-            case .failure(let err):
-                print("\(err), \(response)")
-                break
-            }
-        }
+        
     }
     
     func socket(eventType:EventType!,
