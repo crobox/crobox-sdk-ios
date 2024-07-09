@@ -14,13 +14,13 @@ class CroboxAPIServices {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
+        let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
-        guard var urlComponents = URLComponents(string:  "\(Constant.Promotions_Path)") else {
+        guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions path")))
             return
         }
-        
-        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
+        urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
             closure(.failure(CroboxError.internalError(msg: "Failed to form promotions parameters")))
@@ -30,14 +30,8 @@ class CroboxAPIServices {
         let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
         
         // Alamofire Request
-        var urlRequest = URLRequest(url: url)
-        urlRequest.method = .post
-        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpBody = bodyString.data(using: .utf8)
-                
-        AF.request(urlRequest).responseData { response in
+        APIRequests.shared.request(url: url, body: bodyString) { response in
             switch response.result {
-
             case .success(let data):
                 do {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -47,7 +41,6 @@ class CroboxAPIServices {
                             closure(.success(promotionResponse))
                         } else {
                             closure(.failure(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))
-
                         }
                     } else {
                         closure(.failure(CroboxError.invalidJSON(msg: "Error in \(data)")))

@@ -34,4 +34,17 @@ class APIRequests: NSObject {
             closure(.failure(CroboxError.internalError(msg: "Network status unreachable")))
         }
     }
+    
+    func request(url: URL, body: String, closure: @escaping (AFDataResponse<Data>) -> Void)
+    {
+        var urlRequest = URLRequest(url: url)
+        urlRequest.method = .post
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpBody = body.data(using: .utf8)
+
+        
+        AF.request(urlRequest).responseData { response in
+            closure(response)
+        }
+    }
 }
