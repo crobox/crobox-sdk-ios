@@ -23,7 +23,7 @@ if spec.respond_to? 'swift_versions'
 
   spec.platform     = :ios
  
-  spec.platform     = :ios, "12.0"
+  spec.platform     = :ios, "13.0"
 
   spec.source       = { :git => "https://github.com/crobox/crobox-sdk-ios.git", :tag => "#{spec.version}" }
 
