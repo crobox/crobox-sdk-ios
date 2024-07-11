@@ -10,7 +10,7 @@ class CroboxAPIServices {
                     queryParams:RequestQueryParams,
                     productIds: Set<String>? = Set(),
                     closure: @escaping (_ result: Result<PromotionResponse, CroboxError>) -> Void) {
-
+        
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
@@ -59,7 +59,7 @@ class CroboxAPIServices {
                 additionalParams:Any?,
                 queryParams:RequestQueryParams,
                 closure: @escaping (_ result: Result<Void, CroboxError>) -> Void) {
-
+        
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["t"] = eventType.rawValue
@@ -67,10 +67,10 @@ class CroboxAPIServices {
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
-
+        
         APIRequests.shared.request(method: .get, url: Constant.Socket_Path , parameters: parameters, closure: closure)
     }
-
+    
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
         // Mandatory
         var parameters = [
@@ -78,13 +78,14 @@ class CroboxAPIServices {
             "pid": "\(Crobox.shared.config.visitorId)",
             "e": "\(queryParams.viewCounter())",
             "vid": "\(queryParams.viewId)",
-            "pt" : "\(queryParams.pageType.rawValue)"
+            "pt": "\(queryParams.pageType.rawValue)",
+            "sdk": "1"
         ]
         // Optional
         if let currencyCode = Crobox.shared.config.currencyCode {
             parameters["cc"] = currencyCode.rawValue
         }
-
+        
         if let localeCode = Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
         }
@@ -96,7 +97,7 @@ class CroboxAPIServices {
         }
         let millis = Int64(Date().timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
-
+        
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
@@ -106,7 +107,7 @@ class CroboxAPIServices {
                 parameters["cp.\(key)"] = value
             }
         }
-
+        
         return parameters
     }
 }
