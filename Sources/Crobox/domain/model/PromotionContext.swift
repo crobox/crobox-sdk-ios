@@ -7,7 +7,7 @@ import SwiftyJSON
  The context about campaigns
 
  - Parameters
-    - experiments: The list of ongoing campaigns
+    - campaigns: The list of ongoing campaigns
     - sessionId: Session ID
     - visitorId: Visitor ID
     - groupName: List of campaign and variant names, combined
@@ -15,20 +15,19 @@ import SwiftyJSON
 public class PromotionContext: NSObject {
    
     public var groupName: String?
-    public var visitorId: String?
-    public var sessionId: String?
-    public var experiments = [Experiment]()
-    
-    
+    public var visitorId: UUID?
+    public var sessionId: UUID?
+    public var campaigns = [Campaign]()
+        
     public init(jsonData: JSON) {
         
         self.groupName = jsonData["groupName"].stringValue
-        self.visitorId = jsonData["pid"].stringValue
-        self.sessionId = jsonData["sid"].stringValue
+        self.visitorId = UUID(uuidString: jsonData["pid"].stringValue)
+        self.sessionId = UUID(uuidString: jsonData["sid"].stringValue)
 
         if  let arr = jsonData["experiments"].array {
             for item in arr {
-                experiments.append(Experiment(jsonData: item))
+                campaigns.append(Campaign(jsonData: item))
             }
         }
     }

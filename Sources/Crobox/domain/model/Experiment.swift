@@ -3,7 +3,7 @@ import Foundation
 import SwiftyJSON
 
 /**
- Represents an ongoing campaign
+ Represents an ongoing Campaign
 
  - Parameters
     - id:  Campaign ID
@@ -12,7 +12,7 @@ import SwiftyJSON
     - variantName: Name of the Campaign Variant
     - control: Indicates if variant is allocated to the control group
  */
-public class Experiment: Codable {
+public class Campaign: Codable {
    
     public var id: Int?
     public var name: String?

@@ -2,7 +2,6 @@
 platform :ios, '13.0'
 
 source 'https://github.com/CocoaPods/Specs.git' # CocoaPods Master Repo
-#source 'https://github.com/crobox/crobox-sdk-ios.git'
 
 target 'CroboxTestApp' do
   # Comment the next line if you don't want to use dynamic frameworks

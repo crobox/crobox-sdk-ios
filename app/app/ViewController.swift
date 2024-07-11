@@ -64,13 +64,10 @@ class ViewController: UIViewController {
                                                   queryParams: overviewPageParams,
                                                   productIds: ["1", "2", "3"]) { result in
                 switch result {
-                case let .success(p):
-                    print("id: \(p.promotions[0].id ?? "")")
-                    print("campaignId: \(String(describing: p.promotions[0].campaignId))")
-                    print("productId: \(p.promotions[0].productId ?? "")")
-                    print("variantId: \(p.promotions[0].variantId ?? -1)")
-                    print("content.id: \(p.promotions[0].content?.id ?? "")")
-                    print("content.config: \(p.promotions[0].content?.config?.data ?? [:])")
+                case let .success(response):
+                    if let p = response.context?.visitorId {
+                        print("\(p)")
+                    }
                 case let .failure(error):
                     print(error)
                 }
