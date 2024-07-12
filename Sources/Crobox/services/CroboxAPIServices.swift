@@ -37,7 +37,7 @@ class CroboxAPIServices {
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if jsonObject["error"] == nil {
                             let jsonData = JSON(jsonObject)
-                            let promotionResponse:PromotionResponse = PromotionResponse(jsonData: jsonData)
+                            let promotionResponse:PromotionResponse = try PromotionResponse(jsonData: jsonData)
                             closure(.success(promotionResponse))
                         } else {
                             closure(.failure(CroboxError.invalidJSON(msg: "Error in \(jsonObject)")))

@@ -2,23 +2,19 @@
 import Foundation
 import SwiftyJSON
 
-/**
- Represents an ongoing Campaign
-
- - Parameters
-    - id:  Campaign ID
-    - name: Campaign Name
-    - variantId: Id of the Campaign Variant
-    - variantName: Name of the Campaign Variant
-    - control: Indicates if variant is allocated to the control group
- */
+/// Represents an ongoing Campaign
 public class Campaign: Codable {
-   
-    public var id: Int?
-    public var name: String?
-    public var variantId: Int?
-    public var variantName: String?
-    public var control: Bool?
+    
+    /// Campaign ID
+    public let id: Int
+    /// Campaign Name
+    public let name: String
+    /// Id of the Campaign Variant
+    public let variantId: Int
+    /// Name of the Campaign Variant
+    public let variantName: String
+    /// Indicates if variant is allocated to the control group
+    public let control: Bool
     
     init(jsonData: JSON) {
         self.id = jsonData["id"].intValue

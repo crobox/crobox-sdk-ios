@@ -2,25 +2,21 @@
 import Foundation
 import SwiftyJSON
 
-/**
- Promotion Result
-
- - Parameters
-    - context: The context about campaigns
-    - promotions: The promotions calculated
- */
+/// Promotion Result
 public class PromotionResponse: NSObject {
-  
-    public var context: PromotionContext?
+    
+    /// The context about campaigns
+    public var context: PromotionContext
+    /// The promotions calculated
     public var promotions = [Promotion]()
     
-    public init(jsonData: JSON) {
+    public init(jsonData: JSON) throws {
         
-        self.context = PromotionContext(jsonData:jsonData["context"])
-      
+        self.context = try PromotionContext(jsonData:jsonData["context"])
+        
         if  let arr = jsonData["promotions"].array {
             for item in arr {
-                self.promotions.append(Promotion(jsonData: item))
+                try self.promotions.append(Promotion(jsonData: item))
             }
         }
     }
