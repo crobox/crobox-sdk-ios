@@ -123,9 +123,10 @@ final class PromotionResponseTests: XCTestCase {
         let promotionContent = PromotionContent(jsonData: json)
         
         let imageBadge = promotionContent.getImageBadge()
-        
         XCTAssertEqual(image, imageBadge?.image)
         XCTAssertEqual(altText, imageBadge?.altText)
+        
+        XCTAssertNil(promotionContent.getTextBadge())
     }
     
     func testTextBadge() async throws {
@@ -145,9 +146,10 @@ final class PromotionResponseTests: XCTestCase {
         let promotionContent = PromotionContent(jsonData: json)
         
         let textBadge = promotionContent.getTextBadge()
-        
         XCTAssertEqual(text, textBadge?.text)
         XCTAssertEqual(fontColor, textBadge?.fontColor)
+        
+        XCTAssertNil(promotionContent.getImageBadge())
     }
     
     func testTextBadgeWithBackground() async throws {
@@ -171,11 +173,12 @@ final class PromotionResponseTests: XCTestCase {
         let promotionContent = PromotionContent(jsonData: json)
         
         let textBadge = promotionContent.getTextBadge()
-        
         XCTAssertEqual(text, textBadge?.text)
         XCTAssertEqual(fontColor, textBadge?.fontColor)
         XCTAssertEqual(backgroundColor, textBadge?.backgroundColor)
         XCTAssertEqual(borderColor, textBadge?.borderColor)
+        
+        XCTAssertNil(promotionContent.getImageBadge())
     }
     
 }
