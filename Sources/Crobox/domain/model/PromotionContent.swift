@@ -41,6 +41,7 @@ public class PromotionContent: NSObject {
         return config[key] ?? defaultValue
     }
     
+    /// Returns image badge configuration with pre-designed configuration keys
     func getImageBadge() -> ImageBadge? {
         if let image = getValue( "image") {
             return ImageBadge(image: image, altText: getValue("altText"))
@@ -49,6 +50,7 @@ public class PromotionContent: NSObject {
         }
     }
     
+    /// Returns text badge configuration with pre-designed configuration keys
     func getTextBadge() -> TextBadge? {
         if let text = getValue("text"), let fontColor = getValue("fontColor") {
             return TextBadge(text: text, fontColor: fontColor, backgroundColor: getValue("backgroundColor"), borderColor: getValue("borderColor"))
