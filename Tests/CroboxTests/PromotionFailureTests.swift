@@ -17,9 +17,8 @@ final class PromotionFailureTests: XCTestCase {
             case let .success(p):
                 XCTFail("\(p)")
             case let .failure(error):
-                XCTFail("failure: \(error)")
                 switch error {
-                case CroboxErrors.httpError(let statusCode, let cause):
+                case CroboxErrors.httpError(let statusCode, _):
                     XCTAssertEqual(405, statusCode)
                     expectation.fulfill()
                 default :
