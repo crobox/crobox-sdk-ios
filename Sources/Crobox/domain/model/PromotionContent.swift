@@ -43,7 +43,7 @@ public class PromotionContent: NSObject {
     
     /// Returns image badge configuration with pre-designed configuration keys
     func getImageBadge() -> ImageBadge? {
-        if let image = getValue( "image") {
+        if let image = getValue("image") {
             return ImageBadge(image: image, altText: getValue("altText"))
         } else {
             return nil
