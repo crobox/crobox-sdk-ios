@@ -33,7 +33,7 @@ public class PromotionContent: NSObject {
         
     }
     
-    func getValue(forKey key: String) -> String? {
+    func getValue(_ key: String) -> String? {
         return config[key]
     }
     
@@ -41,5 +41,19 @@ public class PromotionContent: NSObject {
         return config[key] ?? defaultValue
     }
     
+    func getImageBadge() -> ImageBadge? {
+        if let image = getValue( "image") {
+            return ImageBadge(image: image, altText: getValue("altText"))
+        } else {
+            return nil
+        }
+    }
+    
+    func getTextBadge() -> TextBadge? {
+        if let text = getValue("text"), let fontColor = getValue("fontColor") {
+            return TextBadge(text: text, fontColor: fontColor, backgroundColor: getValue("backgroundColor"), borderColor: getValue("borderColor"))
+        } else {
+            return nil
+        }
+    }
 }
-
