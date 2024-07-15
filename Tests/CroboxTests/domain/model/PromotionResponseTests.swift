@@ -82,7 +82,7 @@ final class PromotionResponseTests: XCTestCase {
         XCTAssertEqual(false, campaign2?.control)
         XCTAssertEqual("Campaign 2", campaign2?.name)
         XCTAssertEqual("Crobox", campaign2?.variantName)
-        if let promotion1 = promotionResponse.promotions.filter { p in p.campaignId == 1}.first {
+        if let promotion1 = promotionResponse.promotions.filter ({ p in p.campaignId == 1}).first {
             XCTAssertEqual(UUID(uuidString: "821037e1-42a6-11ef-b765-a7995e01acd0"), promotion1.id)
             XCTAssertEqual(1, promotion1.campaignId)
             XCTAssertEqual(1, promotion1.variantId)
@@ -93,7 +93,7 @@ final class PromotionResponseTests: XCTestCase {
             XCTAssertEqual("Campaign 1 text", promotion1.content?.config["Text1_text"])
             
         }
-        if let promotion2 = promotionResponse.promotions.filter { p in p.campaignId == 2}.first {
+        if let promotion2 = promotionResponse.promotions.filter({ p in p.campaignId == 2}).first {
             XCTAssertEqual(UUID(uuidString: "820fe9a0-42a6-11ef-b765-a7995e01acd0"), promotion2.id)
             XCTAssertEqual(2, promotion2.campaignId)
             XCTAssertEqual(1, promotion2.variantId)
