@@ -13,7 +13,6 @@
 		054051842C1094F300338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051832C1094F300338217 /* Base */; };
 		054051862C1094F800338217 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 054051852C1094F800338217 /* Assets.xcassets */; };
 		054051892C1094F800338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051882C1094F800338217 /* Base */; };
-		057E65972C345A220071231D /* Crobox in Frameworks */ = {isa = PBXBuildFile; productRef = 057E65962C345A220071231D /* Crobox */; };
 		BA421D9587B8D8C39F1E33B1 /* Pods_CroboxTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,7 +50,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				057E65972C345A220071231D /* Crobox in Frameworks */,
 				BA421D9587B8D8C39F1E33B1 /* Pods_CroboxTestApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,7 +105,6 @@
 				90308022DD3FB4522032A95A /* Pods-CroboxTestApp.debug.xcconfig */,
 				4D77BD30C4AE44B85471E51E /* Pods-CroboxTestApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -131,7 +128,6 @@
 			);
 			name = CroboxTestApp;
 			packageProductDependencies = (
-				057E65962C345A220071231D /* Crobox */,
 			);
 			productName = CroboxTestApp;
 			productReference = 054051792C1094F300338217 /* CroboxTestApp.app */;
@@ -162,7 +158,6 @@
 			);
 			mainGroup = 054051702C1094F300338217;
 			packageReferences = (
-				057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */,
 			);
 			productRefGroup = 0540517A2C1094F300338217 /* Products */;
 			projectDirPath = "";
@@ -472,25 +467,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/crobox/crobox-sdk-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.20;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		057E65962C345A220071231D /* Crobox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 057E65952C345A220071231D /* XCRemoteSwiftPackageReference "crobox-sdk-ios" */;
-			productName = Crobox;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 054051712C1094F300338217 /* Project object */;
 }
