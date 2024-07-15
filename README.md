@@ -80,6 +80,99 @@ For retrieving promotions for zero, one or more products, use the specific Place
 
 ```
 
+
+## Promotion Response Schema
+
+```swift
+        let _ = await Crobox.shared.promotions(placeholderId: "1",
+                                               queryParams: overviewPageParams,
+                                               productIds: ["1051101", "29883481", "04133050", "3A626400"]) { result in
+            switch result {
+            case let .success(response):
+                let context = response.context
+                let promotions = response.promotions
+                
+                let visitorId = context.visitorId
+                let sessionId = context.sessionId
+                let groupName = context.groupName
+                for campaign in context.campaigns {
+                    let campaignId = campaign.id
+                    let campaignName = campaign.name
+                    let variantId = campaign.variantId
+                    let variantName = campaign.variantName
+                    let control = campaign.control
+                }
+                for promotion in response.promotions {
+                    let promotionId = promotion.id
+                    let campaignId = promotion.campaignId
+                    let variantId = promotion.variantId
+                    let productId = promotion.productId
+                    if let content = promotion.content {
+                        let messageId = content.messageId
+                        let componentName = content.component
+                        let configMap = content.config
+                        for c in configMap {
+                            let configKey = c.key
+                            let configValue = c.value
+                        }
+                    }
+                    
+                }
+
+                XCTAssertNotNil(context.sessionId)
+                XCTAssertEqual(PromotionTests.visitorId, context.visitorId)
+                expectation.fulfill()
+            
+            case let .failure(error):
+                print(error)
+            }
+        }
+```
+
+### PromotionsResponse
+
+| Name       | Type             | Description                       |
+|------------|------------------|-----------------------------------|
+| context    | PromotionContext | The context about campaigns       |
+| promotions | List<Promotion>  | The list of promotions calculated |
+
+### PromotionContext
+
+| Name      | Type           | Description                                      |
+|-----------|----------------|--------------------------------------------------|
+| sessionId | UUID           | Session ID                                       |
+| visitorId | UUID           | Visitor ID                                       |
+| groupName | String?        | The list of campaign and variant names, combined |
+| campaigns | List<Campaign> | The list of ongoing campaigns                    |
+
+### Campaign
+
+| Name        | Type    | Description                                                                                                                                                                                                                                         |
+|-------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id          | String  | Campaign ID                                                                                                                                                                                                                                         |
+| name        | String  | Campaign Name                                                                                                                                                                                                                                       |
+| variantId   | String  | There is a ratio that determines the amount of traffic exposed to this campaign (or is allocated to the control group) between Crobox and Control group. Variant id refers to the variant which this promotion belongs to and is used for debugging |
+| variantName | String  | Name of the Campaign Variant                                                                                                                                                                                                                        |  
+| control     | Boolean | Indicates if the variant is allocated to the control group                                                                                                                                                                                          |
+
+### Promotion
+
+| Name       | Type              | Description                                          |
+|------------|-------------------|------------------------------------------------------|
+| id         | String            | Unique id for this promotion                         |
+| productId  | String?           | Product ID if requested                              |
+| campaignId | Int               | The campaign which this promotion belongs to         |
+| variantId  | Int               | ID of the variant that this promotion is assigned to |
+| content    | PromotionContent? | Promotion Content                                    |
+
+### PromotionContent
+
+| Name      | Type                | Description                                                                                                                                                |
+|-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| messageId | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
+| component | String              | Component Name                                                                                                                                             |
+| config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
+
 ## Samples
 
 See [test snippet](app/app/ViewController.swift) for various samples

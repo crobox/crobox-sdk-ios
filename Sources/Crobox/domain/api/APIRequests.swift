@@ -14,37 +14,39 @@ class APIRequests: NSObject {
         AF.sessionConfiguration.timeoutIntervalForRequest = 60*5
     }
     
-    func request(method:HTTPMethod, url: String, parameters:[String: String], closure: @escaping (_ result: Result<Void, CroboxError>) -> Void)
+    func get(url: String, parameters:[String: String], closure: @escaping (_ result: Result<Void, CroboxErrors>) -> Void)
     {
         header()
         
-        if NetworkReachabilityManager()!.isReachable {
-            AF.request("\(url)", method: method, parameters: parameters, encoding: URLEncoding(destination: .queryString))
-                .validate(statusCode: 200..<501)
-                .responseData {
-                    response in
-                    switch response.result {
-                    case .success(_):
-                        closure(.success(()))
-                    case .failure(let error):
-                        closure(.failure(CroboxError.httpError(statusCode: response.response?.statusCode ?? -1, error: error)))
-                    }
+        AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding(destination: .queryString))
+            .validate()
+            .responseData {
+                response in
+                switch response.result {
+                case .success(_):
+                    closure(.success(()))
+                case .failure(let error):
+                    closure(.failure(CroboxErrors.httpError(statusCode: response.response?.statusCode ?? -1, cause: error)))
                 }
-        } else {
-            closure(.failure(CroboxError.internalError(msg: "Network status unreachable")))
-        }
+            }
     }
     
-    func request(url: URL, body: String, closure: @escaping (AFDataResponse<Data>) -> Void)
+    func post(url: URL, body: String, closure: @escaping (_ result: Result<Data, CroboxErrors>) -> Void)
     {
         var urlRequest = URLRequest(url: url)
         urlRequest.method = .post
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = body.data(using: .utf8)
-
         
-        AF.request(urlRequest).responseData { response in
-            closure(response)
-        }
+        AF.request(urlRequest)
+            .validate()
+            .responseData { response in
+                switch response.result {
+                case .success(let responseData):
+                    closure(.success(responseData))
+                case .failure(let afError):
+                    closure(.failure(CroboxErrors.httpError(statusCode: response.response?.statusCode ?? -1, cause: afError)))
+                }
+            }
     }
 }
