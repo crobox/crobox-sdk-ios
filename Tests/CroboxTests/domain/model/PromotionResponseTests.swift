@@ -4,7 +4,7 @@ import XCTest
 
 final class PromotionResponseTests: XCTestCase {
     
-    func testPromotionsError() async throws {
+    func testPromotionsResponse() async throws {
         let jsonStr = """
             {
                 "context": {
@@ -104,6 +104,81 @@ final class PromotionResponseTests: XCTestCase {
             XCTAssertEqual("Campaign 2 text", promotion2.content?.config["Text1_text"])
             
         }
+    }
+    
+    func testImageBadge() async throws {
+        let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
+        let altText = "Image alt text"
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "image": "\(image)",
+                    "altText": "\(altText)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let imageBadge = promotionContent.getImageBadge()
+        XCTAssertEqual(image, imageBadge?.image)
+        XCTAssertEqual(altText, imageBadge?.altText)
+        
+        XCTAssertNil(promotionContent.getTextBadge())
+    }
+    
+    func testTextBadge() async throws {
+        let text = "Best Seller"
+        let fontColor = "#ffffff"
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(fontColor)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let textBadge = promotionContent.getTextBadge()
+        XCTAssertEqual(text, textBadge?.text)
+        XCTAssertEqual(fontColor, textBadge?.fontColor)
+        
+        XCTAssertNil(promotionContent.getImageBadge())
+    }
+    
+    func testTextBadgeWithBackground() async throws {
+        let text = "Best Seller"
+        let fontColor = "#ffffff"
+        let backgroundColor = "#aaaaaa"
+        let borderColor = "#bbbbbb"
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(fontColor)",
+                    "backgroundColor": "\(backgroundColor)",
+                    "borderColor": "\(borderColor)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let textBadge = promotionContent.getTextBadge()
+        XCTAssertEqual(text, textBadge?.text)
+        XCTAssertEqual(fontColor, textBadge?.fontColor)
+        XCTAssertEqual(backgroundColor, textBadge?.backgroundColor)
+        XCTAssertEqual(borderColor, textBadge?.borderColor)
+        
+        XCTAssertNil(promotionContent.getImageBadge())
     }
     
 }
