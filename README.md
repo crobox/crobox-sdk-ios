@@ -29,7 +29,7 @@ let package = Package(
 ### CocoaPods
 
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website.
- To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
  pod 'croboxSDK', '~> 1.0.22'
@@ -62,7 +62,7 @@ async let _ = Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQ
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```swift
-        async let _ = Crobox.shared.promotions(placeholderId: "1",
+        await Crobox.shared.promotions(placeholderId: "1",
                                        queryParams: overviewPageParams,
                                        productIds: ["1", "2", "3"]) { result in
             switch result {
@@ -84,9 +84,9 @@ For retrieving promotions for zero, one or more products, use the specific Place
 ## Promotion Response Schema
 
 ```swift
-        let _ = await Crobox.shared.promotions(placeholderId: "1",
-                                               queryParams: overviewPageParams,
-                                               productIds: ["1051101", "29883481", "04133050", "3A626400"]) { result in
+        await Crobox.shared.promotions(placeholderId: "1",
+                                       queryParams: overviewPageParams,
+                                       productIds: ["1", "2", "3"]) { result in
             switch result {
             case let .success(response):
                 let context = response.context
@@ -115,13 +115,10 @@ For retrieving promotions for zero, one or more products, use the specific Place
                             let configKey = c.key
                             let configValue = c.value
                         }
+                        let imageBadge = content.getImageBadge()
+                        let textBadge = content.getTextBadge()
                     }
-                    
                 }
-
-                XCTAssertNotNil(context.sessionId)
-                XCTAssertEqual(PromotionTests.visitorId, context.visitorId)
-                expectation.fulfill()
             
             case let .failure(error):
                 print(error)
@@ -167,11 +164,31 @@ For retrieving promotions for zero, one or more products, use the specific Place
 
 ### PromotionContent
 
-| Name      | Type                | Description                                                                                                                                                |
-|-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| messageId | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
-| component | String              | Component Name                                                                                                                                             |
-| config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
+| Name          | Type                | Description                                                                                                                                                |
+|---------------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| messageId     | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
+| component     | String              | Component Name                                                                                                                                             |
+| config        | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
+| getTextBadge  | TextBadge?          | Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"              |
+| getImageBadge | ImageBadge?         | Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"                                             |
+
+### TextBadge
+
+| Name            | Type        | Description               |
+|-----------------|-------------|---------------------------|
+| text            | String      | Text message              |
+| fontColor       | String      | Font color                |
+| backgroundColor | String?     | Optional background color |
+| borderColor     | String?     | Optional border color     |
+
+### ImageBadge
+
+| Name    | Type    | Description    |
+|---------|---------|----------------|
+| image   | String  | Image url      |
+| altText | String? | Alternate text |
+
+
 
 ## Samples
 
