@@ -6,17 +6,17 @@
 //
 
 import UIKit
-import Crobox
-import Alamofire
-import SwiftyJSON
+import croboxSDK
 
 class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let containerId = "xlrc9t"
+        let productIds:Set<String> = ["1", "2", "3"]
         
         //Crobox.shared is the single point of contact for all interactions, keeping the configuration and providing all functionality
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: .en_US))
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: UUID.init(), localeCode: .en_US))
         
         /// Enable/Disable debugging
         Crobox.shared.isDebug = true
@@ -62,12 +62,10 @@ class ViewController: UIViewController {
         let _ = Task {
             return await Crobox.shared.promotions(placeholderId: "1",
                                                   queryParams: overviewPageParams,
-                                                  productIds: ["1", "2", "3"]) { result in
+                                                  productIds: productIds) { result in
                 switch result {
                 case let .success(response):
-                    if let p = response.context?.visitorId {
-                        print("\(p)")
-                    }
+                    self.printAll(response: response)
                 case let .failure(error):
                     print(error)
                 }
@@ -81,9 +79,7 @@ class ViewController: UIViewController {
                                                   productIds: ["1"]) { result in
                 switch result {
                 case let .success(response):
-                    if let p = response.context?.visitorId {
-                        print("\(p)")
-                    }
+                    self.printAll(response: response)
                 case let .failure(error):
                     print(error)
                 }
@@ -96,15 +92,36 @@ class ViewController: UIViewController {
             return await Crobox.shared.promotions(placeholderId: "2", queryParams: checkoutPageParams) { result in
                 switch result {
                 case let .success(response):
-                    if let p = response.context?.visitorId {
-                        print("\(p)")
-                    }
+                    self.printAll(response: response)
                 case let .failure(error):
                     print(error)
                 }
                 
             }
         }
+    }
+    
+    private func printAll(response: PromotionResponse) {
+        let context = response.context
+        let p = context.visitorId
+        print("VisitorId: \(p)")
+        for c in context.campaigns {
+            print("\tCampaign:[Id: \(c.id), Name: \(c.name)]")
+        }
+        print("Promotions: \(response.promotions.count)")
+        for p in response.promotions {
+            print("Id: \(p.id.uuidString)")
+            print("Product: \(p.productId ?? "")")
+            print("Campaign Id: \(p.campaignId)")
+            print("Image: \(p.content?.getImageBadge()?.image ?? "")")
+            print("AltText: \(p.content?.getImageBadge()?.altText ?? "")")
+            print("Text: \(p.content?.getTextBadge()?.text ?? "")")
+            print("FontColor: \(p.content?.getTextBadge()?.fontColor ?? "")")
+            print("Background: \(p.content?.getTextBadge()?.backgroundColor ?? "")")
+            print("Border: \(p.content?.getTextBadge()?.borderColor ?? "")")
+            print("Config: \(p.content?.config ?? [:])")
+        }
+
     }
 }
 
