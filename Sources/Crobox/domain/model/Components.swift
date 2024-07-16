@@ -1,13 +1,13 @@
 import Foundation
 
-struct ImageBadge {
-    let image: String
-    let altText: String?
+public struct ImageBadge {
+    public let image: String
+    public let altText: String?
 }
 
-struct TextBadge {
-    let text: String
-    let fontColor: String
-    let backgroundColor: String?
-    let borderColor: String?
+public struct TextBadge {
+    public let text: String
+    public let fontColor: String
+    public let backgroundColor: String?
+    public let borderColor: String?
 }
