@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (5.9.1)
-  - croboxSDK (1.0.29):
+  - croboxSDK (1.0.30):
     - Alamofire
     - SwiftyJSON
   - SwiftyJSON (5.0.2)
@@ -19,7 +19,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  croboxSDK: a75ac1046de620acc0bae5eb1c8926e9c7c02bc4
+  croboxSDK: b902c061fc73fe4650fd43132d816c78a2865c8c
   SwiftyJSON: f5b1bf1cd8dd53cd25887ac0eabcfd92301c6a5a
 
 PODFILE CHECKSUM: 4ef9eb32cb8d0bfbb03a0948b9c98d03621e2320
