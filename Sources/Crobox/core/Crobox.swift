@@ -32,7 +32,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter clickQueryParams: Event specific query parameters for Click Events
     public func clickEvent(queryParams: RequestQueryParams!, clickQueryParams:ClickQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams){result in
+        CroboxAPIServices.shared.event(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams){result in
             switch result {
             case .success(_):
                 ()
@@ -49,7 +49,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter addCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func addCartEvent(queryParams: RequestQueryParams!, addCartQueryParams:CartQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) {result in
+        CroboxAPIServices.shared.event(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams) {result in
             switch result {
             case .success(_):
                 ()
@@ -66,7 +66,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter rmCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func removeCartEvent(queryParams: RequestQueryParams!, rmCartQueryParams:CartQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { result in
+        CroboxAPIServices.shared.event(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams) { result in
             switch result {
             case .success(_):
                 ()
@@ -83,7 +83,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter errorQueryParams: Event specific query parameters for Error Events
     public func errorEvent(queryParams: RequestQueryParams!, errorQueryParams:ErrorQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) {result in
+        CroboxAPIServices.shared.event(eventType: .Error, additionalParams: errorQueryParams, queryParams: queryParams) {result in
             switch result {
             case .success(_):
                 ()
@@ -100,7 +100,24 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter customQueryParams: Event specific query parameters for Custom Events
     public func customEvent(queryParams: RequestQueryParams!, customQueryParams:CustomQueryParams? = nil) async {
-        CroboxAPIServices.shared.socket(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { result in
+        CroboxAPIServices.shared.event(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams) { result in
+            switch result {
+            case .success(_):
+                ()
+            case let .failure(error):
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
+            }
+        }
+    }
+
+    /// For reporting page view events
+    ///
+    /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
+    /// - Parameter pageViewParams: Event specific query parameters for Page View Events
+    public func pageViewEvent(queryParams: RequestQueryParams!, pageViewParams:PageViewParams? = nil) async {
+        CroboxAPIServices.shared.event(eventType: .PageView, additionalParams: pageViewParams, queryParams: queryParams) { result in
             switch result {
             case .success(_):
                 ()
@@ -112,6 +129,41 @@ public class Crobox {
         }
     }
     
+    /// For reporting checkout events
+    ///
+    /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
+    /// - Parameter checkoutParams: Event specific query parameters for Checkout Events
+    public func checkoutEvent(queryParams: RequestQueryParams!, checkoutParams: CheckoutParams? = nil) async {
+        CroboxAPIServices.shared.event(eventType: .Checkout, additionalParams: checkoutParams, queryParams: queryParams) { result in
+            switch result {
+            case .success(_):
+                ()
+            case let .failure(error):
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    /// For reporting purchase events
+    ///
+    /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
+    /// - Parameter purchaseParams: Event specific query parameters for Purchase Events
+    public func purchaseEvent(queryParams: RequestQueryParams!, purchaseParams: PurchaseParams? = nil) async {
+        CroboxAPIServices.shared.event(eventType: .Purchase, additionalParams: purchaseParams, queryParams: queryParams) { result in
+            switch result {
+            case .success(_):
+                ()
+            case let .failure(error):
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
+            }
+        }
+    }
+    
+
     /// For retrieval of Promotions
     ///
     ///  - Note A Placeholder represent a predesignated point on the user interface, where the promotion will be located and displayed. Placeholders are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc. These are all managed via the Crobox Admin application.

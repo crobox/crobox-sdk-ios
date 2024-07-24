@@ -50,6 +50,8 @@ public enum EventType:String{
     case AddCart = "cart" // Add to Shopping Cart
     case RemoveCart = "rmcart" // Remove from Shopping Cart
     case PageView = "pageview" // PageView
+    case Checkout = "checkout" // Checkout
+    case Purchase = "purchase" // Purchase
     case Error = "error" // Error
     case CustomEvent = "event" // CustomEvent
 }
@@ -158,55 +160,117 @@ public struct CustomQueryParams {
     }
 }
 
-//TODO
-struct ClickEvent {
-    var pageType: String?
-    var pageTitle: String?
-    var productId: ProductId?
-    var impressions: Int?
-    var clientLoadStartTime: Date?
-    var clientLoadDuration: TimeInterval?
-    var referrerUrl: URL?
-    var pageUrl: URL?
-    var searchTerms: String?
-    var historyLength: Int?
-    var step: Step?
-    var transactionId: TransactionId?
+/**
+ Product specific parameters for various events
+ 
+ - parameter productId Product identifier
+ - parameter price Optional product price
+ - parameter quantity Optional quantity
+ - parameter otherProductIds Optional set of productIds accompanying this particular product
+ */
+public struct ProductParams {
+    var productId: String?
+    var price: Double?
+    var quantity: Int?
+    var otherProductIds: [String]?
     
-    struct ProductId {
-        var id: String
-        var category: String?
-        var productList: [String]?
-        
-        init(id: String, category: String? = nil, productList: [String]? = nil) {
-            self.id = id
-            self.category = category
-            self.productList = productList
-        }
-    }
-    
-    struct Step {
-        var choice: String?
-        init(choice: String? = nil) {
-            self.choice = choice
-        }
-    }
-    
-    struct TransactionId {
-        var id: String
-        var revenue: Double?
-        var coupon: String?
-        var affiliation: String?
-        
-        init(id: String, revenue: Double? = nil, coupon: String? = nil, affiliation: String? = nil) {
-            self.id = id
-            self.revenue = revenue
-            self.coupon = coupon
-            self.affiliation = affiliation
-        }
+    public init(productId: String? = nil,
+                price: Double? = nil,
+                quantity: Int? = nil,
+                otherProductIds: [String]? = nil
+    ) {
+        self.productId = productId
+        self.price = price
+        self.quantity = quantity
+        self.otherProductIds = otherProductIds
     }
 }
 
+/**
+ Type specific parameters for Page View events
+ 
+ - parameter name: Event name
+ - parameter promotionId: Promotion Id, if available
+ - parameter productId: Unique identifier for a product
+ - parameter price: Product price, if available
+ - parameter quantity: Quantity, if available
+ */
+public struct PageViewParams {
+    var pageTitle: String?
+    var product: ProductParams?
+    var searchTerms: String?
+    var impressions: [ProductParams]?
+    var customProperties: [String : String]?
+    
+    public init(pageTitle: String?,
+                product: ProductParams?,
+                searchTerms: String?,
+                impressions: [ProductParams]?,
+                customProperties: [String : String]?
+    ) {
+        self.pageTitle = pageTitle
+        self.product = product
+        self.searchTerms = searchTerms
+        self.impressions = impressions
+        self.customProperties = customProperties
+    }
+}
+
+/**
+ Type specific parameters for Checkout events
+ 
+ - parameter products: Optional set of products to be purchased
+ - parameter step: Optional identifier representing a step in the checkout process
+ - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
+ */
+public struct CheckoutParams {
+    var products: [ProductParams]?
+    var step: String?
+    var customProperties: [String : String]?
+    
+    public init(products: [ProductParams]?,
+                step: String?,
+                customProperties: [String : String]?
+    ) {
+        self.products = products
+        self.step = step
+        self.customProperties = customProperties
+    }
+}
+
+/**
+ Type specific parameters for Purchase events
+ 
+ - parameter products: Optional set of products purchased
+ - parameter transactionId: Optional transaction identifier
+ - parameter affiliation The store or affiliation from which this transaction occurred (e.g. Google Store), if available
+ - parameter coupon Coupon, if available
+ - parameter revenue The total associated with the transaction
+ - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
+ */
+public struct PurchaseParams {
+    var products: [ProductParams]?
+    var transactionId: String?
+    var affiliation: String?
+    var coupon: String?
+    var revenue: Double?
+    var customProperties: [String : String]?
+    
+    public init(products: [ProductParams]?,
+                transactionId: String?,
+                affiliation: String?,
+                coupon: String?,
+                revenue: Double?,
+                customProperties: [String : String]?
+    ) {
+        self.products = products
+        self.transactionId = transactionId
+        self.affiliation = affiliation
+        self.coupon = coupon
+        self.revenue = revenue
+        self.customProperties = customProperties
+    }
+}
 
 /**
  Common Configuration parameters for all requests

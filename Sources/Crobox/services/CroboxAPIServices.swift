@@ -54,10 +54,10 @@ class CroboxAPIServices {
         
     }
     
-    func socket(eventType:EventType!,
-                additionalParams:Any?,
-                queryParams:RequestQueryParams,
-                closure: @escaping (_ result: Result<Void, CroboxErrors>) -> Void) {
+    func event(eventType:EventType!,
+               additionalParams:Any?,
+               queryParams:RequestQueryParams,
+               closure: @escaping (_ result: Result<Void, CroboxErrors>) -> Void) {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -67,7 +67,7 @@ class CroboxAPIServices {
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.get(url: Constant.Socket_Path , parameters: parameters, closure: closure)
+        APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters, closure: closure)
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
@@ -109,14 +109,11 @@ class CroboxAPIServices {
         
         return parameters
     }
-}
-
-
-
-// check for event type
-extension CroboxAPIServices
-{
-    func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : String])
+    
+    
+    // check for event type
+    
+    private func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : String])
     {
         switch eventType {
         case .Click:
@@ -130,7 +127,21 @@ extension CroboxAPIServices
             }
             break
         case .PageView:
-            //TODO
+            if let pageViewParams = additionalParams as? PageViewParams {
+                pageViewEvent(pageViewParams: pageViewParams, parameters: &parameters)
+            }
+            break
+        case .Checkout:
+            parameters["t"] = EventType.PageView.rawValue
+            if let checkoutParams = additionalParams as? CheckoutParams {
+                checkoutEvent(checkoutParams: checkoutParams, parameters: &parameters)
+            }
+            break
+        case .Purchase:
+            parameters["t"] = EventType.PageView.rawValue
+            if let purchaseParams = additionalParams as? PurchaseParams {
+                purchaseEvent(purchaseParams: purchaseParams, parameters: &parameters)
+            }
             break
         case .Error:
             if let errorQueryParams = additionalParams as? ErrorQueryParams {
@@ -145,18 +156,15 @@ extension CroboxAPIServices
         }
     }
     
-}
-
-
-/*
- 
- The following arguments are applicable for error events( where t=error ). They are all optional.
- 
- */
-
-extension CroboxAPIServices
-{
-    func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : String])
+    
+    
+    /*
+     
+     The following arguments are applicable for error events( where t=error ). They are all optional.
+     
+     */
+    
+    private func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : String])
     {
         if let tag = errorQueryParams.tag {
             parameters["tg"] = tag
@@ -174,18 +182,17 @@ extension CroboxAPIServices
             parameters["l"] = "\(line)"
         }
     }
-}
-
-
-/*
- 
- The following arguments are applicable for click events( where t=click ). They are all optional
- 
- */
-
-extension CroboxAPIServices
-{
-    func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : String])
+    
+    
+    
+    /*
+     
+     The following arguments are applicable for click events( where t=click ). They are all optional
+     
+     */
+    
+    
+    private func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : String])
     {
         if let productId = clickParams.productId {
             parameters["pi"] = productId
@@ -197,18 +204,16 @@ extension CroboxAPIServices
             parameters["qty"] = "\(quantity)"
         }
     }
-}
-
-
-/*
- 
- The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
- 
- */
-
-extension CroboxAPIServices
-{
-    func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : String])
+    
+    
+    
+    /*
+     
+     The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
+     
+     */
+    
+    private  func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : String])
     {
         if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
@@ -220,17 +225,70 @@ extension CroboxAPIServices
             parameters["qty"] = "\(quantity)"
         }
     }
-}
-
-/*
- 
- The following arguments are applicable for click events( where t=event ). They are all optional
- 
- */
-
-extension CroboxAPIServices
-{
-    func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : String])
+    
+    
+    private func pageViewEvent(pageViewParams:PageViewParams, parameters: inout [String : String])
+    {
+        if let pageTitle = pageViewParams.pageTitle {
+            parameters["dt"] = "\(pageTitle)"
+        }
+        if let productParams = pageViewParams.product {
+            processProductParams(productParams, &parameters)
+        }
+        if let impressions = pageViewParams.impressions {
+            processImpressions(impressions, &parameters)
+        }
+        if let searchTerms = pageViewParams.searchTerms {
+            parameters["st"] = "\(searchTerms)"
+        }
+        if let customProperties = pageViewParams.customProperties {
+            processCustomProperties(customProperties, &parameters)
+        }
+    }
+    
+    private func checkoutEvent(checkoutParams:CheckoutParams, parameters: inout [String : String])
+    {
+        if let products = checkoutParams.products {
+            processImpressions(products, &parameters)
+        }
+        if let step = checkoutParams.step {
+            parameters["stp"] = step
+        }
+        if let customProperties = checkoutParams.customProperties {
+            processCustomProperties(customProperties, &parameters)
+        }
+    }
+    
+    private func purchaseEvent(purchaseParams:PurchaseParams, parameters: inout [String : String])
+    {
+        if let impressions = purchaseParams.products {
+            processImpressions(impressions, &parameters)
+        }
+        if let transactionId = purchaseParams.transactionId {
+            parameters["tid"] = transactionId
+        }
+        if let affiliation = purchaseParams.affiliation {
+            parameters["aff"] = affiliation
+        }
+        if let coupon = purchaseParams.coupon {
+            parameters["cpn"] = coupon
+        }
+        if let revenue = purchaseParams.revenue{
+            parameters["rev"] = "\(revenue)"
+        }
+        if let customProperties = purchaseParams.customProperties {
+            processCustomProperties(customProperties, &parameters)
+        }
+    }
+    
+    /*
+     
+     The following arguments are applicable for click events( where t=event ). They are all optional
+     
+     */
+    
+    
+    private func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : String])
     {
         if let name = customQueryParams.name {
             parameters["nm"] = name
@@ -248,7 +306,38 @@ extension CroboxAPIServices
             parameters["qty"] = "\(quantity)"
         }
     }
+    
+    private func processProductParams(_ productParams:ProductParams, _ parameters: inout [String : String])
+    {
+        if let productId = productParams.productId {
+            parameters["pi"] = productId
+        }
+        if let price = productParams.price {
+            parameters["price"] = "\(price)"
+        }
+        if let quantity = productParams.quantity {
+            parameters["qty"] = "\(quantity)"
+        }
+        if let otherProductIds = productParams.otherProductIds {
+            parameters["lst"] = "\(otherProductIds.joined(separator: ","))"
+        }
+    }
+    
+    private func processImpressions(_ impressions:[ProductParams], _ parameters: inout [String : String])
+    {
+        let productIds = impressions.map{$0.productId}
+        for (index, id) in productIds.enumerated() {
+            parameters["[\(index)]"] = id
+        }
+    }
+    
+    
+    private func processCustomProperties(_ customProperties:[String : String], _ parameters: inout [String : String])
+    {
+        for (key, value) in customProperties {
+            parameters["cp.\(key)"] = value
+        }
+    }
 }
-
 
 
