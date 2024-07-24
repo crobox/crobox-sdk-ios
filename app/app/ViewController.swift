@@ -163,13 +163,22 @@ class ViewController: UIViewController {
             print("Id: \(p.id.uuidString)")
             print("Product: \(p.productId ?? "")")
             print("Campaign Id: \(p.campaignId)")
-            print("Image: \(p.content?.getImageBadge()?.image ?? "")")
-            print("AltText: \(p.content?.getImageBadge()?.altText ?? "")")
-            print("Text: \(p.content?.getTextBadge()?.text ?? "")")
-            print("FontColor: \(p.content?.getTextBadge()?.fontColor ?? "")")
-            print("Background: \(p.content?.getTextBadge()?.backgroundColor ?? "")")
-            print("Border: \(p.content?.getTextBadge()?.borderColor ?? "")")
             print("Config: \(p.content?.config ?? [:])")
+           
+            let badge = p.content?.contentConfig
+            switch badge {
+            case let badge as ImageBadge:
+                print("Image: \(badge.image)")
+                print("AltText: \(badge.altText ?? "")")
+            case let badge as TextBadge:
+                print("Text: \(badge.text)")
+                print("FontColor: \(badge.fontColor ?? "")")
+                print("Background: \(badge.backgroundColor ?? "")")
+                print("Border: \(badge.borderColor ?? "")")
+            default:
+                print("n/a")
+            }
+            
         }
         
     }
