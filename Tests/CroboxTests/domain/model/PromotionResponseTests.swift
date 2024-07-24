@@ -87,7 +87,7 @@ final class PromotionResponseTests: XCTestCase {
             XCTAssertEqual(1, promotion1.campaignId)
             XCTAssertEqual(1, promotion1.variantId)
             XCTAssertEqual("Product1", promotion1.productId)
-            XCTAssertEqual("component1.tsx", promotion1.content?.component)
+            XCTAssertEqual("component1.tsx", promotion1.content?.componentName)
             XCTAssertEqual("dd737bf6-0223-48e8-b102-b680265219ef", promotion1.content?.messageId)
             XCTAssertEqual("#aaaaaa", promotion1.content?.config["Text1_color"])
             XCTAssertEqual("Campaign 1 text", promotion1.content?.config["Text1_text"])
@@ -98,11 +98,10 @@ final class PromotionResponseTests: XCTestCase {
             XCTAssertEqual(2, promotion2.campaignId)
             XCTAssertEqual(1, promotion2.variantId)
             XCTAssertEqual("Product2", promotion2.productId)
-            XCTAssertEqual("component2.tsx", promotion2.content?.component)
+            XCTAssertEqual("component2.tsx", promotion2.content?.componentName)
             XCTAssertEqual("94d31690-f4be-4e77-9f26-c711d3c7b258", promotion2.content?.messageId)
             XCTAssertEqual("#ffffff", promotion2.content?.config["Text1_color"])
             XCTAssertEqual("Campaign 2 text", promotion2.content?.config["Text1_text"])
-            
         }
     }
     
@@ -180,6 +179,69 @@ final class PromotionResponseTests: XCTestCase {
         
         XCTAssertNil(promotionContent.getImageBadge())
     }
+    
+    func testPromotionContentAsTextConfig() async throws {
+        let text = "Best Seller"
+        let fontColor = "#ffffff"
+        let backgroundColor = "#aaaaaa"
+        let borderColor = "#bbbbbb"
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(fontColor)",
+                    "backgroundColor": "\(backgroundColor)",
+                    "borderColor": "\(borderColor)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let textBadge = promotionContent.contentConfig
+        switch textBadge {
+        case let textBadge as TextBadge:
+            XCTAssertEqual(text, textBadge.text)
+            XCTAssertEqual(fontColor, textBadge.fontColor)
+            XCTAssertEqual(backgroundColor, textBadge.backgroundColor)
+            XCTAssertEqual(borderColor, textBadge.borderColor)
+            XCTAssertNil(promotionContent.getImageBadge())
+        default:
+            XCTFail("Expected text badge")
+        }
+        
+    }
+    
+    func testPromotionContentAsImaceConfig() async throws {
+        let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
+        let altText = "Image alt text"
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "image": "\(image)",
+                    "altText": "\(altText)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let badge = promotionContent.contentConfig
+        switch badge {
+        case let badge as ImageBadge:
+            XCTAssertEqual(image, badge.image)
+            XCTAssertEqual(altText, badge.altText)
+            XCTAssertNil(promotionContent.getTextBadge())
+        default:
+            XCTFail("Expected image badge")
+        }
+        
+    }
+    
     
 }
 

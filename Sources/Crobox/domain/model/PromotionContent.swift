@@ -7,7 +7,7 @@ public class PromotionContent: NSObject {
     /// Message Id of this promotion
     public let messageId: String
     /// Component Name
-    public let component: String
+    public let componentName: String
     
     /**
      * Map of all visual configuration items, managed via Crobox Admin app
@@ -22,7 +22,7 @@ public class PromotionContent: NSObject {
     
     init(jsonData: JSON) {
         self.messageId = jsonData["id"].stringValue
-        self.component = jsonData["component"].stringValue
+        self.componentName = jsonData["component"].stringValue
         
         let jsonConfig = jsonData["config"]
         for (key, subJson):(String, JSON) in jsonConfig {
@@ -41,10 +41,18 @@ public class PromotionContent: NSObject {
         return config[key] ?? defaultValue
     }
     
+    public lazy var contentConfig: PromotionContentConfig? = if let image = getValue("image") {
+        getImageBadge()
+    } else {
+        getTextBadge()
+    }
+    
+    public lazy var promotionType: PromotionContentType? = contentConfig?.contentType
+    
     /// Returns image badge configuration with pre-designed configuration keys
     public func getImageBadge() -> ImageBadge? {
         if let image = getValue("image") {
-            return ImageBadge(image: image, altText: getValue("altText"))
+            return ImageBadge(image: image, altText: getValue("altText"), name: componentName)
         } else {
             return nil
         }
@@ -52,8 +60,8 @@ public class PromotionContent: NSObject {
     
     /// Returns text badge configuration with pre-designed configuration keys
     public func getTextBadge() -> TextBadge? {
-        if let text = getValue("text"), let fontColor = getValue("fontColor") {
-            return TextBadge(text: text, fontColor: fontColor, backgroundColor: getValue("backgroundColor"), borderColor: getValue("borderColor"))
+        if let text = getValue("text") {
+            return TextBadge(text: text, fontColor: getValue("fontColor"), backgroundColor: getValue("backgroundColor"), borderColor: getValue("borderColor"), name: componentName)
         } else {
             return nil
         }

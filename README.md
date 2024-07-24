@@ -109,7 +109,7 @@ For retrieving promotions for zero, one or more products, use the specific Place
                     let productId = promotion.productId
                     if let content = promotion.content {
                         let messageId = content.messageId
-                        let componentName = content.component
+                        let componentName = content.componentName
                         let configMap = content.config
                         for c in configMap {
                             let configKey = c.key
@@ -117,6 +117,20 @@ For retrieving promotions for zero, one or more products, use the specific Place
                         }
                         let imageBadge = content.getImageBadge()
                         let textBadge = content.getTextBadge()
+                                   
+                        let conf = p.content?.contentConfig
+                        switch conf {
+                        case let conf as ImageBadge:
+                            let image = conf.image
+                            let altText = conf.altText
+                        case let conf as TextBadge:
+                            let text = conf.text
+                            let fontColor = conf.fontColor ?? ""
+                            let background = conf.backgroundColor ?? ""
+                            let borderColor = conf.borderColor ?? ""
+                        default:
+                            //
+                        }
                     }
                 }
             
