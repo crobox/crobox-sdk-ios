@@ -117,7 +117,7 @@ For retrieving promotions for zero, one or more products, use the specific Place
                     let imageBadge = content.getImageBadge()
                     let textBadge = content.getTextBadge()
                                
-                    let conf = p.content?.contentConfig
+                    let conf = p.content?.contentConfig()
                     switch conf {
                     case let conf as ImageBadge:
                         let image = conf.image
@@ -127,6 +127,9 @@ For retrieving promotions for zero, one or more products, use the specific Place
                         let fontColor = conf.fontColor ?? ""
                         let background = conf.backgroundColor ?? ""
                         let borderColor = conf.borderColor ?? ""
+                    case let conf as SecondaryMessaging:
+                        let text = conf.text
+                        let fontColor = conf.fontColor ?? ""
                     default:
                         //
                     }
@@ -201,6 +204,12 @@ For retrieving promotions for zero, one or more products, use the specific Place
 | altText | String? | Alternate text |
 
 
+### Secondary Messaging
+
+| Name            | Type        | Description               |
+|-----------------|-------------|---------------------------|
+| text            | String      | Text message              |
+| fontColor       | String      | Font color                |
 
 ## Samples
 

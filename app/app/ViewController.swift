@@ -140,7 +140,8 @@ class ViewController: UIViewController {
             print("Campaign Id: \(p.campaignId)")
             print("Config: \(p.content?.config ?? [:])")
             
-            let badge = p.content?.contentConfig
+            
+            let badge = p.content?.contentConfig()
             switch badge {
             case let badge as ImageBadge:
                 print("Image: \(badge.image)")
@@ -150,10 +151,13 @@ class ViewController: UIViewController {
                 print("FontColor: \(badge.fontColor ?? "")")
                 print("Background: \(badge.backgroundColor ?? "")")
                 print("Border: \(badge.borderColor ?? "")")
+            case let badge as SecondaryMessaging:
+                print("Text: \(badge.text)")
+                print("FontColor: \(badge.fontColor ?? "")")
             default:
                 print("n/a")
             }
-            
+
         }
         
     }
