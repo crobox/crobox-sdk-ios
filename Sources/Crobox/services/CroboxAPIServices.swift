@@ -8,8 +8,7 @@ class CroboxAPIServices {
     
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
-                    productIds: Set<String>? = Set(),
-                    closure: @escaping (_ result: Result<PromotionResponse, CroboxErrors>) -> Void) {
+                    productIds: Set<String>? = Set()) async throws -> PromotionResponse {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -17,47 +16,38 @@ class CroboxAPIServices {
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         
         guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
-            closure(.failure(CroboxErrors.internalRequestError(msg: "Failed to form promotions path")))
-            return
+            throw CroboxErrors.internalRequestError(msg: "Failed to form promotions path")
         }
         urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
-            closure(.failure(CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")))
-            return
+            throw CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")
         }
         
         let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
         
-        APIRequests.shared.post(url: url, body: bodyString) { response in
-            switch response {
-            case .success(let data):
-                do {
-                    if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        if jsonObject["error"] == nil {
-                            let jsonData = JSON(jsonObject)
-                            let promotionResponse:PromotionResponse = try PromotionResponse(jsonData: jsonData)
-                            closure(.success(promotionResponse))
-                        } else {
-                            closure(.failure(CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(jsonObject)")))
-                        }
-                    } else {
-                        closure(.failure(CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(data)")))
-                    }
-                } catch {
-                    closure(.failure(CroboxErrors.internalError(msg: "Response handling error", cause: error)))
-                }
-            case .failure(let croboxError):
-                closure(.failure(croboxError))
-            }
-        }
+        let data = try await APIRequests.shared.post(url: url, body: bodyString)
         
+        do {
+            if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                if jsonObject["error"] == nil {
+                    let jsonData = JSON(jsonObject)
+                    let promotionResponse:PromotionResponse = try PromotionResponse(jsonData: jsonData)
+                    return promotionResponse
+                } else {
+                    throw CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(jsonObject)")
+                }
+            } else {
+                throw CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(data)")
+            }
+        } catch {
+            throw CroboxErrors.internalError(msg: "Response handling error", cause: error)
+        }
     }
     
     func event(eventType:EventType!,
                additionalParams:Any?,
-               queryParams:RequestQueryParams,
-               closure: @escaping (_ result: Result<Void, CroboxErrors>) -> Void) {
+               queryParams:RequestQueryParams) async throws -> Void {
         
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -67,7 +57,7 @@ class CroboxAPIServices {
                        additionalParams: additionalParams,
                        parameters: &parameters)
         
-        APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters, closure: closure)
+        return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {

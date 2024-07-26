@@ -7,6 +7,7 @@ public enum PromotionContentType {
 
 public protocol PromotionContentConfig {
     var contentType: PromotionContentType { get }
+    var name: String { get }
 }
 
 public struct ImageBadge : PromotionContentConfig {
