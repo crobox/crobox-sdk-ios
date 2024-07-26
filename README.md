@@ -32,7 +32,7 @@ let package = Package(
 To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
- pod 'croboxSDK', '~> 1.0.22'
+ pod 'croboxSDK', '~> 1.0.31'
 ```
 
 ## Start using Crobox SDK
@@ -56,26 +56,25 @@ Events might also take event specific parameters:
 var addCartQueryParams = CartQueryParams(productId: "abc")
 addCartQueryParams.price = 2.0
 addCartQueryParams.quantity = 3
-async let _ = Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
+Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
 ```
 
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```swift
-        await Crobox.shared.promotions(placeholderId: "1",
-                                       queryParams: overviewPageParams,
-                                       productIds: ["1", "2", "3"]) { result in
-            switch result {
-            case let .success(p):
-                print("id: \(p.promotions[2].id ?? "")")
-                print("campaignId: \(String(describing: p.promotions[2].campaignId))")
-                print("productId: \(p.promotions[2].productId ?? "")")
-                print("variantId: \(p.promotions[2].variantId ?? -1)")
-                print("content.id: \(p.promotions[2].content?.id ?? "")")
-                print("content.config: \(p.promotions[2].content?.config?.data ?? [:])")
-            case let .failure(error):
-                print(error)
-            }
+        let result = await Crobox.shared.promotions(placeholderId: "1",
+                                                    queryParams: overviewPageParams,
+                                                    productIds: ["1", "2", "3"])
+        switch result {
+        case let .success(p):
+            print("id: \(p.promotions[2].id ?? "")")
+            print("campaignId: \(String(describing: p.promotions[2].campaignId))")
+            print("productId: \(p.promotions[2].productId ?? "")")
+            print("variantId: \(p.promotions[2].variantId ?? -1)")
+            print("content.id: \(p.promotions[2].content?.id ?? "")")
+            print("content.config: \(p.promotions[2].content?.config?.data ?? [:])")
+        case let .failure(error):
+            print(error)
         }
 
 ```
@@ -84,59 +83,58 @@ For retrieving promotions for zero, one or more products, use the specific Place
 ## Promotion Response Schema
 
 ```swift
-        await Crobox.shared.promotions(placeholderId: "1",
-                                       queryParams: overviewPageParams,
-                                       productIds: ["1", "2", "3"]) { result in
-            switch result {
-            case let .success(response):
-                let context = response.context
-                let promotions = response.promotions
-                
-                let visitorId = context.visitorId
-                let sessionId = context.sessionId
-                let groupName = context.groupName
-                for campaign in context.campaigns {
-                    let campaignId = campaign.id
-                    let campaignName = campaign.name
-                    let variantId = campaign.variantId
-                    let variantName = campaign.variantName
-                    let control = campaign.control
-                }
-                for promotion in response.promotions {
-                    let promotionId = promotion.id
-                    let campaignId = promotion.campaignId
-                    let variantId = promotion.variantId
-                    let productId = promotion.productId
-                    if let content = promotion.content {
-                        let messageId = content.messageId
-                        let componentName = content.componentName
-                        let configMap = content.config
-                        for c in configMap {
-                            let configKey = c.key
-                            let configValue = c.value
-                        }
-                        let imageBadge = content.getImageBadge()
-                        let textBadge = content.getTextBadge()
-                                   
-                        let conf = p.content?.contentConfig
-                        switch conf {
-                        case let conf as ImageBadge:
-                            let image = conf.image
-                            let altText = conf.altText
-                        case let conf as TextBadge:
-                            let text = conf.text
-                            let fontColor = conf.fontColor ?? ""
-                            let background = conf.backgroundColor ?? ""
-                            let borderColor = conf.borderColor ?? ""
-                        default:
-                            //
-                        }
+        let result = await Crobox.shared.promotions(placeholderId: "1",
+                                                    queryParams: overviewPageParams,
+                                                    productIds: ["1", "2", "3"])
+        switch result {
+        case let .success(response):
+            let context = response.context
+            let promotions = response.promotions
+            
+            let visitorId = context.visitorId
+            let sessionId = context.sessionId
+            let groupName = context.groupName
+            for campaign in context.campaigns {
+                let campaignId = campaign.id
+                let campaignName = campaign.name
+                let variantId = campaign.variantId
+                let variantName = campaign.variantName
+                let control = campaign.control
+            }
+            for promotion in response.promotions {
+                let promotionId = promotion.id
+                let campaignId = promotion.campaignId
+                let variantId = promotion.variantId
+                let productId = promotion.productId
+                if let content = promotion.content {
+                    let messageId = content.messageId
+                    let componentName = content.componentName
+                    let configMap = content.config
+                    for c in configMap {
+                        let configKey = c.key
+                        let configValue = c.value
+                    }
+                    let imageBadge = content.getImageBadge()
+                    let textBadge = content.getTextBadge()
+                               
+                    let conf = p.content?.contentConfig
+                    switch conf {
+                    case let conf as ImageBadge:
+                        let image = conf.image
+                        let altText = conf.altText
+                    case let conf as TextBadge:
+                        let text = conf.text
+                        let fontColor = conf.fontColor ?? ""
+                        let background = conf.backgroundColor ?? ""
+                        let borderColor = conf.borderColor ?? ""
+                    default:
+                        //
                     }
                 }
-            
-            case let .failure(error):
-                print(error)
             }
+        
+        case let .failure(error):
+            print(error)
         }
 ```
 

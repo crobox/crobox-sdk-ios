@@ -16,62 +16,46 @@ final class PromotionTests: XCTestCase {
     }
     
     func testPromotionsNoProduct() async throws {
-        let expectation = XCTestExpectation(description: "receive successful response")
-        
         let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout)
-        let _ = await Crobox.shared.promotions(placeholderId: "1", queryParams: checkoutPageParams) { result in
-            switch result {
-            case let .success(response):
-                XCTAssertNotNil(response.context.sessionId)
-                XCTAssertEqual(PromotionTests.visitorId, response.context.visitorId)
-                expectation.fulfill()
-            case let .failure(error):
-                print(error)
-            }
-        }
+        let result = await Crobox.shared.promotions(placeholderId: "1", queryParams: checkoutPageParams)
         
-        await fulfillment(of: [expectation], timeout: 2.0)
+        switch result {
+        case let .success(response):
+            XCTAssertNotNil(response.context.sessionId)
+            XCTAssertEqual(PromotionTests.visitorId, response.context.visitorId)
+            
+        case .failure(_):
+            XCTFail()
+        }
     }
     
     func testPromotionsOneProduct() async throws {
-        let expectation = XCTestExpectation(description: "receive successful response")
-        
         let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
-        let _ = await Crobox.shared.promotions(placeholderId: "1",
-                                               queryParams: detailPageParams,
-                                               productIds: ["29883481"]) { result in
-            switch result {
-            case let .success(response):
-                XCTAssertNotNil(response.context.sessionId)
-                XCTAssertEqual(PromotionTests.visitorId, response.context.visitorId)
-                expectation.fulfill()
-            case let .failure(error):
-                print(error)
-            }
+        let result = await Crobox.shared.promotions(placeholderId: "1",
+                                                    queryParams: detailPageParams,
+                                                    productIds: ["29883481"])
+        switch result {
+        case let .success(response):
+            XCTAssertNotNil(response.context.sessionId)
+            XCTAssertEqual(PromotionTests.visitorId, response.context.visitorId)
+        case .failure(_):
+            XCTFail()
         }
-        await fulfillment(of: [expectation], timeout: 1.0)
         
-    }
-    
-    func testPromotionsMultiProducts() async throws {
-        let expectation = XCTestExpectation(description: "receive successful response")
-        
-        let _ = await Crobox.shared.promotions(placeholderId: "1",
-                                               queryParams: overviewPageParams,
-                                               productIds: ["product1", "product2", "product3", "product4"]) { result in
+        func testPromotionsMultiProducts() async throws {
+            let result = await Crobox.shared.promotions(placeholderId: "1",
+                                                        queryParams: overviewPageParams,
+                                                        productIds: ["product1", "product2", "product3", "product4"])
             switch result {
             case let .success(response):
                 let context = response.context
                 XCTAssertNotNil(context.sessionId)
                 XCTAssertEqual(PromotionTests.visitorId, context.visitorId)
-                expectation.fulfill()
-            
-            case let .failure(error):
-                print(error)
+            case .failure(_):
+                XCTFail()
             }
+            
         }
-        await fulfillment(of: [expectation], timeout: 2.0)
     }
     
 }
-

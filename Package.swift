@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "Crobox",
+    platforms: [
+       .macOS(.v10_15), .iOS(.v12),
+    ],
     products: [
         .library(name: "Crobox",targets: ["Crobox"]),
     ],

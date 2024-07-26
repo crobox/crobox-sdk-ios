@@ -9,24 +9,20 @@ final class PromotionFailureTests: XCTestCase {
         Crobox.shared.initConfig(config: brokenConfig)
         Crobox.shared.isDebug = true
         
-        let expectation = XCTestExpectation(description: "receive error response")
-        let _ = await Crobox.shared.promotions(placeholderId: "30",
-                                               queryParams: overviewPageParams,
-                                               productIds: ["29883481", "04133050", "3A626400"]) { result in
-            switch result {
-            case let .success(p):
-                XCTFail("\(p)")
-            case let .failure(error):
-                switch error {
-                case CroboxErrors.httpError(let statusCode, _):
-                    XCTAssertEqual(405, statusCode)
-                    expectation.fulfill()
-                default :
-                    XCTFail("other failure: \(error)")
-                }
+        let result = await Crobox.shared.promotions(placeholderId: "30",
+                                                    queryParams: overviewPageParams,
+                                                    productIds: ["29883481", "04133050", "3A626400"])
+        switch result {
+        case .success(_):
+            XCTFail("\(result)")
+        case let .failure(error):
+            switch error {
+            case CroboxErrors.httpError(let statusCode, _):
+                XCTAssertEqual(405, statusCode)
+            default :
+                XCTFail("other failure: \(error)")
             }
         }
-        await fulfillment(of: [expectation], timeout: 2.0)
     }
     
 }

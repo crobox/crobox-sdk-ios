@@ -181,13 +181,14 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testPromotionContentAsTextConfig() async throws {
+        let name = "component1.tsx"
         let text = "Best Seller"
         let fontColor = "#ffffff"
         let backgroundColor = "#aaaaaa"
         let borderColor = "#bbbbbb"
         let jsonStr = """
             {
-                "component": "component1.tsx",
+                "component": "\(name)",
                 "config": {
                     "text": "\(text)",
                     "fontColor": "\(fontColor)",
@@ -203,6 +204,7 @@ final class PromotionResponseTests: XCTestCase {
         let textBadge = promotionContent.contentConfig
         switch textBadge {
         case let textBadge as TextBadge:
+            XCTAssertEqual(name, textBadge.name)
             XCTAssertEqual(text, textBadge.text)
             XCTAssertEqual(fontColor, textBadge.fontColor)
             XCTAssertEqual(backgroundColor, textBadge.backgroundColor)
@@ -214,12 +216,13 @@ final class PromotionResponseTests: XCTestCase {
         
     }
     
-    func testPromotionContentAsImaceConfig() async throws {
+    func testPromotionContentAsImageConfig() async throws {
+        let name = "component1.tsx"
         let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
         let altText = "Image alt text"
         let jsonStr = """
             {
-                "component": "component1.tsx",
+                "component": "\(name)",
                 "config": {
                     "image": "\(image)",
                     "altText": "\(altText)"
@@ -235,6 +238,7 @@ final class PromotionResponseTests: XCTestCase {
         case let badge as ImageBadge:
             XCTAssertEqual(image, badge.image)
             XCTAssertEqual(altText, badge.altText)
+            XCTAssertEqual(name, badge.name)
             XCTAssertNil(promotionContent.getTextBadge())
         default:
             XCTFail("Expected image badge")

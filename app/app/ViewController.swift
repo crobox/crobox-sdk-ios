@@ -29,32 +29,23 @@ class ViewController: UIViewController {
         
         /// Sending Click events with optional event specific parameters
         let clickQueryParams = ClickQueryParams(productId: "4", price: 2.0, quantity: 3)
-        let _ = Task {
-            return await Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
-        }
+        Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
+        
         /// Sending Add To Cart events with optional event specific parameters
         let addCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
-        let _ = Task {
-            return await Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
-        }
+        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
         
         /// Sending Remove From Cart events with optional event specific parameters
         let rmCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
-        let _ = Task {
-            return await Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
-        }
+        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
         
         /// Sending Error events with optional event specific parameters
         let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        let _ = Task {
-            return await Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
-        }
+        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
         
         /// Sending general-purpose Custom event
         let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", price: 1.0, quantity: 1)
-        let _ = Task {
-            return await Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
-        }
+        Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
         
         /// Sending page view event
         let pageViewParams = PageViewParams(
@@ -67,10 +58,7 @@ class ViewController: UIViewController {
             ],
             customProperties: ["event-specific": "value1", "event-specific2": "value2"]
         )
-        let _ = Task {
-            return await Crobox.shared.pageViewEvent(queryParams: overviewPageParams,
-                                                           pageViewParams: pageViewParams)
-        }
+        Crobox.shared.pageViewEvent(queryParams: overviewPageParams, pageViewParams: pageViewParams)
         
         /// Sending checkout event
         let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout, customProperties: ["checkout-specific":"yes"])
@@ -83,9 +71,7 @@ class ViewController: UIViewController {
             step: "step-1",
             customProperties: ["page-specific-key":"value1"]
         )
-        let _ = Task {
-            return await Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)
-        }
+        Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)
         
         /// Sending purchase event
         let pageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageComplete, customProperties: ["complete-specific":"yes"])
@@ -101,54 +87,43 @@ class ViewController: UIViewController {
             revenue: 5.0,
             customProperties: ["event-specific": "value and value2"]
         )
-        let _ = Task {
-            return await Crobox.shared.purchaseEvent(queryParams: pageParams, purchaseParams: purchaseParams)
-        }
-        
-        
-        
+        Crobox.shared.purchaseEvent(queryParams: pageParams, purchaseParams: purchaseParams)
+
         //*****************PROMOTIONS*********************
+        Task {
+            /// Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container for a collection of products/impressions
+            let result = await Crobox.shared.promotions(placeholderId: "1",
+                                                        queryParams: overviewPageParams,
+                                                        productIds: productIds)
+            switch result {
+            case let .success(response):
+                self.printAll(response: response)
+            case let .failure(error):
+                print(error)
+            }
+
+            /// Requesting for a promotion from a product detail page with another placeholderId for a single product
+            let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
+            let resultPDP = await Crobox.shared.promotions(placeholderId: "1",
+                                                           queryParams: detailPageParams,
+                                                           productIds: ["1"])
+            switch resultPDP {
+            case let .success(response):
+                self.printAll(response: response)
+            case let .failure(error):
+                print(error)
+            }
+
+            /// Requesting for a promotion from Checkout Page with another placeholderId without any product
+            let resultCheckout = await Crobox.shared.promotions(placeholderId: "2", queryParams: checkoutPageParams)
+            switch resultCheckout {
+            case let .success(response):
+                self.printAll(response: response)
+            case let .failure(error):
+                print(error)
+            }
+        }
         
-        /// Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container for a collection of products/impressions
-        let _ = Task {
-            return await Crobox.shared.promotions(placeholderId: "1",
-                                                  queryParams: overviewPageParams,
-                                                  productIds: productIds) { result in
-                switch result {
-                case let .success(response):
-                    self.printAll(response: response)
-                case let .failure(error):
-                    print(error)
-                }
-            }
-        }
-        /// Requesting for a promotion from a product detail page with another placeholderId for a single product
-        let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
-        let _ = Task {
-            return await Crobox.shared.promotions(placeholderId: "1",
-                                                  queryParams: detailPageParams,
-                                                  productIds: ["1"]) { result in
-                switch result {
-                case let .success(response):
-                    self.printAll(response: response)
-                case let .failure(error):
-                    print(error)
-                }
-            }
-        }
-        
-        /// Requesting for a promotion from Checkout Page with another placeholderId without any product
-        let _ = Task {
-            return await Crobox.shared.promotions(placeholderId: "2", queryParams: checkoutPageParams) { result in
-                switch result {
-                case let .success(response):
-                    self.printAll(response: response)
-                case let .failure(error):
-                    print(error)
-                }
-                
-            }
-        }
     }
     
     private func printAll(response: PromotionResponse) {
@@ -164,7 +139,7 @@ class ViewController: UIViewController {
             print("Product: \(p.productId ?? "")")
             print("Campaign Id: \(p.campaignId)")
             print("Config: \(p.content?.config ?? [:])")
-           
+            
             let badge = p.content?.contentConfig
             switch badge {
             case let badge as ImageBadge:
