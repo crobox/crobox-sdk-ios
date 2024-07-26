@@ -14,8 +14,8 @@ public class PromotionContent: NSObject {
      *
      * Example:
      * Map(
-     *   "Text1_text" : "Best Seller",
-     *   "Text1_color" : "#0e1111"
+     *   "text" : "Best Seller",
+     *   "textColor" : "#0e1111"
      *  )
      */
     public var config: [String: String] = [:]
@@ -30,7 +30,6 @@ public class PromotionContent: NSObject {
                 self.config[key] = stringValue
             }
         }
-        
     }
     
     func getValue(_ key: String) -> String? {
@@ -41,13 +40,17 @@ public class PromotionContent: NSObject {
         return config[key] ?? defaultValue
     }
     
-    public lazy var contentConfig: PromotionContentConfig? = if let image = getValue("image") {
-        getImageBadge()
-    } else {
-        getTextBadge()
+    public func contentConfig() -> PromotionContentConfig? {
+        if (componentName == "mob-app-image-badge.tsx") {
+            return getImageBadge()
+        } else if (componentName == "mob-app-secondary-messaging.tsx") {
+            return getSecondaryMessaging()
+        } else if (componentName == "mob-app-text-badge.tsx") {
+            return getTextBadge()
+        } else {
+            return nil
+        }
     }
-    
-    public lazy var promotionType: PromotionContentType? = contentConfig?.contentType
     
     /// Returns image badge configuration with pre-designed configuration keys
     public func getImageBadge() -> ImageBadge? {
@@ -66,4 +69,14 @@ public class PromotionContent: NSObject {
             return nil
         }
     }
+    
+    /// Returns secondary messaging configuration with pre-designed configuration keys
+    public func getSecondaryMessaging() -> SecondaryMessaging? {
+        if let text = getValue("text") {
+            return SecondaryMessaging(text: text, fontColor: getValue("fontColor"), name: componentName)
+        } else {
+            return nil
+        }
+    }
+    
 }

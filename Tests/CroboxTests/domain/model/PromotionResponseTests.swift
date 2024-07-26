@@ -181,7 +181,7 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testPromotionContentAsTextConfig() async throws {
-        let name = "component1.tsx"
+        let name = "mob-app-text-badge.tsx"
         let text = "Best Seller"
         let fontColor = "#ffffff"
         let backgroundColor = "#aaaaaa"
@@ -201,7 +201,7 @@ final class PromotionResponseTests: XCTestCase {
         let json = JSON(parseJSON: jsonStr)
         let promotionContent = PromotionContent(jsonData: json)
         
-        let textBadge = promotionContent.contentConfig
+        let textBadge = promotionContent.contentConfig()
         switch textBadge {
         case let textBadge as TextBadge:
             XCTAssertEqual(name, textBadge.name)
@@ -213,11 +213,10 @@ final class PromotionResponseTests: XCTestCase {
         default:
             XCTFail("Expected text badge")
         }
-        
     }
     
     func testPromotionContentAsImageConfig() async throws {
-        let name = "component1.tsx"
+        let name = "mob-app-image-badge.tsx"
         let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
         let altText = "Image alt text"
         let jsonStr = """
@@ -233,7 +232,7 @@ final class PromotionResponseTests: XCTestCase {
         let json = JSON(parseJSON: jsonStr)
         let promotionContent = PromotionContent(jsonData: json)
         
-        let badge = promotionContent.contentConfig
+        let badge = promotionContent.contentConfig()
         switch badge {
         case let badge as ImageBadge:
             XCTAssertEqual(image, badge.image)
@@ -246,6 +245,33 @@ final class PromotionResponseTests: XCTestCase {
         
     }
     
+    func testPromotionContentAsSecondaryMessaging() async throws {
+        let name = "mob-app-secondary-messaging.tsx"
+        let text = "Best Seller"
+        let fontColor = "#ffffff"
+        let jsonStr = """
+            {
+                "component": "\(name)",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(fontColor)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let config = promotionContent.contentConfig()
+        switch config {
+        case let sm as SecondaryMessaging:
+            XCTAssertEqual(name, sm.name)
+            XCTAssertEqual(text, sm.text)
+            XCTAssertEqual(fontColor, sm.fontColor)
+        default:
+            XCTFail("Expected secondary messaging")
+        }
+    }
     
 }
 

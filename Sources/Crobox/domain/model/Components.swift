@@ -1,12 +1,6 @@
 import Foundation
 
-public enum PromotionContentType {
-    case image
-    case text
-}
-
 public protocol PromotionContentConfig {
-    var contentType: PromotionContentType { get }
     var name: String { get }
 }
 
@@ -14,7 +8,6 @@ public struct ImageBadge : PromotionContentConfig {
     public let image: String
     public let altText: String?
     public let name: String
-    public let contentType: PromotionContentType = .image
 }
 
 public struct TextBadge : PromotionContentConfig {
@@ -23,5 +16,10 @@ public struct TextBadge : PromotionContentConfig {
     public let backgroundColor: String?
     public let borderColor: String?
     public let name: String
-    public let contentType: PromotionContentType = .text
+}
+
+public struct SecondaryMessaging : PromotionContentConfig {
+    public let text: String
+    public let fontColor: String?
+    public let name: String
 }
