@@ -273,5 +273,61 @@ final class PromotionResponseTests: XCTestCase {
         }
     }
     
+#if canImport(UIKit)
+    
+    func testTextBadgeWithUIColor() async throws {
+        let text = "Best Seller"
+        let green = "#00ff00"
+        let red_transparent = "rgba(255, 0, 0, 0.5)"
+        let blue = "#0000ff"
+        
+        let jsonStr = """
+            {
+                "component": "component1.tsx",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(green)",
+                    "backgroundColor": "\(red_transparent)",
+                    "borderColor": "\(blue)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let textBadge = promotionContent.getTextBadge()
+        XCTAssertEqual(UIColor.green, textBadge?.fontUIColor())
+        XCTAssertEqual(UIColor.red.alpha(0.5), textBadge?.backgroundUIColor())
+        XCTAssertEqual(UIColor.blue, textBadge?.borderUIColor())
+    }
+    
+    func testSecondaryMessagingWithUIColor() async throws {
+        let name = "mob-app-secondary-messaging.tsx"
+        let text = "Best Seller"
+        let fontColor = "#000000"
+        let jsonStr = """
+            {
+                "component": "\(name)",
+                "config": {
+                    "text": "\(text)",
+                    "fontColor": "\(fontColor)"
+                }
+            }
+        """.trimmingCharacters(in: .whitespaces)
+        
+        let json = JSON(parseJSON: jsonStr)
+        let promotionContent = PromotionContent(jsonData: json)
+        
+        let config = promotionContent.contentConfig()
+        switch config {
+        case let sm as SecondaryMessaging:
+            XCTAssertEqual(true, sm.fontUIColor()?.isBlack)
+        default :
+            XCTFail()
+        }
+    }
+    
+#endif
 }
 

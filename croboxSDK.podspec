@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
 
   spec.name         = "croboxSDK"
 
-  spec.version      = "1.0.31"
+  spec.version      = "1.0.32"
 
   spec.summary      = "Crobox SDK for iOS"
 
@@ -17,13 +17,13 @@ Pod::Spec.new do |spec|
 
   spec.authors      = { "Crobox" => "info@crobox.com" }
 
-if spec.respond_to? 'swift_versions'
+  if spec.respond_to? 'swift_versions'
     spec.swift_versions = ['5.10.1']
   end
 
   spec.platform     = :ios
- 
-  spec.platform     = :ios, "13.0"
+
+  spec.platform     = :ios, "16.0"
 
   spec.source       = { :git => "https://github.com/crobox/crobox-sdk-ios.git", :tag => "#{spec.version}" }
 
@@ -33,4 +33,5 @@ if spec.respond_to? 'swift_versions'
   
   spec.dependency       'SwiftyJSON'
 
+  spec.dependency       'Hue'
 end

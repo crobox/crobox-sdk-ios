@@ -150,10 +150,16 @@ class ViewController: UIViewController {
                 print("Text: \(badge.text)")
                 print("FontColor: \(badge.fontColor ?? "")")
                 print("Background: \(badge.backgroundColor ?? "")")
-                print("Border: \(badge.borderColor ?? "")")
+                print("BorderColor: \(badge.borderColor ?? "")")
+                
+                print("Font UIColor: \(badge.fontUIColor() ?? UIColor.clear )")
+                print("Background UIColor: \(badge.backgroundUIColor() ?? UIColor.clear)")
+                print("Border UIColor: \(badge.borderUIColor() ?? UIColor.clear)")
+                
             case let badge as SecondaryMessaging:
                 print("Text: \(badge.text)")
                 print("FontColor: \(badge.fontColor ?? "")")
+                print("FontUIColor: \(badge.fontUIColor() ?? UIColor.clear)")
             default:
                 print("n/a")
             }
