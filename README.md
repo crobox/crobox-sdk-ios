@@ -127,9 +127,16 @@ For retrieving promotions for zero, one or more products, use the specific Place
                         let fontColor = conf.fontColor ?? ""
                         let background = conf.backgroundColor ?? ""
                         let borderColor = conf.borderColor ?? ""
+
+                        let fontUIColor = conf.fontUIColor() ?? UIColor.clear
+                        let backgroundUIColor = conf.backgroundUIColor() ?? UIColor.clear
+                        let borderUIColor = conf.borderUIColor() ?? UIColor.clear
+
                     case let conf as SecondaryMessaging:
                         let text = conf.text
                         let fontColor = conf.fontColor ?? ""
+                        let fontUIColor = conf.fontUIColor() ?? UIColor.clear
+
                     default:
                         //
                     }
@@ -186,6 +193,7 @@ For retrieving promotions for zero, one or more products, use the specific Place
 | config        | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 | getTextBadge  | TextBadge?          | Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"              |
 | getImageBadge | ImageBadge?         | Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"                                             |
+| contentConfig | PromotionContentConfig | Returns either an Image Badge, a Text Badge or a Secondary Messaging component |
 
 ### TextBadge
 
@@ -195,6 +203,7 @@ For retrieving promotions for zero, one or more products, use the specific Place
 | fontColor       | String      | Font color                |
 | backgroundColor | String?     | Optional background color |
 | borderColor     | String?     | Optional border color     |
+
 
 ### ImageBadge
 

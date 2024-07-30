@@ -6,14 +6,17 @@ import UIKit
 
 public extension TextBadge {
     
+    /// font color and opacity as UIColor
     func fontUIColor() -> UIColor? {
         return fontColor.flatMap{ $0.toUIColor() }
     }
     
+    /// background color and opacity as UIColor
     func backgroundUIColor() -> UIColor? {
         return backgroundColor.flatMap{ $0.toUIColor() }
     }
     
+    /// border color and opacity as UIColor
     func borderUIColor() -> UIColor? {
         return borderColor.flatMap{ $0.toUIColor() }
     }
@@ -22,6 +25,7 @@ public extension TextBadge {
 
 public extension SecondaryMessaging {
     
+    /// font color and opacity as UIColor
     func fontUIColor() -> UIColor? {
         return fontColor.flatMap{ $0.toUIColor() }
     }
@@ -31,7 +35,6 @@ public extension SecondaryMessaging {
 
 extension String {
     func toUIColor() -> UIColor? {
-        print("ui color for \(self)")
         if starts(with: "#") {
             return hexToUIColor()
         } else if starts(with: "rgba") {
