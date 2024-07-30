@@ -12,14 +12,18 @@ public struct ImageBadge : PromotionContentConfig {
 
 public struct TextBadge : PromotionContentConfig {
     public let text: String
+    /// font color as hex for colors or rgba for colors with opacity
     public let fontColor: String?
+    /// background color as hex for colors or rgba for colors with opacity
     public let backgroundColor: String?
+    /// border color as hex for colors or rgba for colors with opacity
     public let borderColor: String?
     public let name: String
 }
 
 public struct SecondaryMessaging : PromotionContentConfig {
     public let text: String
+    /// font color as hex for colors or rgba for colors with opacity
     public let fontColor: String?
     public let name: String
 }

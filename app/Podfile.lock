@@ -1,8 +1,10 @@
 PODS:
   - Alamofire (5.9.1)
-  - croboxSDK (1.0.31):
+  - croboxSDK (1.0.32):
     - Alamofire
+    - Hue
     - SwiftyJSON
+  - Hue (5.0.0)
   - SwiftyJSON (5.0.2)
 
 DEPENDENCIES:
@@ -11,6 +13,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Alamofire
+    - Hue
     - SwiftyJSON
 
 EXTERNAL SOURCES:
@@ -19,9 +22,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  croboxSDK: 5e44be32216fa1feacdca47e16fb548472d67c56
+  croboxSDK: 61c6ecb6233e2bf13749aec0090e0450134dda07
+  Hue: c129cb67be7d093a82bbbc30ce8a96757bf6f37a
   SwiftyJSON: f5b1bf1cd8dd53cd25887ac0eabcfd92301c6a5a
 
-PODFILE CHECKSUM: 4ef9eb32cb8d0bfbb03a0948b9c98d03621e2320
+PODFILE CHECKSUM: 486d985593428f34722bef1b34deed4b3dbca5c5
 
 COCOAPODS: 1.15.2
