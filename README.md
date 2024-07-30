@@ -32,7 +32,7 @@ let package = Package(
 To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
- pod 'croboxSDK', '~> 1.0.31'
+ pod 'croboxSDK', '~> 1.0.32'
 ```
 
 ## Start using Crobox SDK
