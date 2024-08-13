@@ -51,7 +51,7 @@ final class ColorUtilTests: XCTestCase {
     
     func testRGBATransparentToUIColor() async throws {
         let alpha = 0.5
-        let white = "rgba(255, 255, 255, \(alpha)"
+        let white = "rgba(255, 255, 255, \(alpha))"
         XCTAssertEqual(true, white.toUIColor()?.isWhite)
         
         let black = "rgba(0, 0, 0, \(alpha))"
