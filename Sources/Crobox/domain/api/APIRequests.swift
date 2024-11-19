@@ -7,18 +7,21 @@ class APIRequests: NSObject {
     
     static let shared = APIRequests()
     
+    var session: Session!
     var headers: HTTPHeaders!
     
     func header()
     {
         AF.sessionConfiguration.timeoutIntervalForRequest = 60*5
+        let combinedInterceptor = Interceptor(interceptors: [UserAgentInterceptor()])
+        session = Session(interceptor: combinedInterceptor)
     }
     
     func get(url: String, parameters:[String: String]) async throws -> Void {
         header()
         
         return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding(destination: .queryString))
+            session.request(url, method: .get, parameters: parameters, encoding: URLEncoding(destination: .queryString))
                 .validate()
                 .responseData {
                     response in
@@ -39,7 +42,7 @@ class APIRequests: NSObject {
         urlRequest.httpBody = body.data(using: .utf8)
         
         return try await withCheckedThrowingContinuation{ continuation in
-            AF.request(urlRequest)
+            session.request(urlRequest)
                 .validate()
                 .responseData { response in
                     switch response.result {
