@@ -42,6 +42,7 @@ struct ProductGridView: View {
                     ForEach(products) { product in
                         ProductCardView(product: product)
                             .onTapGesture {
+                                CroboxEventManager.shared.onClickEvent(product)
                                 navigationManager.append(.detail(product))
                             }
                     }
@@ -51,7 +52,11 @@ struct ProductGridView: View {
             .screenNavigation()
             .navigationTitle("Crobox Demo App")
         }
+        .onAppear {
+            CroboxEventManager.shared.onPageViewEvent(pageName: "product-list")
+        }
     }
+
 }
 
 // MARK: - Preview

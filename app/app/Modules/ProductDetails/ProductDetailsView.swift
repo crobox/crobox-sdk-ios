@@ -37,6 +37,9 @@ struct ProductDetailsView: View {
             .background(Color(UIColor.systemGray6))
             .navigationBarHidden(true)
         }
+        .onAppear {
+            CroboxEventManager.shared.onPageViewEvent(pageName: "product-details")
+        }
     }
 
     private var navigationBar: some View {
@@ -130,7 +133,10 @@ struct ProductDetailsView: View {
 
             HStack(spacing: 0) {
                 Button(action: {
-                    if quantity > 1 { quantity -= 1 }
+                    if quantity > 1 {
+                        quantity -= 1
+                        CroboxEventManager.shared.onRemoveFromCartEvent(product, quantity: 1)
+                    }
                 }) {
                     Text("-")
                         .font(.title2)
@@ -149,6 +155,7 @@ struct ProductDetailsView: View {
 
                 Button(action: {
                     quantity += 1
+                    CroboxEventManager.shared.onAddToCartEvent(product, quantity: 1)
                 }) {
                     Text("+")
                         .font(.title2)

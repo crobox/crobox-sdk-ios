@@ -60,6 +60,7 @@ struct CompletePurchaseView: View {
                     .padding(.horizontal)
 
                     Button(action: {
+                        CroboxEventManager.shared.onPurchaseEvent(purchasedItems)
                         purchasedItems.removeAll()
                         purchaseManager.removeAllItems()
                         print("Purchase confirmed with total: $\(totalPrice)")
@@ -80,6 +81,9 @@ struct CompletePurchaseView: View {
             .background(Color(UIColor.systemGray6))
             .navigationBarHidden(true)
             .screenNavigation()
+        }
+        .onAppear {
+            CroboxEventManager.shared.onPageViewEvent(pageName: "purchase")
         }
     }
 

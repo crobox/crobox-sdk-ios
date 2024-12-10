@@ -26,6 +26,7 @@
 		9C109A762D0783CE00FC03C2 /* SearchBarWithCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A602D0783CE00FC03C2 /* SearchBarWithCartView.swift */; };
 		9C109A772D0783CE00FC03C2 /* CompletePurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A5C2D0783CE00FC03C2 /* CompletePurchaseView.swift */; };
 		9C109A782D0783CE00FC03C2 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A5F2D0783CE00FC03C2 /* BadgeView.swift */; };
+		9C11CD892D078E6700426BBC /* CroboxEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C11CD882D078E6700426BBC /* CroboxEventManager.swift */; };
 		BA421D9587B8D8C39F1E33B1 /* Pods_CroboxTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		9C109A662D0783CE00FC03C2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		9C109A672D0783CE00FC03C2 /* BasketItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketItem.swift; sourceTree = "<group>"; };
 		9C109A692D0783CE00FC03C2 /* AsyncCachedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncCachedImage.swift; sourceTree = "<group>"; };
+		9C11CD882D078E6700426BBC /* CroboxEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroboxEventManager.swift; sourceTree = "<group>"; };
 		DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CroboxTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -197,6 +199,7 @@
 			children = (
 				9C109A632D0783CE00FC03C2 /* NavigationManager.swift */,
 				9C109A642D0783CE00FC03C2 /* PurchaseManager.swift */,
+				9C11CD882D078E6700426BBC /* CroboxEventManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				9C109A6C2D0783CE00FC03C2 /* BasketItem.swift in Sources */,
 				9C109A6D2D0783CE00FC03C2 /* BasketView.swift in Sources */,
 				9C109A6E2D0783CE00FC03C2 /* PurchaseManager.swift in Sources */,
+				9C11CD892D078E6700426BBC /* CroboxEventManager.swift in Sources */,
 				9C109A6F2D0783CE00FC03C2 /* ProductCardView.swift in Sources */,
 				9C109A702D0783CE00FC03C2 /* Product.swift in Sources */,
 				9C109A712D0783CE00FC03C2 /* NavigationManager.swift in Sources */,
@@ -527,7 +531,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.crobox.testapp.App;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crobox.testapp.AppT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -564,7 +568,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.crobox.testapp.App;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crobox.testapp.AppT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

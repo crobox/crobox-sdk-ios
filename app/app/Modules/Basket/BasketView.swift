@@ -34,7 +34,7 @@ struct BasketView: View {
                     .padding(.horizontal)
                 }
                 
-                BottomMenuView(totalAmount: totalPrice, onPurchase: {
+                BottomMenuView(totalAmount: totalPrice, items: basketItems, onPurchase: {
                     navigationManager.append(.purchase(basketItems))
                 })
             }
@@ -47,6 +47,9 @@ struct BasketView: View {
             .onChange(of: purchaseManager.itemsInBasket) { _, _ in
                 basketItems = purchaseManager.itemsInBasket.toBasketItems().sorted { $0.title > $1.title }
             }
+        }
+        .onAppear {
+            CroboxEventManager.shared.onPageViewEvent(pageName: "basket")
         }
     }
 
@@ -102,6 +105,7 @@ struct BasketItemView: View {
                     Button(action: {
                         if item.quantity > 1 {
                             purchaseManager.removeOneItem(item.title)
+                            CroboxEventManager.shared.onRemoveFromCartEvent(item.id, price: item.price, quantity: 1)
                         }
                     }) {
                         Text("-")
@@ -121,6 +125,7 @@ struct BasketItemView: View {
                     // Increase Quantity
                     Button(action: {
                         purchaseManager.appendItem(item.title, quantity: 1)
+                        CroboxEventManager.shared.onAddToCartEvent(item.id, price: item.price, quantity: 1)
                     }) {
                         Text("+")
                             .font(.title2)
@@ -138,6 +143,7 @@ struct BasketItemView: View {
 
             Button(action: {
                 purchaseManager.removeAllSameItems(item.title)
+                CroboxEventManager.shared.onRemoveFromCartEvent(item.id, price: item.price, quantity: item.quantity)
             }) {
                 Image(systemName: "trash")
                     .foregroundColor(.red)
@@ -153,6 +159,7 @@ struct BasketItemView: View {
 
 struct BottomMenuView: View {
     var totalAmount: Double
+    var items: [BasketItem]
     var onPurchase: () -> Void
 
     var body: some View {
@@ -169,6 +176,7 @@ struct BottomMenuView: View {
             .padding(.horizontal)
 
             Button(action: {
+                CroboxEventManager.shared.onCheckoutEvent(items)
                 onPurchase()
             }) {
                 Text("PURCHASE")
