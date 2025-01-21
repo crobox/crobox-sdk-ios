@@ -46,6 +46,7 @@ final class PurchaseManager: ObservableObject {
 }
 
 struct ProductKey: Hashable {
+    let id: UUID
     let title: String
     let imageName: String
 }
@@ -53,13 +54,14 @@ struct ProductKey: Hashable {
 extension Array where Element == Product {
     func toBasketItems() -> [BasketItem] {
         let grouped = Dictionary(grouping: self) { product in
-            ProductKey(title: product.title, imageName: product.imageName)
+            ProductKey(id: product.id, title: product.title, imageName: product.imageName)
         }
 
         return grouped.map { key, products in
             let totalPrice = products.reduce(0) { $0 + $1.price }
             let totalQuantity = products.count
             return BasketItem(
+                id: key.id,
                 title: key.title,
                 image: key.imageName,
                 price: totalPrice,

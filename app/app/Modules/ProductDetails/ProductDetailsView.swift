@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct ProductDetailsView: View {
-    @EnvironmentObject private var navigationManager: NavigationManager
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var purchaseManager = PurchaseManager.shared
 
@@ -19,51 +18,37 @@ struct ProductDetailsView: View {
     let product: Product
 
     var body: some View {
-        NavigationStack(path: $navigationManager.navPath) {
-            VStack(alignment: .leading) {
-                navigationBar
-
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 16) {
-                        imageHeader
-                        productDetails
-                        quantitySelector
-                        sizes
-                        purchaseButton
-                    }
+        VStack(alignment: .leading, spacing: 0) {
+            navigationBar
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    imageHeader
+                    productDetails
+                    quantitySelector
+                    sizes
                 }
+                .padding(.horizontal, 16)
             }
-            .screenNavigation()
-            .background(Color(UIColor.systemGray6))
-            .navigationBarHidden(true)
+            
+            purchaseButton
         }
+        .background(Color(UIColor.systemGray6))
+        .navigationBarHidden(true)
         .onAppear {
             CroboxEventManager.shared.onPageViewEvent(pageName: "product-details")
         }
     }
 
     private var navigationBar: some View {
-        HStack {
-            Button(action: {
-                dismiss()
-            }) {
-                Image(systemName: "arrow.left")
-                    .foregroundColor(.black)
-            }
-            .padding()
-
-            Text("Product Details")
-                .font(.headline)
-                .foregroundColor(.black)
-
-            Spacer()
-        }
-        .background(Color.white)
-        .padding(.bottom, 4)
+        HeaderView(
+            title: "Product Details",
+            onBack: dismiss.callAsFunction
+        )
     }
 
     private var imageHeader: some View {
-        Group {
+        VStack(spacing: 8) {
             AsyncCachedImage(url: URL(string: product.imageName)) { image in
                 image
                     .resizable()
@@ -91,39 +76,29 @@ struct ProductDetailsView: View {
                     }
                 }
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal, -16)
     }
 
     private var productDetails: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-
-                Text(product.title)
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                HStack {
-                    HStack(spacing: 2) {
-                        ForEach(0..<5) { index in
-                            Image(systemName: index < 4 ? "star.fill" : "star.lefthalf.fill")
-                                .foregroundColor(.yellow)
-                                .font(.caption)
-                        }
-                    }
-                    Text("4.5")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Text(product.category)
-                    .font(.subheadline)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(product.title)
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            HStack(spacing: 8) {
+                StarRatingView(rating: 4.5)
+                
+                Text("4.5")
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .padding(.horizontal)
-
-            Spacer()
+            
+            Text(product.category)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var quantitySelector: some View {
@@ -131,40 +106,7 @@ struct ProductDetailsView: View {
             Text("Quantity:")
                 .font(.subheadline)
 
-            HStack(spacing: 0) {
-                Button(action: {
-                    if quantity > 1 {
-                        quantity -= 1
-                        CroboxEventManager.shared.onRemoveFromCartEvent(product, quantity: 1)
-                    }
-                }) {
-                    Text("-")
-                        .font(.title2)
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.black)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
-
-                Text("\(quantity)")
-                    .font(.title2)
-                    .frame(width: 40, height: 40)
-                    .foregroundColor(.black)
-                    .background(Color.white)
-                    .cornerRadius(8)
-
-                Button(action: {
-                    quantity += 1
-                    CroboxEventManager.shared.onAddToCartEvent(product, quantity: 1)
-                }) {
-                    Text("+")
-                        .font(.title2)
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.black)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
-            }
+            QuantityView(quantity: $quantity, product: product)
 
             Spacer()
 
@@ -172,36 +114,32 @@ struct ProductDetailsView: View {
                 .font(.title2)
                 .fontWeight(.bold)
         }
-        .padding(.horizontal)
     }
 
     private var sizes: some View {
         VStack(alignment: .leading) {
             Text("Available sizes")
                 .font(.subheadline)
-
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 5), spacing: 12) {
+            
+            let items: [GridItem] = Array(repeating: GridItem(.flexible(), spacing: 12), count: 5)
+            LazyVGrid(columns: items, spacing: 12) {
                 ForEach(product.sizes, id: \.self) { size in
-                    Button(action: {
+                    let isSelected = selectedSize == size
+                    
+                    Button {
                         selectedSize = size
-                    }) {
-                        Text("\(size)")
-                            .font(.headline)
-                            .foregroundColor(selectedSize == size ? .white : .black)
-                            .frame(width: 50, height: 40)
-                            .background(selectedSize == size ? Color.blue : Color.gray.opacity(0.2))
-                            .cornerRadius(8)
+                    } label: {
+                        SizeCell(size: size, isSelected: isSelected)
                     }
                 }
             }
         }
-        .padding(.horizontal)
     }
 
     private var purchaseButton: some View {
-        Button(action: {
+        Button {
             purchaseManager.appendItem(product.title, quantity: quantity)
-        }) {
+        } label: {
             Text("ADD TO BASKET")
                 .font(.headline)
                 .foregroundColor(.white)
@@ -211,7 +149,87 @@ struct ProductDetailsView: View {
                 .cornerRadius(8)
         }
         .buttonStyle(.plain)
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+}
+
+fileprivate struct StarRatingView: View {
+    let rating: Double
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(1...5, id: \.self) { index in
+                if rating >= Double(index) {
+                    Image(systemName: "star.fill")
+                } else if rating >= Double(index) - 0.5 {
+                    Image(systemName: "star.leadinghalf.filled")
+                } else {
+                    Image(systemName: "star")
+                }
+            }
+        }
+        .foregroundColor(.yellow)
+        .font(.caption)
+    }
+}
+
+fileprivate struct QuantityView: View {
+    @Binding var quantity: Int
+    let product: Product
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            controlButton(increment: false)
+            title
+            controlButton(increment: true)
+        }
+    }
+    
+    private var title: some View {
+        Text("\(quantity)")
+            .font(.title2)
+            .frame(width: 40, height: 40)
+            .foregroundColor(.black)
+            .background(Color.white)
+            .cornerRadius(8)
+    }
+    
+    private func controlButton(increment: Bool) -> some View {
+        Button {
+            if increment {
+                quantity += 1
+                CroboxEventManager.shared.onAddToCartEvent(product, quantity: 1)
+            } else {
+                quantity = max(1, quantity - 1)
+                CroboxEventManager.shared.onRemoveFromCartEvent(product, quantity: 1)
+            }
+        } label: {
+            Text(increment ? "+" : "-")
+                .font(.title2)
+                .frame(width: 40, height: 40)
+                .foregroundColor(.black)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(8)
+        }
+        .disabled(increment ? false : quantity <= 1)
+    }
+}
+
+fileprivate struct SizeCell: View {
+    let size: Int
+    let isSelected: Bool
+    
+    var body: some View {
+        let foregroundColor = isSelected ? Color.white : Color.black
+        let background = isSelected ? Color.blue : Color.gray.opacity(0.2)
+        
+        Text("\(size)")
+            .font(.headline)
+            .foregroundColor(foregroundColor)
+            .frame(width: 50, height: 40)
+            .background(background)
+            .cornerRadius(8)
     }
 }
 

@@ -29,3 +29,11 @@ struct Product: Identifiable, Hashable {
         )
     }
 }
+
+extension Array where Element == Product {
+    func filterBy(text: String) -> [Element] {
+        if text.isEmpty { return self }
+        
+        return self.filter { $0.title.lowercased().contains(text.lowercased()) }
+    }
+ }

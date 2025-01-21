@@ -12,7 +12,9 @@ import SwiftUI
 struct ProductGridView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
 
-    let products: [Product] = sampleProducts
+    @State private var searchText: String = ""
+    @State private var products: [Product] = sampleProducts
+    @State private var filteredProducts: [Product] = sampleProducts
 
     let columns = [
         GridItem(.flexible()),
@@ -22,41 +24,56 @@ struct ProductGridView: View {
     var body: some View {
         NavigationStack(path: $navigationManager.navPath) {
             ScrollView {
-                HStack(spacing: 8) {
-                    SearchBarWithCartView()
-                    Button(action: {
-                        navigationManager.append(.basket)
-                    }) {
-                        Image(systemName: "cart.fill")
-                            .foregroundColor(.black)
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray, lineWidth: 1)
-                            )
-                    }
+                VStack(spacing: 24) {
+                    searchBar
+                    productsView
                 }
-                .padding()
-
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(products) { product in
-                        ProductCardView(product: product)
-                            .onTapGesture {
-                                CroboxEventManager.shared.onClickEvent(product)
-                                navigationManager.append(.detail(product))
-                            }
-                    }
-                }
+                .frame(maxWidth: .infinity)
                 .padding()
             }
             .screenNavigation()
             .navigationTitle("Crobox Demo App")
+            .animation(.linear(duration: 0.12), value: filteredProducts)
         }
         .onAppear {
             CroboxEventManager.shared.onPageViewEvent(pageName: "product-list")
         }
     }
+    
+    private var searchBar: some View {
+        HStack(spacing: 8) {
+            SearchBarWithCartView(searchText: $searchText)
+                .onChange(of: searchText) { _, newValue in
+                    filteredProducts = products.filterBy(text: newValue)
+                }
+            
+            Button {
+                navigationManager.append(.basket)
+            } label: {
+                Image(systemName: "cart.fill")
+                    .foregroundColor(.black)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+            }
+        }
+    }
 
+    private var productsView: some View {
+        LazyVGrid(columns: columns, spacing: 16) {
+            ForEach(filteredProducts) { product in
+                Button {
+                    CroboxEventManager.shared.onClickEvent(product)
+                    navigationManager.append(.detail(product))
+                } label: {
+                    ProductCardView(product: product)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+        }
+    }
 }
 
 // MARK: - Preview
