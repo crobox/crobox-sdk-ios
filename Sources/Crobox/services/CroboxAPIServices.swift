@@ -1,50 +1,41 @@
 import Foundation
-import SwiftyJSON
-import Alamofire
 
 class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
-    
+
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
                     productIds: Set<String>? = Set()) async throws -> PromotionResponse {
-        
+
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["vpid"] = placeholderId!
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
-        
+
         guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
             throw CroboxErrors.internalRequestError(msg: "Failed to form promotions path")
         }
         urlComponents.queryItems = queryItems
-        
+
         guard let url = urlComponents.url else {
             throw CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")
         }
-        
+
         let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
-        
+
         let data = try await APIRequests.shared.post(url: url, body: bodyString)
-        
+
         do {
-            if let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                if jsonObject["error"] == nil {
-                    let jsonData = JSON(jsonObject)
-                    let promotionResponse:PromotionResponse = try PromotionResponse(jsonData: jsonData)
-                    return promotionResponse
-                } else {
-                    throw CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(jsonObject)")
-                }
-            } else {
-                throw CroboxErrors.invalidJSON(msg: "Json Serialization Error", value: "\(data)")
-            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase // Adjust if needed for JSON key styles
+            let promotionResponse = try decoder.decode(PromotionResponse.self, from: data)
+            return promotionResponse
         } catch {
-            throw CroboxErrors.internalError(msg: "Response handling error", cause: error)
+            throw CroboxErrors.invalidJSON(msg: "Decoding error", value: "\(error)")
         }
     }
-    
+
     func event(eventType:EventType!,
                additionalParams:Any?,
                queryParams:RequestQueryParams) async throws -> Void {

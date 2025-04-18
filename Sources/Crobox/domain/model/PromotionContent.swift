@@ -1,9 +1,8 @@
 
 import Foundation
-import SwiftyJSON
 
 /// Promotion Content
-public class PromotionContent: NSObject {
+public class PromotionContent: NSObject, Decodable {
     /// Message Id of this promotion
     public let messageId: String
     /// Component Name
@@ -19,19 +18,24 @@ public class PromotionContent: NSObject {
      *  )
      */
     public var config: [String: String] = [:]
-    
-    init(jsonData: JSON) {
-        self.messageId = jsonData["id"].stringValue
-        self.componentName = jsonData["component"].stringValue
-        
-        let jsonConfig = jsonData["config"]
-        for (key, subJson):(String, JSON) in jsonConfig {
-            if let stringValue = subJson.string {
-                self.config[key] = stringValue
-            }
-        }
+
+    private enum CodingKeys: String, CodingKey {
+        case messageId = "id"
+        case componentName = "component"
+        case config
     }
-    
+
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Decode simple properties
+        self.messageId = try container.decode(String.self, forKey: .messageId)
+        self.componentName = try container.decode(String.self, forKey: .componentName)
+
+        // Decode `config` dictionary
+        self.config = try container.decode([String: String].self, forKey: .config)
+    }
+
     func getValue(_ key: String) -> String? {
         return config[key]
     }

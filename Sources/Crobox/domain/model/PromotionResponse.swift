@@ -1,23 +1,26 @@
 
 import Foundation
-import SwiftyJSON
 
 /// Promotion Result
-public class PromotionResponse: NSObject {
-    
+public class PromotionResponse: NSObject, Decodable {
+
     /// The context about campaigns
     public var context: PromotionContext
     /// The promotions calculated
     public var promotions = [Promotion]()
-    
-    public init(jsonData: JSON) throws {
-        
-        self.context = try PromotionContext(jsonData:jsonData["context"])
-        
-        if  let arr = jsonData["promotions"].array {
-            for item in arr {
-                try self.promotions.append(Promotion(jsonData: item))
-            }
-        }
+
+    private enum CodingKeys: String, CodingKey {
+        case context
+        case promotions
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Decode `context`
+        self.context = try container.decode(PromotionContext.self, forKey: .context)
+
+        // Decode `promotions`
+        self.promotions = try container.decode([Promotion].self, forKey: .promotions)
     }
 }

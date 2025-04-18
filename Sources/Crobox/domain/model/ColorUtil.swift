@@ -1,5 +1,4 @@
 import Foundation
-import Hue
 
 #if canImport(UIKit)
 import UIKit
@@ -45,10 +44,25 @@ extension String {
     }
     
     private func hexToUIColor() -> UIColor? {
-        guard starts(with: "#"), count == 7 else {
+        guard starts(with: "#"), count <= 9 else {
             return nil
         }
-        return UIColor(hex: self)
+
+        let hex = trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = ((int >> 24) & 0xFF, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+
+        return UIColor(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, alpha: Double(a) / 255)
     }
     
     private func rgbaToUIColor() -> UIColor? {

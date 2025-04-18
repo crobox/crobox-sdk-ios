@@ -1,9 +1,8 @@
 
 import Foundation
-import SwiftyJSON
 
 /// The context about campaigns
-public class PromotionContext: NSObject {
+public class PromotionContext: NSObject, Decodable {
     
     /// List of campaign and variant names, combined
     public var groupName: String?
@@ -14,27 +13,34 @@ public class PromotionContext: NSObject {
     /// The list of ongoing campaigns
     public var campaigns:[Campaign] = [Campaign]()
     
-    public init(jsonData: JSON) throws {
-        self.groupName = jsonData["groupName"].stringValue
-        
-        let visitorIdStr = jsonData["pid"].stringValue
-        if let visitorId = UUID(uuidString: visitorIdStr) {
-            self.visitorId = visitorId
-        } else {
+    private enum CodingKeys: String, CodingKey {
+            case groupName
+            case visitorId = "pid"
+            case sessionId = "sid"
+            case campaigns = "experiments"
+        }
+
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Decode optional group name
+        self.groupName = try container.decodeIfPresent(String.self, forKey: .groupName)
+
+        // Decode visitorId (UUID)
+        let visitorIdStr = try container.decode(String.self, forKey: .visitorId)
+        guard let visitorId = UUID(uuidString: visitorIdStr) else {
             throw CroboxErrors.invalidUUID(key: "context.visitorId", value: visitorIdStr)
         }
-        
-        let sessionIdStr = jsonData["sid"].stringValue
-        if let sessionId = UUID(uuidString: jsonData["sid"].stringValue) {
-            self.sessionId = sessionId
-        } else {
+        self.visitorId = visitorId
+
+        // Decode sessionId (UUID)
+        let sessionIdStr = try container.decode(String.self, forKey: .sessionId)
+        guard let sessionId = UUID(uuidString: sessionIdStr) else {
             throw CroboxErrors.invalidUUID(key: "context.sessionId", value: sessionIdStr)
         }
-        
-        if let arr = jsonData["experiments"].array {
-            for item in arr {
-                campaigns.append(Campaign(jsonData: item))
-            }
-        }
+        self.sessionId = sessionId
+
+        // Decode campaigns array
+        self.campaigns = try container.decode([Campaign].self, forKey: .campaigns)
     }
 }
