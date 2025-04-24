@@ -29,11 +29,11 @@ public class PromotionContent: NSObject, Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         // Decode simple properties
-        self.messageId = try container.decode(String.self, forKey: .messageId)
-        self.componentName = try container.decode(String.self, forKey: .componentName)
+        self.messageId = (try? container.decode(String.self, forKey: .messageId)) ?? ""
+        self.componentName = (try? container.decode(String.self, forKey: .componentName)) ?? ""
 
         // Decode `config` dictionary
-        self.config = try container.decode([String: String].self, forKey: .config)
+        self.config = (try? container.decode([String: String].self, forKey: .config)) ?? [:]
     }
 
     func getValue(_ key: String) -> String? {

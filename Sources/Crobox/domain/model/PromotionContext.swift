@@ -23,24 +23,31 @@ public class PromotionContext: NSObject, Decodable {
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        // Decode optional group name
         self.groupName = try container.decodeIfPresent(String.self, forKey: .groupName)
 
-        // Decode visitorId (UUID)
-        let visitorIdStr = try container.decode(String.self, forKey: .visitorId)
-        guard let visitorId = UUID(uuidString: visitorIdStr) else {
-            throw CroboxErrors.invalidUUID(key: "context.visitorId", value: visitorIdStr)
+        // Decode visitorId (UUID) or throw a custom error
+        if let visitorIdStr = try? container.decode(String.self, forKey: .visitorId),
+           let visitorId = UUID(uuidString: visitorIdStr) {
+            self.visitorId = visitorId
+        } else {
+            throw CroboxErrors.invalidUUID(
+                key: "context.visitorId",
+                value: (try? container.decode(String.self, forKey: .visitorId)) ?? "nil"
+            )
         }
-        self.visitorId = visitorId
 
-        // Decode sessionId (UUID)
-        let sessionIdStr = try container.decode(String.self, forKey: .sessionId)
-        guard let sessionId = UUID(uuidString: sessionIdStr) else {
-            throw CroboxErrors.invalidUUID(key: "context.sessionId", value: sessionIdStr)
+        // Decode sessionId (UUID) or throw a custom error
+        if let sessionIdStr = try? container.decode(String.self, forKey: .sessionId),
+           let sessionId = UUID(uuidString: sessionIdStr) {
+            self.sessionId = sessionId
+        } else {
+            throw CroboxErrors.invalidUUID(
+                key: "context.sessionId",
+                value: (try? container.decode(String.self, forKey: .sessionId)) ?? "nil"
+            )
         }
-        self.sessionId = sessionId
 
-        // Decode campaigns array
-        self.campaigns = try container.decode([Campaign].self, forKey: .campaigns)
+        // Decode campaigns array, defaulting to an empty array if missing or invalid
+        self.campaigns = (try? container.decode([Campaign].self, forKey: .campaigns)) ?? []
     }
 }

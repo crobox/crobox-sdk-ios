@@ -1,5 +1,4 @@
 @testable import Crobox
-import SwiftyJSON
 import XCTest
 
 final class PromotionResponseTests: XCTestCase {
@@ -63,10 +62,10 @@ final class PromotionResponseTests: XCTestCase {
                 ]
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionResponse = try PromotionResponse(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionResponse = try! JSONDecoder().decode(PromotionResponse.self, from: jsonData)
+
         XCTAssertEqual(UUID(uuidString: "722D78A6-ADA6-4E03-B903-2F6869185912"), promotionResponse.context.visitorId)
         XCTAssertEqual(UUID(uuidString: "1DC4FE32-B2CE-4A84-A85F-50AF738226F9"), promotionResponse.context.sessionId)
         XCTAssertEqual("Campaign 1 : Crobox + Campaign 2: Crobox", promotionResponse.context.groupName)
@@ -117,10 +116,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let imageBadge = promotionContent.getImageBadge()
         XCTAssertEqual(image, imageBadge?.image)
         XCTAssertEqual(altText, imageBadge?.altText)
@@ -140,10 +139,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let textBadge = promotionContent.getTextBadge()
         XCTAssertEqual(text, textBadge?.text)
         XCTAssertEqual(fontColor, textBadge?.fontColor)
@@ -167,10 +166,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let textBadge = promotionContent.getTextBadge()
         XCTAssertEqual(text, textBadge?.text)
         XCTAssertEqual(fontColor, textBadge?.fontColor)
@@ -197,10 +196,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let textBadge = promotionContent.contentConfig()
         switch textBadge {
         case let textBadge as TextBadge:
@@ -228,10 +227,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let badge = promotionContent.contentConfig()
         switch badge {
         case let badge as ImageBadge:
@@ -258,10 +257,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let config = promotionContent.contentConfig()
         switch config {
         case let sm as SecondaryMessaging:
@@ -292,10 +291,10 @@ final class PromotionResponseTests: XCTestCase {
                 }
             }
         """.trimmingCharacters(in: .whitespaces)
-        
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let textBadge = promotionContent.getTextBadge()
         XCTAssertEqual(UIColor.green, textBadge?.fontUIColor())
         XCTAssertEqual(UIColor.red.alpha(0.5), textBadge?.backgroundUIColor())
@@ -316,9 +315,9 @@ final class PromotionResponseTests: XCTestCase {
             }
         """.trimmingCharacters(in: .whitespaces)
         
-        let json = JSON(parseJSON: jsonStr)
-        let promotionContent = PromotionContent(jsonData: json)
-        
+        let jsonData = jsonStr.data(using: .utf8)!
+        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
+
         let config = promotionContent.contentConfig()
         switch config {
         case let sm as SecondaryMessaging:

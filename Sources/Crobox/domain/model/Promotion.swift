@@ -17,18 +17,18 @@ public class Promotion: NSObject, Decodable {
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        // Validate and decode `id` as UUID
+        // Validate and decode `id` as UUID, or throw an error
         let idStr = try container.decode(String.self, forKey: .id)
         guard let id = UUID(uuidString: idStr) else {
             throw CroboxErrors.invalidUUID(key: "promotion.id", value: idStr)
         }
         self.id = id
 
-        // Decode other properties
-        self.productId = try container.decode(String.self, forKey: .productId)
-        self.variantId = try container.decode(Int.self, forKey: .variantId)
-        self.campaignId = try container.decode(Int.self, forKey: .campaignId)
-        self.content = try container.decode(PromotionContent.self, forKey: .content)
+        // Decode other properties with defaulting or optional handling
+        self.productId = try? container.decode(String?.self, forKey: .productId) // Optional, defaults to `nil`
+        self.variantId = (try? container.decode(Int.self, forKey: .variantId)) ?? 0 // Default to 0
+        self.campaignId = (try? container.decode(Int.self, forKey: .campaignId)) ?? 0 // Default to 0
+        self.content = try? container.decode(PromotionContent.self, forKey: .content) // Optional, defaults to `nil`
     }
 
     private enum CodingKeys: String, CodingKey {

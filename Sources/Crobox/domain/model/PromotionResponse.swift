@@ -21,6 +21,6 @@ public class PromotionResponse: NSObject, Decodable {
         self.context = try container.decode(PromotionContext.self, forKey: .context)
 
         // Decode `promotions`
-        self.promotions = try container.decode([Promotion].self, forKey: .promotions)
+        self.promotions = (try? container.decode([Promotion].self, forKey: .promotions)) ?? []
     }
 }
