@@ -12,13 +12,9 @@ let package = Package(
     products: [
         .library(name: "Crobox",targets: ["Crobox"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.9.1")),
-        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "4.0.0"),
-        .package(url: "https://github.com/zenangst/Hue.git", .upToNextMinor(from: "5.0.1"))
-    ],
+    dependencies: [],
     targets: [
-        .target(name: "Crobox", dependencies: ["Alamofire", "SwiftyJSON", "Hue"]),
-        .testTarget(name: "CroboxTests", dependencies: ["Crobox", "Hue"]),
+        .target(name: "Crobox", dependencies: []),
+        .testTarget(name: "CroboxTests", dependencies: ["Crobox"]),
     ]
 )

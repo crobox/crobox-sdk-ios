@@ -1,54 +1,43 @@
 
 import Foundation
-import SwiftyJSON
-import Alamofire
 
 class APIRequests: NSObject {
-    
+
     static let shared = APIRequests()
-    
-    var headers: HTTPHeaders!
-    
-    func header()
-    {
-        AF.sessionConfiguration.timeoutIntervalForRequest = 60*5
-    }
-    
-    func get(url: String, parameters:[String: String]) async throws -> Void {
-        header()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding(destination: .queryString))
-                .validate()
-                .responseData {
-                    response in
-                    switch response.result {
-                    case .success(_):
-                        continuation.resume()
-                    case .failure(let error):
-                        continuation.resume(throwing: CroboxErrors.httpError(statusCode: response.response?.statusCode ?? -1, cause: error))
-                    }
-                }
+
+    func get(url: String, parameters: [String: String]) async throws -> Void {
+        guard var urlComponents = URLComponents(string: url) else {
+            throw CroboxErrors.invalidURL
+        }
+        urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
+
+        guard let finalURL = urlComponents.url else {
+            throw CroboxErrors.invalidURL
+        }
+
+        var urlRequest = URLRequest(url: finalURL)
+        urlRequest.timeoutInterval = 60 * 5
+
+        let (_, response) = try await URLSession.shared.data(for: urlRequest)
+
+        if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+            throw CroboxErrors.httpError(statusCode: httpResponse.statusCode)
         }
     }
-    
+
     func post(url: URL, body: String) async throws -> Data {
         var urlRequest = URLRequest(url: url)
-        urlRequest.method = .post
+        urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = body.data(using: .utf8)
-        
-        return try await withCheckedThrowingContinuation{ continuation in
-            AF.request(urlRequest)
-                .validate()
-                .responseData { response in
-                    switch response.result {
-                    case .success(let responseData):
-                        continuation.resume(returning: responseData)
-                    case .failure(let afError):
-                        continuation.resume(throwing: CroboxErrors.httpError(statusCode: response.response?.statusCode ?? -1, cause: afError))
-                    }
-                }
+        urlRequest.timeoutInterval = 60 * 5
+
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+
+        if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+            throw CroboxErrors.httpError(statusCode: httpResponse.statusCode)
         }
+
+        return data
     }
 }
