@@ -221,6 +221,50 @@ For retrieving promotions for zero, one or more products, use the specific Place
 | fontColor       | String      | Font color                |
 
 ## Samples
+ 
+See [test app](app/app/CroboxApp.swift) to see details of Crobox SDK usage.
 
-See [test snippet](app/app/ViewController.swift) for various samples
+### List of screens
+The application includes test UI for the next pages:  <br/>
+**List of Products page**  - display list of test products with test promotion and banners<br/>
+**Product Details page**  - display product images, description and available variants.<br/>
+**Product Basket page**  - display list of products in a user basket<br/>
+**Checkout page**  - dialog with checkout data<br/>
+**Purchase page** - final confirmation to complete purchase
 
+### List of Events
+Sample App sends Crobox event requests for the next scenarios:  <br/>
+**onClickEvent**  - used to track click events at object/ specific area.<br/>
+```swift
+CroboxEventManager.shared.onClickEvent(product)
+```
+**onPageViewEvent**  - used to track page view events, for example list of products, product details, checkout, etc.<br/>
+```swift
+CroboxEventManager.shared.onPageViewEvent(pageName: "basket")
+```
+**onAddToCartEvent**  - used to track analytics when the user add products to the basket<br/>
+```swift
+CroboxEventManager.shared.onAddToCartEvent(product, quantity: 1)
+```
+**onRemoveFromCartEvent**   - used to track analytics when the user removes/delete products to the basket<br/>
+```swift
+CroboxEventManager.shared.onRemoveFromCartEvent(product, quantity: 1)
+```
+**onCheckoutEvent**  - used to track checkout page<br/>
+```swift
+CroboxEventManager.shared.onCheckoutEvent(basketItems)
+```
+**onPurchaseEvent**  - used to track final confirmation for purchase<br/>
+```swift
+CroboxEventManager.shared.onPurchaseEvent(purchasedItems)
+```
+
+### Get Promotion
+The app executes **Crobox.shared.promotions** request to get a list of test promotions. These test promotions can be shown   
+as a banner to notify end user about "Sales", and "Ads" about specific products.
+
+### Sample data
+Sample project uses test products and test data sources to visualize the general flow of E-Commerce application.   
+That's why the application operates with a simplified set of data models, like:<br/>   
+**Product** data model - specific Object that user can purchase  <br/>
+**BasketItem** data model - elements that the user puts into Basket.

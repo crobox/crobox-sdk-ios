@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
 
   spec.name         = "croboxSDK"
 
-  spec.version      = "1.0.32"
+  spec.version      = "1.0.33"
 
   spec.summary      = "Crobox SDK for iOS"
 
@@ -28,10 +28,5 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => "https://github.com/crobox/crobox-sdk-ios.git", :tag => "#{spec.version}" }
 
   spec.source_files = "Sources/**/*.{h,m,swift}"
-
-  spec.dependency       'Alamofire'
   
-  spec.dependency       'SwiftyJSON'
-
-  spec.dependency       'Hue'
 end

@@ -10,9 +10,24 @@
 		0540517D2C1094F300338217 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0540517C2C1094F300338217 /* AppDelegate.swift */; };
 		0540517F2C1094F300338217 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0540517E2C1094F300338217 /* SceneDelegate.swift */; };
 		054051812C1094F300338217 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054051802C1094F300338217 /* ViewController.swift */; };
-		054051842C1094F300338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051832C1094F300338217 /* Base */; };
 		054051862C1094F800338217 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 054051852C1094F800338217 /* Assets.xcassets */; };
 		054051892C1094F800338217 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 054051882C1094F800338217 /* Base */; };
+		443D657E2D3FD8EC00D1B814 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443D657D2D3FD8EC00D1B814 /* HeaderView.swift */; };
+		9C109A6B2D0783CE00FC03C2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A542D0783CE00FC03C2 /* RootView.swift */; };
+		9C109A6C2D0783CE00FC03C2 /* BasketItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A672D0783CE00FC03C2 /* BasketItem.swift */; };
+		9C109A6D2D0783CE00FC03C2 /* BasketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A5A2D0783CE00FC03C2 /* BasketView.swift */; };
+		9C109A6E2D0783CE00FC03C2 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A642D0783CE00FC03C2 /* PurchaseManager.swift */; };
+		9C109A6F2D0783CE00FC03C2 /* ProductCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A612D0783CE00FC03C2 /* ProductCardView.swift */; };
+		9C109A702D0783CE00FC03C2 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A662D0783CE00FC03C2 /* Product.swift */; };
+		9C109A712D0783CE00FC03C2 /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A632D0783CE00FC03C2 /* NavigationManager.swift */; };
+		9C109A722D0783CE00FC03C2 /* ProductDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A582D0783CE00FC03C2 /* ProductDetailsView.swift */; };
+		9C109A732D0783CE00FC03C2 /* ProductGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A562D0783CE00FC03C2 /* ProductGridView.swift */; };
+		9C109A742D0783CE00FC03C2 /* AsyncCachedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A692D0783CE00FC03C2 /* AsyncCachedImage.swift */; };
+		9C109A752D0783CE00FC03C2 /* CroboxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A532D0783CE00FC03C2 /* CroboxApp.swift */; };
+		9C109A762D0783CE00FC03C2 /* SearchBarWithCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A602D0783CE00FC03C2 /* SearchBarWithCartView.swift */; };
+		9C109A772D0783CE00FC03C2 /* CompletePurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A5C2D0783CE00FC03C2 /* CompletePurchaseView.swift */; };
+		9C109A782D0783CE00FC03C2 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C109A5F2D0783CE00FC03C2 /* BadgeView.swift */; };
+		9C11CD892D078E6700426BBC /* CroboxEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C11CD882D078E6700426BBC /* CroboxEventManager.swift */; };
 		BA421D9587B8D8C39F1E33B1 /* Pods_CroboxTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,14 +49,28 @@
 		0540517C2C1094F300338217 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0540517E2C1094F300338217 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		054051802C1094F300338217 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		054051832C1094F300338217 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		054051852C1094F800338217 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		054051882C1094F800338217 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0540518A2C1094F800338217 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		05D8D0692C10B17300484422 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D8D06A2C10B17300484422 /* SwiftyJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftyJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		443D657D2D3FD8EC00D1B814 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		4D77BD30C4AE44B85471E51E /* Pods-CroboxTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CroboxTestApp.release.xcconfig"; path = "Target Support Files/Pods-CroboxTestApp/Pods-CroboxTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		90308022DD3FB4522032A95A /* Pods-CroboxTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CroboxTestApp.debug.xcconfig"; path = "Target Support Files/Pods-CroboxTestApp/Pods-CroboxTestApp.debug.xcconfig"; sourceTree = "<group>"; };
+		9C109A532D0783CE00FC03C2 /* CroboxApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroboxApp.swift; sourceTree = "<group>"; };
+		9C109A542D0783CE00FC03C2 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9C109A562D0783CE00FC03C2 /* ProductGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductGridView.swift; sourceTree = "<group>"; };
+		9C109A582D0783CE00FC03C2 /* ProductDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsView.swift; sourceTree = "<group>"; };
+		9C109A5A2D0783CE00FC03C2 /* BasketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketView.swift; sourceTree = "<group>"; };
+		9C109A5C2D0783CE00FC03C2 /* CompletePurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletePurchaseView.swift; sourceTree = "<group>"; };
+		9C109A5F2D0783CE00FC03C2 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
+		9C109A602D0783CE00FC03C2 /* SearchBarWithCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarWithCartView.swift; sourceTree = "<group>"; };
+		9C109A612D0783CE00FC03C2 /* ProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCardView.swift; sourceTree = "<group>"; };
+		9C109A632D0783CE00FC03C2 /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
+		9C109A642D0783CE00FC03C2 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		9C109A662D0783CE00FC03C2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		9C109A672D0783CE00FC03C2 /* BasketItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasketItem.swift; sourceTree = "<group>"; };
+		9C109A692D0783CE00FC03C2 /* AsyncCachedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncCachedImage.swift; sourceTree = "<group>"; };
+		9C11CD882D078E6700426BBC /* CroboxEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroboxEventManager.swift; sourceTree = "<group>"; };
 		DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CroboxTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -78,10 +107,15 @@
 		0540517B2C1094F300338217 /* app */ = {
 			isa = PBXGroup;
 			children = (
+				9C109A532D0783CE00FC03C2 /* CroboxApp.swift */,
+				9C109A5E2D0783CE00FC03C2 /* Modules */,
+				9C109A622D0783CE00FC03C2 /* Components */,
+				9C109A652D0783CE00FC03C2 /* Managers */,
+				9C109A682D0783CE00FC03C2 /* Models */,
+				9C109A6A2D0783CE00FC03C2 /* Helpers */,
 				0540517C2C1094F300338217 /* AppDelegate.swift */,
 				0540517E2C1094F300338217 /* SceneDelegate.swift */,
 				054051802C1094F300338217 /* ViewController.swift */,
-				054051822C1094F300338217 /* Main.storyboard */,
 				054051852C1094F800338217 /* Assets.xcassets */,
 				054051872C1094F800338217 /* LaunchScreen.storyboard */,
 				0540518A2C1094F800338217 /* Info.plist */,
@@ -92,11 +126,100 @@
 		8E04D79AE395D93D7B07F7F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				05D8D0692C10B17300484422 /* Alamofire.framework */,
 				05D8D06A2C10B17300484422 /* SwiftyJSON.framework */,
 				DBD867483275B758DB33373F /* Pods_CroboxTestApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9C109A552D0783CE00FC03C2 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A542D0783CE00FC03C2 /* RootView.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		9C109A572D0783CE00FC03C2 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A562D0783CE00FC03C2 /* ProductGridView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		9C109A592D0783CE00FC03C2 /* ProductDetails */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A582D0783CE00FC03C2 /* ProductDetailsView.swift */,
+			);
+			path = ProductDetails;
+			sourceTree = "<group>";
+		};
+		9C109A5B2D0783CE00FC03C2 /* Basket */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A5A2D0783CE00FC03C2 /* BasketView.swift */,
+			);
+			path = Basket;
+			sourceTree = "<group>";
+		};
+		9C109A5D2D0783CE00FC03C2 /* Purchase */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A5C2D0783CE00FC03C2 /* CompletePurchaseView.swift */,
+			);
+			path = Purchase;
+			sourceTree = "<group>";
+		};
+		9C109A5E2D0783CE00FC03C2 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A552D0783CE00FC03C2 /* Root */,
+				9C109A572D0783CE00FC03C2 /* Main */,
+				9C109A592D0783CE00FC03C2 /* ProductDetails */,
+				9C109A5B2D0783CE00FC03C2 /* Basket */,
+				9C109A5D2D0783CE00FC03C2 /* Purchase */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		9C109A622D0783CE00FC03C2 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A5F2D0783CE00FC03C2 /* BadgeView.swift */,
+				9C109A602D0783CE00FC03C2 /* SearchBarWithCartView.swift */,
+				9C109A612D0783CE00FC03C2 /* ProductCardView.swift */,
+				443D657D2D3FD8EC00D1B814 /* HeaderView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		9C109A652D0783CE00FC03C2 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A632D0783CE00FC03C2 /* NavigationManager.swift */,
+				9C109A642D0783CE00FC03C2 /* PurchaseManager.swift */,
+				9C11CD882D078E6700426BBC /* CroboxEventManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		9C109A682D0783CE00FC03C2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A662D0783CE00FC03C2 /* Product.swift */,
+				9C109A672D0783CE00FC03C2 /* BasketItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9C109A6A2D0783CE00FC03C2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				9C109A692D0783CE00FC03C2 /* AsyncCachedImage.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		FAB6DA7F4C04F68C6AD053EE /* Pods */ = {
@@ -175,7 +298,6 @@
 			files = (
 				054051862C1094F800338217 /* Assets.xcassets in Resources */,
 				054051892C1094F800338217 /* Base in Resources */,
-				054051842C1094F300338217 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +351,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				054051812C1094F300338217 /* ViewController.swift in Sources */,
+				9C109A6B2D0783CE00FC03C2 /* RootView.swift in Sources */,
+				9C109A6C2D0783CE00FC03C2 /* BasketItem.swift in Sources */,
+				9C109A6D2D0783CE00FC03C2 /* BasketView.swift in Sources */,
+				9C109A6E2D0783CE00FC03C2 /* PurchaseManager.swift in Sources */,
+				9C11CD892D078E6700426BBC /* CroboxEventManager.swift in Sources */,
+				443D657E2D3FD8EC00D1B814 /* HeaderView.swift in Sources */,
+				9C109A6F2D0783CE00FC03C2 /* ProductCardView.swift in Sources */,
+				9C109A702D0783CE00FC03C2 /* Product.swift in Sources */,
+				9C109A712D0783CE00FC03C2 /* NavigationManager.swift in Sources */,
+				9C109A722D0783CE00FC03C2 /* ProductDetailsView.swift in Sources */,
+				9C109A732D0783CE00FC03C2 /* ProductGridView.swift in Sources */,
+				9C109A742D0783CE00FC03C2 /* AsyncCachedImage.swift in Sources */,
+				9C109A752D0783CE00FC03C2 /* CroboxApp.swift in Sources */,
+				9C109A762D0783CE00FC03C2 /* SearchBarWithCartView.swift in Sources */,
+				9C109A772D0783CE00FC03C2 /* CompletePurchaseView.swift in Sources */,
+				9C109A782D0783CE00FC03C2 /* BadgeView.swift in Sources */,
 				0540517D2C1094F300338217 /* AppDelegate.swift in Sources */,
 				0540517F2C1094F300338217 /* SceneDelegate.swift in Sources */,
 			);
@@ -237,14 +375,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		054051822C1094F300338217 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				054051832C1094F300338217 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		054051872C1094F800338217 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -381,7 +511,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -393,10 +524,9 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -417,7 +547,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -429,10 +560,9 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
