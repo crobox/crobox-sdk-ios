@@ -290,3 +290,7 @@ Sample project uses test products and test data sources to visualize the general
 That's why the application operates with a simplified set of data models, like:<br/>   
 **Product** data model - specific Object that user can purchase  <br/>
 **BasketItem** data model - elements that the user puts into Basket.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to run the tests and how to release.

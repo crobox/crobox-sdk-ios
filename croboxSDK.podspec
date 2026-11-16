@@ -3,7 +3,8 @@ Pod::Spec.new do |spec|
 
   spec.name         = "croboxSDK"
 
-  spec.version      = "1.0.33"
+  # The Release workflow sets the version in Version.swift; see CONTRIBUTING.md.
+  spec.version      = File.read(File.join(__dir__, "Sources/Crobox/common/Version.swift"))[/current = "([^"]+)"/, 1]
 
   spec.summary      = "Crobox SDK for iOS"
 

@@ -17,6 +17,7 @@ class APIRequests: NSObject {
 
         var urlRequest = URLRequest(url: finalURL)
         urlRequest.timeoutInterval = 60 * 5
+        urlRequest.setValue(UserAgent.value, forHTTPHeaderField: "User-Agent")
 
         let (_, response) = try await URLSession.shared.data(for: urlRequest)
 
@@ -31,6 +32,7 @@ class APIRequests: NSObject {
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = body.data(using: .utf8)
         urlRequest.timeoutInterval = 60 * 5
+        urlRequest.setValue(UserAgent.value, forHTTPHeaderField: "User-Agent")
 
         let (data, response) = try await URLSession.shared.data(for: urlRequest)
 

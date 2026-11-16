@@ -1,0 +1,77 @@
+name: Release
+
+# Releases a new version: sets it in Version.swift, commits that on top of main, tags the commit,
+# creates the GitHub release and publishes the pod. main keeps the 0.0.0-dev placeholder, because
+# branch protection does not let this workflow push to main. See CONTRIBUTING.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, for example 1.0.34"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+
+jobs:
+  release:
+    runs-on: macos-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Check the inputs
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The version must look like 1.2.3, not '$VERSION'."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            echo "::error::Tag $VERSION already exists."
+            exit 1
+          fi
+          if [[ -z "$COCOAPODS_TRUNK_TOKEN" ]]; then
+            echo "::error::The COCOAPODS_TRUNK_TOKEN secret is not set."
+            exit 1
+          fi
+
+      - name: Set the version
+        run: |
+          sed -i '' -E "s/(static let current = )\"[^\"]*\"/\1\"$VERSION\"/" Sources/Crobox/common/Version.swift
+          podspec_version="$(pod ipc spec croboxSDK.podspec | jq -r .version)"
+          if [[ "$podspec_version" != "$VERSION" ]]; then
+            echo "::error::The podspec reads version '$podspec_version' from Version.swift, expected '$VERSION'."
+            exit 1
+          fi
+
+      - name: Build
+        run: swift build
+
+      - name: Lint the pod
+        run: pod lib lint croboxSDK.podspec --allow-warnings
+
+      - name: Tag the release commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Release $VERSION"
+          git tag "$VERSION"
+          git push origin "refs/tags/$VERSION"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$VERSION" --verify-tag --generate-notes --title "$VERSION"
+
+      - name: Publish the pod
+        run: pod trunk push croboxSDK.podspec --allow-warnings
