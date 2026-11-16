@@ -83,13 +83,13 @@ class CroboxAPIServices {
         ]
         // Optional
         if let localeCode = Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
+            parameters["lc"] = localeCode.code
         }
         if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
         let now = Date()
-        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(TimeZone.current, at: now)
+        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(Crobox.shared.config.timezone ?? TimeZone.current, at: now)
         let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         

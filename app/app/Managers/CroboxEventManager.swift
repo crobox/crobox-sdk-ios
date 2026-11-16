@@ -28,7 +28,7 @@ class CroboxEventManager {
         let config = CroboxConfig(
             containerId: containerId,
             visitorId: CroboxConfig.persistentVisitorId(),
-            localeCode: .en_US
+            localeCode: LocaleCode("en_US")
         )
 
         Crobox.shared.initConfig(config: config)

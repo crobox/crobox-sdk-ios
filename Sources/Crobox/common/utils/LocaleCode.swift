@@ -1,139 +1,50 @@
-
 import Foundation
 
 /**
- LocaleCodes are in the from of {language}-{COUNTRY} format where
- - the language is lowercase, two-letter form of ISO 639-1 language codes
- - the country is uppercase, two-letter form of ISO 3166-1 Country codes
+ The locale of the visitor, in the form `{language}_{COUNTRY}`, for example `en_US`, where
+ - the language is the lowercase, two-letter ISO 639-1 language code
+ - the country is the uppercase, two-letter ISO 3166-1 country code
+
+ Crobox uses it to select one of the regions configured for your Container, and with it the language, country and
+ currency of the request. Use a code that matches one of those regions. When none matches, the Container's
+ fallback region is used.
+
+ ```
+ LocaleCode("en_US")
+ LocaleCode.of(Locale.current)
+ ```
  */
-public enum LocaleCode:String {
-    
-    case af_ZA = "af_ZA" // Afrikaans
-    case sq_AL = "sq_AL" // Albanian
-    case am_ET = "am_ET" // Amharic
-    case ar_DZ = "ar_DZ" // Arabic (Algeria)
-    case ar_BH = "ar_BH" // Arabic (Bahrain)
-    case ar_EG = "ar_EG" // Arabic (Egypt)
-    case ar_IQ = "ar_IQ" // Arabic (Iraq)
-    case ar_JO = "ar_JO" // Arabic (Jordan)
-    case ar_KW = "ar_KW" // Arabic (Kuwait)
-    case ar_LB = "ar_LB" // Arabic (Lebanon)
-    case ar_LY = "ar_LY" // Arabic (Libya)
-    case ar_MA = "ar_MA" // Arabic (Morocco)
-    case ar_OM = "ar_OM" // Arabic (Oman)
-    case ar_QA = "ar_QA" // Arabic (Qatar)
-    case ar_SA = "ar_SA" // Arabic (Saudi Arabia)
-    case ar_SY = "ar_SY" // Arabic (Syria)
-    case ar_TN = "ar_TN" // Arabic (Tunisia)
-    case ar_AE = "ar_AE" // Arabic (UAE)
-    case ar_YE = "ar_YE" // Arabic (Yemen)
-    case hy_AM = "hy_AM" // Armenian
-    case as_IN = "as_IN" // Assamese
-    case az_AZ = "az_AZ" // Azerbaijani
-    case eu_ES = "eu_ES" // Basque
-    case be_BY = "be_BY" // Belarusian
-    case bn_BD = "bn_BD" // Bengali
-    case bn_IN = "bn_IN" // Bengali (India)
-    case bs_BA = "bs_BA" // Bosnian
-    case bg_BG = "bg_BG" // Bulgarian
-    case my_MM = "my_MM" // Burmese
-    case ca_ES = "ca_ES" // Catalan
-    case zh_CN = "zh_CN" // Chinese (Simplified)
-    case zh_HK = "zh_HK" // Chinese (Hong Kong)
-    case zh_TW = "zh_TW" // Chinese (Traditional)
-    case hr_HR = "hr_HR" // Croatian
-    case cs_CZ = "cs_CZ" // Czech
-    case da_DK = "da_DK" // Danish
-    case nl_BE = "nl_BE" // Dutch (Belgium)
-    case nl_NL = "nl_NL" // Dutch (Netherlands)
-    case en_AU = "en_AU" // English (Australia)
-    case en_CA = "en_CA" // English (Canada)
-    case en_IN = "en_IN" // English (India)
-    case en_IE = "en_IE" // English (Ireland)
-    case en_MT = "en_MT" // English (Malta)
-    case en_NZ = "en_NZ" // English (New Zealand)
-    case en_PH = "en_PH" // English (Philippines)
-    case en_SG = "en_SG" // English (Singapore)
-    case en_ZA = "en_ZA" // English (South Africa)
-    case en_GB = "en_GB" // English (United Kingdom)
-    case en_US = "en_US" // English (United States)
-    case et_EE = "et_EE" // Estonian
-    case fi_FI = "fi_FI" // Finnish
-    case fr_BE = "fr_BE" // French (Belgium)
-    case fr_CA = "fr_CA" // French (Canada)
-    case fr_FR = "fr_FR" // French (France)
-    case fr_LU = "fr_LU" // French (Luxembourg)
-    case fr_CH = "fr_CH" // French (Switzerland)
-    case ka_GE = "ka_GE" // Georgian
-    case de_AT = "de_AT" // German (Austria)
-    case de_DE = "de_DE" // German (Germany)
-    case de_LU = "de_LU" // German (Luxembourg)
-    case de_CH = "de_CH" // German (Switzerland)
-    case el_GR = "el_GR" // Greek
-    case gu_IN = "gu_IN" // Gujarati
-    case he_IL = "he_IL" // Hebrew
-    case hi_IN = "hi_IN" // Hindi
-    case hu_HU = "hu_HU" // Hungarian
-    case is_IS = "is_IS" // Icelandic
-    case id_ID = "id_ID" // Indonesian
-    case it_IT = "it_IT" // Italian (Italy)
-    case it_CH = "it_CH" // Italian (Switzerland)
-    case ja_JP = "ja_JP" // Japanese
-    case kn_IN = "kn_IN" // Kannada
-    case kk_KZ = "kk_KZ" // Kazakh
-    case km_KH = "km_KH" // Khmer
-    case ko_KR = "ko_KR" // Korean
-    case ky_KG = "ky_KG" // Kyrgyz
-    case lo_LA = "lo_LA" // Lao
-    case lv_LV = "lv_LV" // Latvian
-    case lt_LT = "lt_LT" // Lithuanian
-    case mk_MK = "mk_MK" // Macedonian
-    case ms_MY = "ms_MY" // Malay
-    case ml_IN = "ml_IN" // Malayalam
-    case mr_IN = "mr_IN" // Marathi
-    case mn_MN = "mn_MN" // Mongolian
-    case ne_NP = "ne_NP" // Nepali
-    case no_NO = "no_NO" // Norwegian
-    case or_IN = "or_IN" // Odia (Oriya)
-    case fa_IR = "fa_IR" // Persian
-    case pl_PL = "pl_PL" // Polish
-    case pt_BR = "pt_BR" // Portuguese (Brazil)
-    case pt_PT = "pt_PT" // Portuguese (Portugal)
-    case pa_IN = "pa_IN" // Punjabi
-    case ro_RO = "ro_RO" // Romanian
-    case ru_RU = "ru_RU" // Russian
-    case sr_RS = "sr_RS" // Serbian
-    case si_LK = "si_LK" // Sinhala
-    case sk_SK = "sk_SK" // Slovak
-    case sl_SI = "sl_SI" // Slovenian
-    case es_AR = "es_AR" // Spanish (Argentina)
-    case es_BO = "es_BO" // Spanish (Bolivia)
-    case es_CL = "es_CL" // Spanish (Chile)
-    case es_CO = "es_CO" // Spanish (Colombia)
-    case es_CR = "es_CR" // Spanish (Costa Rica)
-    case es_DO = "es_DO" // Spanish (Dominican Republic)
-    case es_EC = "es_EC" // Spanish (Ecuador)
-    case es_SV = "es_SV" // Spanish (El Salvador)
-    case es_GT = "es_GT" // Spanish (Guatemala)
-    case es_HN = "es_HN" // Spanish (Honduras)
-    case es_MX = "es_MX" // Spanish (Mexico)
-    case es_NI = "es_NI" // Spanish (Nicaragua)
-    case es_PA = "es_PA" // Spanish (Panama)
-    case es_PY = "es_PY" // Spanish (Paraguay)
-    case es_PE = "es_PE" // Spanish (Peru)
-    case es_PR = "es_PR" // Spanish (Puerto Rico)
-    case es_ES = "es_ES" // Spanish (Spain)
-    case es_UY = "es_UY" // Spanish (Uruguay)
-    case es_VE = "es_VE" // Spanish (Venezuela)
-    case sw_KE = "sw_KE" // Swahili
-    case sv_SE = "sv_SE" // Swedish
-    case ta_IN = "ta_IN" // Tamil
-    case te_IN = "te_IN" // Telugu
-    case th_TH = "th_TH" // Thai
-    case tr_TR = "tr_TR" // Turkish
-    case uk_UA = "uk_UA" // Ukrainian
-    case ur_PK = "ur_PK" // Urdu
-    case uz_UZ = "uz_UZ" // Uzbek
-    case vi_VN = "vi_VN" // Vietnamese
-    case cy_GB = "cy_GB" // Welsh
+public struct LocaleCode: Hashable, CustomStringConvertible, ExpressibleByStringLiteral {
+
+    public let code: String
+
+    public init(_ code: String) {
+        self.code = code
+    }
+
+    public init(stringLiteral code: String) {
+        self.code = code
+    }
+
+    /**
+     Creates a LocaleCode from a `Locale`, for example `en_US` from `Locale(identifier: "en_US")`, or `en` for a
+     locale without a country.
+     */
+    public static func of(_ locale: Locale) -> LocaleCode {
+        let nsLocale = locale as NSLocale
+        // Legacy codes for Hebrew, Indonesian and Yiddish
+        let language: String
+        switch nsLocale.languageCode {
+        case "iw": language = "he"
+        case "in": language = "id"
+        case "ji": language = "yi"
+        default: language = nsLocale.languageCode
+        }
+        guard let country = nsLocale.countryCode, !country.isEmpty else {
+            return LocaleCode(language)
+        }
+        return LocaleCode("\(language)_\(country)")
+    }
+
+    public var description: String { code }
 }

@@ -42,7 +42,7 @@ First configure and create a `Crobox` singleton as:
 ```swift
 Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci",
                                               visitorId: CroboxConfig.persistentVisitorId(),
-                                              localeCode: .en_US))
+                                              localeCode: LocaleCode("en_US")))
 ```
 
 The `visitorId` must stay the same across app launches. Campaign and control assignment is keyed on it,
@@ -52,11 +52,13 @@ If your app already stores its own visitor id, pass that instead.
 Call `CroboxConfig.resetPersistentVisitorId()` if a visitor should start over, for example on logout.
 
 The `localeCode` selects the region of the Container (country, language and currency). If the Container has
-several regions, set it to the region the user is shopping in, and update it when the user switches:
+several regions, set it to the region the user is shopping in, for example `LocaleCode("nl_BE")` or
+`LocaleCode.of(Locale.current)`, and update it when the user switches:
 ```swift
-Crobox.shared.config.localeCode = .nl_BE
+Crobox.shared.config.localeCode = LocaleCode("nl_BE")
 ```
-The device timezone is sent automatically.
+The device time zone is sent automatically. To use a different one, set `timezone`, for example
+`TimeZone(identifier: "Europe/Amsterdam")`.
 
 `RequestQueryParams` contains page specific parameters, shared by all requests sent from the same page/view.
 Create **one** `RequestQueryParams` (with a new `viewId`) each time a screen is displayed, and use it for the pageview
@@ -209,11 +211,11 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 | Name          | Type                | Description                                                                                                                                                |
 |---------------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | messageId     | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
-| component     | String              | Component Name                                                                                                                                             |
+| component     | String              | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                              |
 | config        | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 | getTextBadge  | TextBadge?          | Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"              |
 | getImageBadge | ImageBadge?         | Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"                                             |
-| contentConfig | PromotionContentConfig | Returns either an Image Badge, a Text Badge or a Secondary Messaging component |
+| contentConfig | PromotionContentConfig? | Returns an Image Badge, Text Badge or Secondary Messaging when the campaign uses `MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`, otherwise nil |
 
 ### TextBadge
 
