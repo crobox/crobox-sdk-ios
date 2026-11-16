@@ -7,7 +7,7 @@ final class PromotionTests: XCTestCase {
     static var visitorId: UUID = UUID.init()
     
     override class func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, localeCode: .en_US))
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, localeCode: LocaleCode("en_US")))
         Crobox.shared.isDebug = true
     }
     

@@ -9,7 +9,7 @@ final class PromotionFailureTests: XCTestCase {
     
     func testPromotionsError() async throws {
         let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"failure"])
-        let brokenConfig = CroboxConfig(containerId: "9999", visitorId: UUID.init(), localeCode: .en_US)
+        let brokenConfig = CroboxConfig(containerId: "9999", visitorId: UUID.init(), localeCode: LocaleCode("en_US"))
         Crobox.shared.initConfig(config: brokenConfig)
         Crobox.shared.isDebug = true
         

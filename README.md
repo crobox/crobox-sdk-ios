@@ -42,7 +42,7 @@ First configure and create a `Crobox` singleton as:
 ```swift
 Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci",
                                               visitorId: CroboxConfig.persistentVisitorId(),
-                                              localeCode: .en_US))
+                                              localeCode: LocaleCode("en_US")))
 ```
 
 The `visitorId` must stay the same across app launches. Campaign and control assignment is keyed on it,
@@ -52,9 +52,10 @@ If your app already stores its own visitor id, pass that instead.
 Call `CroboxConfig.resetPersistentVisitorId()` if a visitor should start over, for example on logout.
 
 The `localeCode` selects the region of the Container (country, language and currency). If the Container has
-several regions, set it to the region the user is shopping in, and update it when the user switches:
+several regions, set it to the region the user is shopping in, for example `LocaleCode("nl_BE")` or
+`LocaleCode.of(Locale.current)`, and update it when the user switches:
 ```swift
-Crobox.shared.config.localeCode = .nl_BE
+Crobox.shared.config.localeCode = LocaleCode("nl_BE")
 ```
 The device timezone is sent automatically.
 

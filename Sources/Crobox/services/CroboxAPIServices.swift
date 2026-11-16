@@ -83,7 +83,7 @@ class CroboxAPIServices {
         ]
         // Optional
         if let localeCode = Crobox.shared.config.localeCode {
-            parameters["lc"] = localeCode.rawValue
+            parameters["lc"] = localeCode.code
         }
         if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId

@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         let productIds = ["1", "2", "3"]
         
         //Crobox.shared is the single point of contact for all interactions, keeping the configuration and providing all functionality
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: CroboxConfig.persistentVisitorId(), localeCode: .en_US))
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: CroboxConfig.persistentVisitorId(), localeCode: LocaleCode("en_US")))
         
         /// Enable/Disable debugging
         Crobox.shared.isDebug = true
