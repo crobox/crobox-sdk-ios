@@ -328,5 +328,51 @@ final class PromotionResponseTests: XCTestCase {
     }
     
 #endif
+
+    func testOneInvalidPromotionDoesNotDropTheOthers() throws {
+        let jsonStr = """
+            {
+                "context": {
+                    "pid": "722D78A6-ADA6-4E03-B903-2F6869185912",
+                    "sid": "1DC4FE32-B2CE-4A84-A85F-50AF738226F9"
+                },
+                "promotions": [
+                    { "id": "not-a-uuid", "campaignId": 1 },
+                    42,
+                    { "id": "820fe9a0-42a6-11ef-b765-a7995e01acd0", "campaignId": 2, "productId": "Product2" }
+                ]
+            }
+        """
+        let response = try JSONDecoder().decode(PromotionResponse.self, from: jsonStr.data(using: .utf8)!)
+        XCTAssertEqual(1, response.promotions.count)
+        XCTAssertEqual("Product2", response.promotions.first?.productId)
+    }
+
+    func testNonStringConfigValuesDoNotEmptyTheConfig() throws {
+        let jsonStr = """
+            {
+                "id": "dd737bf6-0223-48e8-b102-b680265219ef",
+                "component": "mob-app-text-badge.tsx",
+                "config": {
+                    "text": "Best Seller",
+                    "Text1_color": "#aaaaaa",
+                    "fontSize": 12,
+                    "opacity": 0.5,
+                    "visible": true,
+                    "missing": null,
+                    "nested": { "a": "b" }
+                }
+            }
+        """
+        let content = try JSONDecoder().decode(PromotionContent.self, from: jsonStr.data(using: .utf8)!)
+        XCTAssertEqual("Best Seller", content.config["text"])
+        XCTAssertEqual("#aaaaaa", content.config["Text1_color"])
+        XCTAssertEqual("12", content.config["fontSize"])
+        XCTAssertEqual("0.5", content.config["opacity"])
+        XCTAssertEqual("true", content.config["visible"])
+        XCTAssertNil(content.config["missing"])
+        XCTAssertNil(content.config["nested"])
+        XCTAssertEqual("Best Seller", content.getTextBadge()?.text)
+    }
 }
 

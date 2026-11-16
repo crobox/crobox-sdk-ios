@@ -13,10 +13,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let containerId = "xlrc9t"
-        let productIds:Set<String> = ["1", "2", "3"]
+        let productIds = ["1", "2", "3"]
         
         //Crobox.shared is the single point of contact for all interactions, keeping the configuration and providing all functionality
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: UUID.init(), localeCode: .en_US))
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: CroboxConfig.persistentVisitorId(), localeCode: .en_US))
         
         /// Enable/Disable debugging
         Crobox.shared.isDebug = true

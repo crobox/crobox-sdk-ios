@@ -6,7 +6,7 @@ class CroboxAPIServices {
 
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
-                    productIds: Set<String>? = Set()) async throws -> PromotionResponse {
+                    productIds: [String]? = []) async throws -> PromotionResponse {
 
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -22,13 +22,14 @@ class CroboxAPIServices {
             throw CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")
         }
 
-        let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
+        let bodyString = promotionsBody(productIds: productIds)
 
         let data = try await APIRequests.shared.post(url: url, body: bodyString)
 
         do {
+            // All coding keys match the JSON keys, so no key conversion: it would also rename
+            // keys inside the promotion `config` map (e.g. "Text1_color").
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase // Adjust if needed for JSON key styles
             let promotionResponse = try decoder.decode(PromotionResponse.self, from: data)
             return promotionResponse
         } catch {
@@ -39,16 +40,35 @@ class CroboxAPIServices {
     func event(eventType:EventType!,
                additionalParams:Any?,
                queryParams:RequestQueryParams) async throws -> Void {
-        
+        let parameters = eventParameters(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams)
+        return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
+    }
+
+    /// The form-encoded body of a promotions request. The server ranks promotions in this order.
+    func promotionsBody(productIds: [String]?) -> String {
+        return (productIds ?? []).enumerated()
+            .map { "\($0.offset)=\(formEncode($0.element))" }
+            .joined(separator: "&")
+    }
+
+    /// All query parameters of an event request
+    func eventParameters(eventType:EventType!,
+                         additionalParams:Any?,
+                         queryParams:RequestQueryParams) -> [String: String] {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["t"] = eventType.rawValue
-        
+
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
-        
-        return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
+        return parameters
+    }
+
+    private func formEncode(_ value: String) -> String {
+        var allowed = CharacterSet.alphanumerics
+        allowed.insert(charactersIn: "-._~")
+        return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
@@ -82,10 +102,12 @@ class CroboxAPIServices {
             parameters["lh"] = pageName
         }
         
+        // Container-wide custom properties first, so that view specific ones can override them
+        if let customProperties = Crobox.shared.config.customProperties {
+            processCustomProperties(customProperties, &parameters)
+        }
         if let customProperties = queryParams.customProperties {
-            for (key, value) in customProperties {
-                parameters["cp.\(key)"] = value
-            }
+            processCustomProperties(customProperties, &parameters)
         }
         
         return parameters
@@ -113,13 +135,17 @@ class CroboxAPIServices {
             }
             break
         case .Checkout:
+            // Checkout is a pageview of a checkout page; the server only records it with that page type
             parameters["t"] = EventType.PageView.rawValue
+            parameters["pt"] = "\(PageType.PageCheckout.rawValue)"
             if let checkoutParams = additionalParams as? CheckoutParams {
                 checkoutEvent(checkoutParams: checkoutParams, parameters: &parameters)
             }
             break
         case .Purchase:
+            // Purchase is a pageview of the order complete page; the server only records it with that page type
             parameters["t"] = EventType.PageView.rawValue
+            parameters["pt"] = "\(PageType.PageComplete.rawValue)"
             if let purchaseParams = additionalParams as? PurchaseParams {
                 purchaseEvent(purchaseParams: purchaseParams, parameters: &parameters)
             }
@@ -306,9 +332,9 @@ class CroboxAPIServices {
     
     private func processImpressions(_ impressions:[ProductParams], _ parameters: inout [String : String])
     {
-        let productIds = impressions.map{$0.productId}
+        let productIds = impressions.compactMap{$0.productId}
         for (index, id) in productIds.enumerated() {
-            parameters["[\(index)]"] = id
+            parameters["imp[\(index)]"] = id
         }
     }
     

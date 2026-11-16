@@ -27,7 +27,7 @@ class CroboxEventManager {
         // Initialize Crobox configuration
         let config = CroboxConfig(
             containerId: containerId,
-            visitorId: UUID(),
+            visitorId: CroboxConfig.persistentVisitorId(),
             localeCode: .en_US
         )
 

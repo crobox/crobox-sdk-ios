@@ -15,7 +15,10 @@ public class RequestQueryParams {
     public var customProperties: [String: String]?
     public var pageName: String?
     
+    // Events from the same view are deduplicated on the counter, so it must never hand out
+    // the same value twice, even when requests are sent from concurrent tasks.
     private var counter: Int = 0
+    private let counterLock = NSLock()
 
     public init(viewId: UUID,
                 pageType: PageType,
@@ -28,6 +31,8 @@ public class RequestQueryParams {
     }
     
     public func viewCounter() -> Int {
+        counterLock.lock()
+        defer { counterLock.unlock() }
         let currentCount = counter
         counter += 1
         return currentCount
@@ -220,7 +225,7 @@ public struct PageViewParams {
  Type specific parameters for Checkout events
  
  - parameter products: Optional set of products to be purchased
- - parameter step: Optional identifier representing a step in the checkout process
+ - parameter step: Optional number of the step in the checkout process (e.g. "1"). The server reads it as an integer.
  - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
  */
 public struct CheckoutParams {
@@ -276,7 +281,7 @@ public struct PurchaseParams {
  Common Configuration parameters for all requests
  
  - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
- - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must be the same across the user session (or even longer when possible).
+ - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxConfig.persistentVisitorId()` unless the app already stores its own id.
  - parameter currencyCode: Contains information about the valid currency. It must be uppercase, three-letter form of ISO 4217 currency codes. It is useful if there are more than one currency configured in the Crobox Container.
  - parameter localeCode: Locale code combination for the localization,
  - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
@@ -300,5 +305,17 @@ public struct CroboxConfig {
         self.userId = userId
         self.timezone = timezone
         self.customProperties = customProperties
+    }
+
+    /// Returns a visitor id that is stored in `UserDefaults` and stays the same across app launches.
+    /// A new id is created and stored on first use.
+    public static func persistentVisitorId(defaults: UserDefaults = .standard) -> UUID {
+        return Preferences(defaults: defaults).visitorId()
+    }
+
+    /// Forgets the stored visitor id, for example when the user logs out.
+    /// The next call to `persistentVisitorId()` returns a new id.
+    public static func resetPersistentVisitorId(defaults: UserDefaults = .standard) {
+        Preferences(defaults: defaults).resetVisitorId()
     }
 }

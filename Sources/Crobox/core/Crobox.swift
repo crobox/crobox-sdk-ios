@@ -30,16 +30,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter clickQueryParams: Event specific query parameters for Click Events
     public func clickEvent(queryParams: RequestQueryParams!, clickQueryParams:ClickQueryParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .Click, additionalParams: clickQueryParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "click", message: "\(error)"))
-            }
-        }
+        send(.Click, name: "click", additionalParams: clickQueryParams, queryParams: queryParams)
     }
     
     /// For sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
@@ -47,16 +38,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter addCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func addCartEvent(queryParams: RequestQueryParams!, addCartQueryParams:CartQueryParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .AddCart, additionalParams: addCartQueryParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "addcart", message: "\(error)"))
-            }
-        }
+        send(.AddCart, name: "addcart", additionalParams: addCartQueryParams, queryParams: queryParams)
     }
     
     /// For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
@@ -64,16 +46,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter rmCartQueryParams: Event specific query parameters for AddToCart and RemoveFromCart Events
     public func removeCartEvent(queryParams: RequestQueryParams!, rmCartQueryParams:CartQueryParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .RemoveCart, additionalParams: rmCartQueryParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "rmcart", message: "\(error)"))
-            }
-        }
+        send(.RemoveCart, name: "rmcart", additionalParams: rmCartQueryParams, queryParams: queryParams)
     }
     
     
@@ -98,16 +71,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter customQueryParams: Event specific query parameters for Custom Events
     public func customEvent(queryParams: RequestQueryParams!, customQueryParams:CustomQueryParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .CustomEvent, additionalParams: customQueryParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "custom", message: "\(error)"))
-            }
-        }
+        send(.CustomEvent, name: "custom", additionalParams: customQueryParams, queryParams: queryParams)
     }
     
     /// For reporting page view events
@@ -115,16 +79,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter pageViewParams: Event specific query parameters for Page View Events
     public func pageViewEvent(queryParams: RequestQueryParams!, pageViewParams:PageViewParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .PageView, additionalParams: pageViewParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "pageview", message: "\(error)"))
-            }
-        }
+        send(.PageView, name: "pageview", additionalParams: pageViewParams, queryParams: queryParams)
     }
     
     /// For reporting checkout events
@@ -132,16 +87,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter checkoutParams: Event specific query parameters for Checkout Events
     public func checkoutEvent(queryParams: RequestQueryParams!, checkoutParams: CheckoutParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .Checkout, additionalParams: checkoutParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "checkout", message: "\(error)"))
-            }
-        }
+        send(.Checkout, name: "checkout", additionalParams: checkoutParams, queryParams: queryParams)
     }
     
     /// For reporting purchase events
@@ -149,16 +95,7 @@ public class Crobox {
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
     /// - Parameter purchaseParams: Event specific query parameters for Purchase Events
     public func purchaseEvent(queryParams: RequestQueryParams!, purchaseParams: PurchaseParams? = nil) {
-        Task {
-            do {
-                try await CroboxAPIServices.shared.event(eventType: .Purchase, additionalParams: purchaseParams, queryParams: queryParams)
-            } catch {
-                if (Crobox.shared.isDebug) {
-                    print(error)
-                }
-                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: "purchase", message: "\(error)"))
-            }
-        }
+        send(.Purchase, name: "purchase", additionalParams: purchaseParams, queryParams: queryParams)
     }
     
     
@@ -168,10 +105,10 @@ public class Crobox {
     ///
     /// - Parameter placeholderId: Identifier of the placeholder
     /// - Parameter queryParams: Common query parameters, shared by the requests sent from the same page view
-    /// - Parameter productIds: List of product ID's which promotions are requested for. It may be empty for the pages where products are not involved. (e.g. Checkout page)
+    /// - Parameter productIds: List of product ID's which promotions are requested for, in the order they are displayed. The server ranks promotions in this order. It may be empty for the pages where products are not involved. (e.g. Checkout page)
     public func promotions(placeholderId:String!,
                            queryParams: RequestQueryParams!,
-                           productIds: Set<String>? = Set()) async -> Result<PromotionResponse, CroboxErrors> {
+                           productIds: [String]? = []) async -> Result<PromotionResponse, CroboxErrors> {
         do {
             let response = try await CroboxAPIServices.shared.promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds)
             return .success(response)
@@ -179,13 +116,68 @@ public class Crobox {
             if (Crobox.shared.isDebug) {
                 print(error)
             }
-            errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name:"promotions", message: "\(error)"))
+            // A cancelled request (e.g. a SwiftUI `.task` that went away) is not an error
+            if !Crobox.isCancellation(error) {
+                errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name:"promotions", message: Crobox.errorMessage(error)))
+            }
             switch error {
             case is CroboxErrors:
                 return .failure(error as! CroboxErrors)
             default:
                 return .failure(CroboxErrors.internalError(msg: "Promotion request failure", cause: error))
             }
+        }
+    }
+    
+    @available(*, deprecated, message: "Pass the product ids as an Array, in display order. A Set loses the order the server ranks promotions by.")
+    public func promotions(placeholderId:String!,
+                           queryParams: RequestQueryParams!,
+                           productIds: Set<String>?) async -> Result<PromotionResponse, CroboxErrors> {
+        return await promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds.map { Array($0) })
+    }
+
+    private func send(_ eventType: EventType, name: String, additionalParams: Any?, queryParams: RequestQueryParams!) {
+        Task {
+            do {
+                try await CroboxAPIServices.shared.event(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams)
+            } catch {
+                if (Crobox.shared.isDebug) {
+                    print(error)
+                }
+                if !Crobox.isCancellation(error) {
+                    errorEvent(queryParams: queryParams, errorQueryParams: ErrorQueryParams(tag: "sdk", name: name, message: Crobox.errorMessage(error)))
+                }
+            }
+        }
+    }
+
+    /// Whether the error means the request was cancelled, rather than that it failed
+    static func isCancellation(_ error: Error) -> Bool {
+        switch error {
+        case is CancellationError:
+            return true
+        case let urlError as URLError:
+            return urlError.code == .cancelled
+        case CroboxErrors.internalError(_, let cause):
+            return isCancellation(cause)
+        default:
+            return false
+        }
+    }
+
+    /// A description of the error for error events. Unlike `"\(error)"`, it leaves out the request URL,
+    /// which carries the user id and custom properties.
+    static func errorMessage(_ error: Error) -> String {
+        switch error {
+        case let urlError as URLError:
+            return "URLError(\(urlError.code.rawValue)): \(urlError.localizedDescription)"
+        case CroboxErrors.internalError(let msg, let cause):
+            return "internalError(\(msg)): \(errorMessage(cause))"
+        case is CroboxErrors:
+            return "\(error)"
+        default:
+            let nsError = error as NSError
+            return "\(nsError.domain)(\(nsError.code)): \(nsError.localizedDescription)"
         }
     }
     

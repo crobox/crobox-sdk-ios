@@ -40,11 +40,21 @@ To integrate Crobox into your Xcode project using CocoaPods, specify it in your 
 First configure and create a `Crobox` singleton as:
 
 ```swift
-Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci", visitorId: UUID.init(), localeCode: .en_US))
+Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci",
+                                              visitorId: CroboxConfig.persistentVisitorId(),
+                                              localeCode: .en_US))
 ```
 
+The `visitorId` must stay the same across app launches. Campaign and control assignment is keyed on it,
+so creating a new `UUID()` on every launch puts the user in a different variant each time and makes the A/B results unusable.
+`CroboxConfig.persistentVisitorId()` creates an id on first use and stores it in `UserDefaults`.
+If your app already stores its own visitor id, pass that instead.
+Call `CroboxConfig.resetPersistentVisitorId()` if a visitor should start over, for example on logout.
+
 `RequestQueryParams` contains page specific parameters, shared by all requests sent from the same page/view.
-It must be recreated when the page/view is displayed.
+Create **one** `RequestQueryParams` (with a new `viewId`) each time a screen is displayed, and use it for the pageview
+and for every promotions request and event on that screen. The server counts every new `viewId` as a page,
+so a new `viewId` per request double-counts pages, and one `viewId` for the whole app merges all screens into one page.
 ```swift
 let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties: ["test":"test"])
 ```
@@ -60,6 +70,7 @@ Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: ad
 ```
 
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
+Pass the product ids in the order they are displayed: the server ranks promotions in that order.
 
 ```swift
         let result = await Crobox.shared.promotions(placeholderId: "1",

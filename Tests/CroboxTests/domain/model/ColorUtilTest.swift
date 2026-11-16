@@ -28,6 +28,11 @@ final class ColorUtilTests: XCTestCase {
         XCTAssertNil(malformed.toUIColor())
     }
     
+    func testHexWithAlphaIsRRGGBBAA() async throws {
+        XCTAssertEqual(UIColor.red.alpha(0.0), "#ff000000".toUIColor())
+        XCTAssertEqual(UIColor.blue, "#0000ffff".toUIColor())
+    }
+
     func testRGBAToUIColor() async throws {
         
         let white = "rgba(255, 255, 255, 1)"
