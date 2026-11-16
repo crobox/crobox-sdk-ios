@@ -129,13 +129,6 @@ public class Crobox {
         }
     }
     
-    @available(*, deprecated, message: "Pass the product ids as an Array, in display order. A Set loses the order the server ranks promotions by.")
-    public func promotions(placeholderId:String!,
-                           queryParams: RequestQueryParams!,
-                           productIds: Set<String>?) async -> Result<PromotionResponse, CroboxErrors> {
-        return await promotions(placeholderId: placeholderId, queryParams: queryParams, productIds: productIds.map { Array($0) })
-    }
-
     private func send(_ eventType: EventType, name: String, additionalParams: Any?, queryParams: RequestQueryParams!) {
         Task {
             do {
