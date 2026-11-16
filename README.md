@@ -7,33 +7,33 @@ Crobox SDK for iOS
 
 This is an asynchronous SDK kit for consuming Crobox API for iOS applications, written in Swift.
 
-First add the dependency to your project:
-
-
 ## Installation
 
-### Swift Package Manager
+The SDK is distributed with Swift Package Manager and needs iOS 16 or later.
+
+In Xcode, choose **File → Add Package Dependencies…**, enter `https://github.com/crobox/crobox-sdk-ios.git`
+and add the `Crobox` library to your app target.
+
+In a `Package.swift`, add the package and the `Crobox` product:
 
 ```swift
-// swift-tools-version:4.0
-import PackageDescription
-
-let package = Package(
-    name: "YOUR_PROJECT_NAME",
-    dependencies: [
-        .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "{{ latest_version }}"),
-    ]
-)
+dependencies: [
+    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.1.0"),
+],
+targets: [
+    .target(name: "YourApp", dependencies: [
+        .product(name: "Crobox", package: "crobox-sdk-ios"),
+    ]),
+]
 ```
 
-### CocoaPods
+Then import it where you use it:
 
-[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website.
-To integrate Crobox into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
-```ruby
- pod 'croboxSDK', '~> 1.0.32'
+```swift
+import Crobox
 ```
+
+The SDK is no longer published to CocoaPods, because CocoaPods trunk stops accepting new versions in December 2026.
 
 ## Start using Crobox SDK
 
