@@ -275,6 +275,7 @@ public struct PurchaseParams {
  - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxConfig.persistentVisitorId()` unless the app already stores its own id.
  - parameter localeCode: Locale code combination for the localization. Crobox picks the region (country, language and currency) of the Container from it, so in a Container with several regions it must be set to the region the user is shopping in.
  - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
+ - parameter timezone: Time zone of the visitor, to use instead of the device's, for example `TimeZone(identifier: "Europe/Amsterdam")`. It is sent as its offset from UTC in hours at the time of each request. When nil, the device's time zone is used.
  - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints with each request, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
  */
 public struct CroboxConfig {
@@ -282,13 +283,15 @@ public struct CroboxConfig {
     public let visitorId: UUID
     public var localeCode: LocaleCode?
     public var userId: String?
+    public var timezone: TimeZone?
     public var customProperties: [String: String]?
 
-    public init(containerId: String, visitorId: UUID, localeCode: LocaleCode? = nil, userId: String? = nil, customProperties: [String: String]? = nil) {
+    public init(containerId: String, visitorId: UUID, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: TimeZone? = nil, customProperties: [String: String]? = nil) {
         self.containerId = containerId
         self.visitorId = visitorId
         self.localeCode = localeCode
         self.userId = userId
+        self.timezone = timezone
         self.customProperties = customProperties
     }
 

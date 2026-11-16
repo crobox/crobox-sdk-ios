@@ -89,7 +89,7 @@ class CroboxAPIServices {
             parameters["uid"] = userId
         }
         let now = Date()
-        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(TimeZone.current, at: now)
+        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(Crobox.shared.config.timezone ?? TimeZone.current, at: now)
         let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         

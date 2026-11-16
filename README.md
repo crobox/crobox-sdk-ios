@@ -57,7 +57,8 @@ several regions, set it to the region the user is shopping in, for example `Loca
 ```swift
 Crobox.shared.config.localeCode = LocaleCode("nl_BE")
 ```
-The device timezone is sent automatically.
+The device time zone is sent automatically. To use a different one, set `timezone`, for example
+`TimeZone(identifier: "Europe/Amsterdam")`.
 
 `RequestQueryParams` contains page specific parameters, shared by all requests sent from the same page/view.
 Create **one** `RequestQueryParams` (with a new `viewId`) each time a screen is displayed, and use it for the pageview

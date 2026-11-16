@@ -56,6 +56,12 @@ final class RequestParametersTests: XCTestCase {
         XCTAssertNil(parameters(.Click, nil)["cc"])
     }
 
+    func testConfiguredTimezoneWins() {
+        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID(),
+                                                      timezone: TimeZone(identifier: "Asia/Kolkata")))
+        XCTAssertEqual("5.5", parameters(.Click, nil)["tz"])
+    }
+
     func testCheckoutSendsProductsAndCheckoutPageType() {
         let params = parameters(.Checkout, CheckoutParams(products: [ProductParams(productId: "1"), ProductParams(productId: "2")],
                                                           step: "1", customProperties: nil),
