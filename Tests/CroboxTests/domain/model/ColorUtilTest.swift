@@ -3,6 +3,21 @@ import XCTest
 
 final class ColorUtilTests: XCTestCase {
 
+    func testParseHexColor() {
+        func rgba(_ s: String) -> [UInt8]? {
+            parseHexColor(s).map { [$0.red, $0.green, $0.blue, $0.alpha] }
+        }
+        XCTAssertEqual([0x11, 0x22, 0x33, 0xFF], rgba("#123"))
+        XCTAssertEqual([0x11, 0x22, 0x33, 0x44], rgba("#1234"))
+        XCTAssertEqual([0xAB, 0xCD, 0xEF, 0xFF], rgba("#abcdef"))
+        XCTAssertEqual([0xFF, 0x00, 0x00, 0x80], rgba("#FF000080"))
+        XCTAssertEqual([0xFF, 0xFF, 0xFF, 0xFF], rgba(" #fff "))
+
+        for invalid in ["", "#", "fff", "#12", "#12345", "#1234567", "#123456789", "#zzzzzz", "#12345g", "#+fffff", "rgba(0,0,0,1)"] {
+            XCTAssertNil(parseHexColor(invalid), invalid)
+        }
+    }
+
     #if canImport(UIKit)
     func testHexToUIColor() async throws {
         let white = "#ffffff"
@@ -28,6 +43,11 @@ final class ColorUtilTests: XCTestCase {
         XCTAssertNil(malformed.toUIColor())
     }
     
+    func testShortHexToUIColor() async throws {
+        XCTAssertEqual(UIColor.red, "#f00".toUIColor())
+        XCTAssertEqual(UIColor.blue.alpha(0.0), "#00f0".toUIColor())
+    }
+
     func testHexWithAlphaIsRRGGBBAA() async throws {
         XCTAssertEqual(UIColor.red.alpha(0.0), "#ff000000".toUIColor())
         XCTAssertEqual(UIColor.blue, "#0000ffff".toUIColor())
