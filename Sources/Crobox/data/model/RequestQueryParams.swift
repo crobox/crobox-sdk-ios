@@ -94,20 +94,18 @@ public struct ErrorQueryParams {
  Type specific parameters for click events
  
  - parameter productId: Unique identifier for a product
- - parameter price: Product price, if available
  - parameter quantity: Quantity, if available
+ 
+ The price is not sent: Crobox takes it from the product catalog.
  */
 public struct ClickQueryParams {
     public var productId: String?
-    public var price: Double?
     public var quantity: Int?
     
     public init(productId: String? = nil,
-                price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.productId = productId
-        self.price = price
         self.quantity = quantity
     }
 }
@@ -116,21 +114,18 @@ public struct ClickQueryParams {
  Type specific parameters for Add/Remove Cart events
  
  - parameter productId: Unique identifier for a product
- - parameter price: Product price, if available
  - parameter quantity: Quantity, if available
+ 
+ The price is not sent: Crobox takes it from the product catalog.
  */
 public struct CartQueryParams {
     public var productId: String?
-    public var price: Double?
     public var quantity: Int?
     
-    
     public init(productId: String? = nil,
-                price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.productId = productId
-        self.price = price
         self.quantity = quantity
     }
 }
@@ -141,26 +136,24 @@ public struct CartQueryParams {
  - parameter name: Event name
  - parameter promotionId: Promotion Id, if available
  - parameter productId: Unique identifier for a product
- - parameter price: Product price, if available
  - parameter quantity: Quantity, if available
+ 
+ The price is not sent: Crobox takes it from the product catalog.
  */
 public struct CustomQueryParams {
     var name: String?
     var promotionId: UUID?
     var productId: String?
-    var price: Double?
     var quantity: Int?
     
     public init(name: String? = nil,
                 promotionId: UUID? = nil,
                 productId: String? = nil,
-                price: Double? = nil,
                 quantity: Int? = nil) {
         
         self.name = name
         self.promotionId = promotionId
         self.productId = productId
-        self.price = price
         self.quantity = quantity
     }
 }
@@ -169,36 +162,34 @@ public struct CustomQueryParams {
  Product specific parameters for various events
  
  - parameter productId Product identifier
- - parameter price Optional product price
- - parameter quantity Optional quantity
- - parameter otherProductIds Optional set of productIds accompanying this particular product
+ - parameter quantity Optional quantity, e.g. of a purchased product
+ - parameter list Optional name of the list the product is shown in, e.g. "search results" or "related products"
+ 
+ The price is not sent: Crobox takes it from the product catalog. The position of an impression is its position in the list it is passed in.
  */
 public struct ProductParams {
     var productId: String?
-    var price: Double?
     var quantity: Int?
-    var otherProductIds: [String]?
+    var list: String?
     
     public init(productId: String? = nil,
-                price: Double? = nil,
                 quantity: Int? = nil,
-                otherProductIds: [String]? = nil
+                list: String? = nil
     ) {
         self.productId = productId
-        self.price = price
         self.quantity = quantity
-        self.otherProductIds = otherProductIds
+        self.list = list
     }
 }
 
 /**
  Type specific parameters for Page View events
- 
- - parameter name: Event name
- - parameter promotionId: Promotion Id, if available
- - parameter productId: Unique identifier for a product
- - parameter price: Product price, if available
- - parameter quantity: Quantity, if available
+
+ - parameter pageTitle: Title of the page, if available
+ - parameter product: The product of a product detail page
+ - parameter searchTerms: Search terms of a search results page
+ - parameter impressions: The products shown on the page, in the order they are shown
+ - parameter customProperties: Optional set of general purpose custom properties
  */
 public struct PageViewParams {
     var pageTitle: String?
@@ -247,22 +238,22 @@ public struct CheckoutParams {
  Type specific parameters for Purchase events
  
  - parameter products: Optional set of products purchased
- - parameter transactionId: Optional transaction identifier
+ - parameter transactionId: Transaction identifier. Crobox only records a purchase with one, and counts each transaction once per visitor.
  - parameter affiliation The store or affiliation from which this transaction occurred (e.g. Google Store), if available
  - parameter coupon Coupon, if available
- - parameter revenue The total associated with the transaction
+ - parameter revenue The total associated with the transaction, in the currency of the locale. Without it, Crobox adds up the catalog prices of the products.
  - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
  */
 public struct PurchaseParams {
     var products: [ProductParams]?
-    var transactionId: String?
+    var transactionId: String
     var affiliation: String?
     var coupon: String?
     var revenue: Double?
     var customProperties: [String : String]?
     
     public init(products: [ProductParams]?,
-                transactionId: String?,
+                transactionId: String,
                 affiliation: String?,
                 coupon: String?,
                 revenue: Double?,
@@ -282,28 +273,22 @@ public struct PurchaseParams {
  
  - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
  - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxConfig.persistentVisitorId()` unless the app already stores its own id.
- - parameter currencyCode: Contains information about the valid currency. It must be uppercase, three-letter form of ISO 4217 currency codes. It is useful if there are more than one currency configured in the Crobox Container.
- - parameter localeCode: Locale code combination for the localization,
+ - parameter localeCode: Locale code combination for the localization. Crobox picks the region (country, language and currency) of the Container from it, so in a Container with several regions it must be set to the region the user is shopping in.
  - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
- - parameter timezone: Timezone
  - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints with each request, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
  */
 public struct CroboxConfig {
     public let containerId: String
     public let visitorId: UUID
-    public var currencyCode: CurrencyCode?
     public var localeCode: LocaleCode?
     public var userId: String?
-    public var timezone: Int?
     public var customProperties: [String: String]?
 
-    public init(containerId: String, visitorId: UUID, currencyCode: CurrencyCode? = nil, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: Int? = nil, customProperties: [String: String]? = nil) {
+    public init(containerId: String, visitorId: UUID, localeCode: LocaleCode? = nil, userId: String? = nil, customProperties: [String: String]? = nil) {
         self.containerId = containerId
         self.visitorId = visitorId
-        self.currencyCode = currencyCode
         self.localeCode = localeCode
         self.userId = userId
-        self.timezone = timezone
         self.customProperties = customProperties
     }
 

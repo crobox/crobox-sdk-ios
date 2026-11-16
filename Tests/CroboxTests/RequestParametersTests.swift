@@ -16,13 +16,44 @@ final class RequestParametersTests: XCTestCase {
         return CroboxAPIServices.shared.eventParameters(eventType: eventType, additionalParams: params, queryParams: queryParams)
     }
 
-    func testPageViewImpressionsUseImpPrefix() {
+    func testPageViewImpressionsCarryIdPositionQuantityAndList() {
+        var impressions = (0..<12).map { ProductParams(productId: "p\($0)") }
+        impressions[1] = ProductParams(productId: "p1", quantity: 2, list: "search results")
         let params = parameters(.PageView, PageViewParams(pageTitle: nil, product: nil, searchTerms: nil,
-                                                          impressions: (0..<12).map { ProductParams(productId: "p\($0)") },
-                                                          customProperties: nil))
-        XCTAssertEqual("p0", params["imp[0]"])
-        XCTAssertEqual("p11", params["imp[11]"])
+                                                          impressions: impressions, customProperties: nil))
+        XCTAssertEqual("p0", params["imp[0].id"])
+        XCTAssertEqual("1", params["imp[0].pos"])
+        XCTAssertNil(params["imp[0].qty"])
+        XCTAssertNil(params["imp[0].lst"])
+        XCTAssertEqual("2", params["imp[1].qty"])
+        XCTAssertEqual("search results", params["imp[1].lst"])
+        XCTAssertEqual("p11", params["imp[11].id"])
+        XCTAssertEqual("12", params["imp[11].pos"])
+        XCTAssertNil(params["imp[0]"])
         XCTAssertNil(params["[0]"])
+    }
+
+    func testProductDetailSendsListNameAndNoPrice() {
+        let params = parameters(.PageView, PageViewParams(pageTitle: nil, product: ProductParams(productId: "1", list: "related"),
+                                                          searchTerms: nil, impressions: nil, customProperties: nil),
+                                pageType: .PageDetail)
+        XCTAssertEqual("1", params["pi"])
+        XCTAssertEqual("related", params["lst"])
+        XCTAssertNil(params["price"])
+    }
+
+    func testTimezoneIsUtcOffsetInHoursAsTheSnippetSendsIt() {
+        let winter = Date(timeIntervalSince1970: 1_767_225_600) // 2026-01-01
+        let summer = Date(timeIntervalSince1970: 1_782_864_000) // 2026-07-01
+        XCTAssertEqual("1", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "Europe/Amsterdam")!, at: winter))
+        XCTAssertEqual("2", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "Europe/Amsterdam")!, at: summer))
+        XCTAssertEqual("5.5", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "Asia/Kolkata")!, at: winter))
+        XCTAssertEqual("5.75", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "Asia/Kathmandu")!, at: winter))
+        XCTAssertEqual("-5", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "America/New_York")!, at: winter))
+        XCTAssertEqual("-3.5", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "America/St_Johns")!, at: winter))
+        XCTAssertEqual("0", CroboxAPIServices.timezoneOffsetHours(TimeZone(identifier: "UTC")!, at: winter))
+        XCTAssertNotNil(parameters(.Click, nil)["tz"])
+        XCTAssertNil(parameters(.Click, nil)["cc"])
     }
 
     func testCheckoutSendsProductsAndCheckoutPageType() {
@@ -31,18 +62,26 @@ final class RequestParametersTests: XCTestCase {
                                 pageType: .PageOther)
         XCTAssertEqual("pageview", params["t"])
         XCTAssertEqual("5", params["pt"])
-        XCTAssertEqual("1", params["imp[0]"])
-        XCTAssertEqual("2", params["imp[1]"])
+        XCTAssertEqual("1", params["imp[0].id"])
+        XCTAssertEqual("2", params["imp[1].id"])
     }
 
     func testPurchaseSendsProductsAndCompletePageType() {
-        let params = parameters(.Purchase, PurchaseParams(products: [ProductParams(productId: "1")], transactionId: "t1",
+        let params = parameters(.Purchase, PurchaseParams(products: [ProductParams(productId: "1", quantity: 3)], transactionId: "t1",
                                                           affiliation: nil, coupon: nil, revenue: 1.0, customProperties: nil),
                                 pageType: .PageOther)
         XCTAssertEqual("pageview", params["t"])
         XCTAssertEqual("6", params["pt"])
-        XCTAssertEqual("1", params["imp[0]"])
+        XCTAssertEqual("1", params["imp[0].id"])
+        XCTAssertEqual("3", params["imp[0].qty"])
         XCTAssertEqual("t1", params["tid"])
+        XCTAssertEqual("1.0", params["rev"])
+    }
+
+    func testClickCartAndCustomEventsSendNoPrice() {
+        XCTAssertNil(parameters(.Click, ClickQueryParams(productId: "1", quantity: 1))["price"])
+        XCTAssertEqual("2", parameters(.AddCart, CartQueryParams(productId: "1", quantity: 2))["qty"])
+        XCTAssertEqual("1", parameters(.CustomEvent, CustomQueryParams(name: "x", productId: "1"))["pi"])
     }
 
     func testConfigCustomPropertiesAreSentAndViewPropertiesWin() {

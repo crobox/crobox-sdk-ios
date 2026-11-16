@@ -20,12 +20,12 @@ final class EventTests: XCTestCase {
     }
     
     func testAddCartEvent() async throws {
-        let addCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
+        let addCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
         Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
     }
     
     func testRmCartEvent() async throws {
-        let rmCartQueryParams = CartQueryParams(productId: "3", price: 1.0, quantity: 12)
+        let rmCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
         Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
     }
     
@@ -35,14 +35,14 @@ final class EventTests: XCTestCase {
     }
     
     func testCustomEvent() async throws {
-        let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", price: 1.0, quantity: 1)
+        let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", quantity: 1)
         Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
     }
     
     func testPageViewEvent() async throws {
         let pageViewParams = PageViewParams(
             pageTitle: "some page title",
-            product: ProductParams(productId: "1", price: 1.0, otherProductIds: ["2", "3", "4"]),
+            product: ProductParams(productId: "1", list: "related products"),
             searchTerms: "some search terms",
             impressions: [
                 ProductParams(productId: "5"),
@@ -75,8 +75,8 @@ final class EventTests: XCTestCase {
         
         let purchaseParams = PurchaseParams(
             products: [
-                ProductParams(productId: "1", price: 1.0, quantity:  1, otherProductIds: ["1", "3", "5"]),
-                ProductParams(productId: "2", price: 2.0, quantity : 2, otherProductIds: ["2", "4", "6"])
+                ProductParams(productId: "1", quantity: 1),
+                ProductParams(productId: "2", quantity: 2)
             ],
             transactionId: "trx-id-1",
             affiliation: "some online store",

@@ -82,20 +82,15 @@ class CroboxAPIServices {
             "sdk": "1"
         ]
         // Optional
-        if let currencyCode = Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode.rawValue
-        }
-        
         if let localeCode = Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
         }
         if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
-        if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        let millis = Int64(Date().timeIntervalSince1970 * 1000)
+        let now = Date()
+        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(TimeZone.current, at: now)
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         
         if let pageName = queryParams.pageName {
@@ -204,9 +199,6 @@ class CroboxAPIServices {
         if let productId = clickParams.productId {
             parameters["pi"] = productId
         }
-        if let price = clickParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = clickParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
@@ -224,9 +216,6 @@ class CroboxAPIServices {
     {
         if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
-        }
-        if let price = cartQueryParams.price {
-            parameters["price"] = "\(price)"
         }
         if let quantity = cartQueryParams.quantity {
             parameters["qty"] = "\(quantity)"
@@ -271,9 +260,7 @@ class CroboxAPIServices {
         if let impressions = purchaseParams.products {
             processImpressions(impressions, &parameters)
         }
-        if let transactionId = purchaseParams.transactionId {
-            parameters["tid"] = transactionId
-        }
+        parameters["tid"] = purchaseParams.transactionId
         if let affiliation = purchaseParams.affiliation {
             parameters["aff"] = affiliation
         }
@@ -306,9 +293,6 @@ class CroboxAPIServices {
         if let productID = customQueryParams.productId {
             parameters["pi"] = productID
         }
-        if let price = customQueryParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = customQueryParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
@@ -319,23 +303,40 @@ class CroboxAPIServices {
         if let productId = productParams.productId {
             parameters["pi"] = productId
         }
-        if let price = productParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = productParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
-        if let otherProductIds = productParams.otherProductIds {
-            parameters["lst"] = "\(otherProductIds.joined(separator: ","))"
+        if let list = productParams.list {
+            parameters["lst"] = list
         }
     }
     
+    /// Sends each product as `imp[n].id`, with its position (1-based) and, when known, its quantity and list.
+    /// A plain `imp[n]=id` would make the server record every position as 0 (unknown) and every quantity as 1.
     private func processImpressions(_ impressions:[ProductParams], _ parameters: inout [String : String])
     {
-        let productIds = impressions.compactMap{$0.productId}
-        for (index, id) in productIds.enumerated() {
-            parameters["imp[\(index)]"] = id
+        let products = impressions.filter { $0.productId != nil }
+        for (index, product) in products.enumerated() {
+            let prefix = "imp[\(index)]"
+            parameters["\(prefix).id"] = product.productId
+            parameters["\(prefix).pos"] = "\(index + 1)"
+            if let quantity = product.quantity {
+                parameters["\(prefix).qty"] = "\(quantity)"
+            }
+            if let list = product.list {
+                parameters["\(prefix).lst"] = list
+            }
         }
+    }
+
+    /// The UTC offset in hours, positive east of UTC, as the web snippet sends it (`getTimezoneOffset() / -60`):
+    /// "1" in Amsterdam in winter, "5.5" in India.
+    static func timezoneOffsetHours(_ timeZone: TimeZone, at date: Date) -> String {
+        let seconds = timeZone.secondsFromGMT(for: date)
+        if seconds % 3600 == 0 {
+            return "\(seconds / 3600)"
+        }
+        return "\(Double(seconds) / 3600)"
     }
     
     
