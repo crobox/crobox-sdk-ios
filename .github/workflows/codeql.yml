@@ -34,6 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # The first swift invocation on a fresh runner is slow, and ~4x slower
+      # under the CodeQL tracer. Warm the toolchain up untraced, then clean so
+      # the traced build below still compiles (and extracts) every source.
+      - if: matrix.build-mode == 'manual'
+        run: swift build && swift package clean
+
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
