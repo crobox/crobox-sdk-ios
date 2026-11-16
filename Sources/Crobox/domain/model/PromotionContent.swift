@@ -32,8 +32,11 @@ public class PromotionContent: NSObject, Decodable {
         self.messageId = (try? container.decode(String.self, forKey: .messageId)) ?? ""
         self.componentName = (try? container.decode(String.self, forKey: .componentName)) ?? ""
 
-        // Decode `config` dictionary
-        self.config = (try? container.decode([String: String].self, forKey: .config)) ?? [:]
+        // Decode `config` dictionary. Values that are not strings (numbers, booleans) are converted
+        // to strings, and values that cannot be represented (null, objects, arrays) are skipped,
+        // so that one unexpected value does not discard the whole config.
+        let rawConfig = (try? container.decode([String: LenientConfigValue].self, forKey: .config)) ?? [:]
+        self.config = rawConfig.compactMapValues { $0.value }
     }
 
     func getValue(_ key: String) -> String? {
@@ -82,5 +85,25 @@ public class PromotionContent: NSObject, Decodable {
             return nil
         }
     }
-    
+
+}
+
+/// A config value that decodes any scalar JSON value as a String, and anything else as nil.
+struct LenientConfigValue: Decodable {
+    let value: String?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let string = try? container.decode(String.self) {
+            value = string
+        } else if let bool = try? container.decode(Bool.self) {
+            value = String(bool)
+        } else if let int = try? container.decode(Int.self) {
+            value = String(int)
+        } else if let double = try? container.decode(Double.self) {
+            value = String(double)
+        } else {
+            value = nil
+        }
+    }
 }

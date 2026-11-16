@@ -124,7 +124,7 @@ fileprivate struct BasketItemView: View {
     private var delete: some View {
         Button {
             PurchaseManager.shared.removeAllSameItems(item.title)
-            CroboxEventManager.shared.onRemoveFromCartEvent(item.id, price: item.price, quantity: item.quantity)
+            CroboxEventManager.shared.onRemoveFromCartEvent(item.id, quantity: item.quantity)
         } label: {
             Image(systemName: "trash")
                 .foregroundColor(.red)
@@ -157,10 +157,10 @@ fileprivate struct QuantityView: View {
         Button {
             if increment {
                 PurchaseManager.shared.appendItem(item.title, quantity: 1)
-                CroboxEventManager.shared.onAddToCartEvent(item.id, price: item.price, quantity: 1)
+                CroboxEventManager.shared.onAddToCartEvent(item.id, quantity: 1)
             } else {
                 PurchaseManager.shared.removeOneItem(item.title)
-                CroboxEventManager.shared.onRemoveFromCartEvent(item.id, price: item.price, quantity: 1)
+                CroboxEventManager.shared.onRemoveFromCartEvent(item.id, quantity: 1)
             }
         } label: {
             Text(increment ? "+" : "-")

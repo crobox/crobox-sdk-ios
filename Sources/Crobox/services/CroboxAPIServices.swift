@@ -6,7 +6,7 @@ class CroboxAPIServices {
 
     func promotions(placeholderId:String!,
                     queryParams:RequestQueryParams,
-                    productIds: Set<String>? = Set()) async throws -> PromotionResponse {
+                    productIds: [String]? = []) async throws -> PromotionResponse {
 
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
@@ -22,13 +22,14 @@ class CroboxAPIServices {
             throw CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")
         }
 
-        let bodyString = productIds?.enumerated().map { "\($0.offset)=\($0.element)" }.joined(separator: "&") ?? ""
+        let bodyString = promotionsBody(productIds: productIds)
 
         let data = try await APIRequests.shared.post(url: url, body: bodyString)
 
         do {
+            // All coding keys match the JSON keys, so no key conversion: it would also rename
+            // keys inside the promotion `config` map (e.g. "Text1_color").
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase // Adjust if needed for JSON key styles
             let promotionResponse = try decoder.decode(PromotionResponse.self, from: data)
             return promotionResponse
         } catch {
@@ -39,16 +40,35 @@ class CroboxAPIServices {
     func event(eventType:EventType!,
                additionalParams:Any?,
                queryParams:RequestQueryParams) async throws -> Void {
-        
+        let parameters = eventParameters(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams)
+        return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
+    }
+
+    /// The form-encoded body of a promotions request. The server ranks promotions in this order.
+    func promotionsBody(productIds: [String]?) -> String {
+        return (productIds ?? []).enumerated()
+            .map { "\($0.offset)=\(formEncode($0.element))" }
+            .joined(separator: "&")
+    }
+
+    /// All query parameters of an event request
+    func eventParameters(eventType:EventType!,
+                         additionalParams:Any?,
+                         queryParams:RequestQueryParams) -> [String: String] {
         //Mandatory
         var parameters = requestQueryParams(queryParams: queryParams)
         parameters["t"] = eventType.rawValue
-        
+
         checkEventType(eventType:eventType,
                        additionalParams: additionalParams,
                        parameters: &parameters)
-        
-        return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
+        return parameters
+    }
+
+    private func formEncode(_ value: String) -> String {
+        var allowed = CharacterSet.alphanumerics
+        allowed.insert(charactersIn: "-._~")
+        return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
     }
     
     private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
@@ -62,30 +82,27 @@ class CroboxAPIServices {
             "sdk": "1"
         ]
         // Optional
-        if let currencyCode = Crobox.shared.config.currencyCode {
-            parameters["cc"] = currencyCode.rawValue
-        }
-        
         if let localeCode = Crobox.shared.config.localeCode {
             parameters["lc"] = localeCode.rawValue
         }
         if let userId = Crobox.shared.config.userId {
             parameters["uid"] = userId
         }
-        if let timezone = Crobox.shared.config.timezone {
-            parameters["tz"] = "\(timezone)"
-        }
-        let millis = Int64(Date().timeIntervalSince1970 * 1000)
+        let now = Date()
+        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(TimeZone.current, at: now)
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         
         if let pageName = queryParams.pageName {
             parameters["lh"] = pageName
         }
         
+        // Container-wide custom properties first, so that view specific ones can override them
+        if let customProperties = Crobox.shared.config.customProperties {
+            processCustomProperties(customProperties, &parameters)
+        }
         if let customProperties = queryParams.customProperties {
-            for (key, value) in customProperties {
-                parameters["cp.\(key)"] = value
-            }
+            processCustomProperties(customProperties, &parameters)
         }
         
         return parameters
@@ -113,13 +130,17 @@ class CroboxAPIServices {
             }
             break
         case .Checkout:
+            // Checkout is a pageview of a checkout page; the server only records it with that page type
             parameters["t"] = EventType.PageView.rawValue
+            parameters["pt"] = "\(PageType.PageCheckout.rawValue)"
             if let checkoutParams = additionalParams as? CheckoutParams {
                 checkoutEvent(checkoutParams: checkoutParams, parameters: &parameters)
             }
             break
         case .Purchase:
+            // Purchase is a pageview of the order complete page; the server only records it with that page type
             parameters["t"] = EventType.PageView.rawValue
+            parameters["pt"] = "\(PageType.PageComplete.rawValue)"
             if let purchaseParams = additionalParams as? PurchaseParams {
                 purchaseEvent(purchaseParams: purchaseParams, parameters: &parameters)
             }
@@ -178,9 +199,6 @@ class CroboxAPIServices {
         if let productId = clickParams.productId {
             parameters["pi"] = productId
         }
-        if let price = clickParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = clickParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
@@ -198,9 +216,6 @@ class CroboxAPIServices {
     {
         if let productId = cartQueryParams.productId {
             parameters["pi"] = productId
-        }
-        if let price = cartQueryParams.price {
-            parameters["price"] = "\(price)"
         }
         if let quantity = cartQueryParams.quantity {
             parameters["qty"] = "\(quantity)"
@@ -245,9 +260,7 @@ class CroboxAPIServices {
         if let impressions = purchaseParams.products {
             processImpressions(impressions, &parameters)
         }
-        if let transactionId = purchaseParams.transactionId {
-            parameters["tid"] = transactionId
-        }
+        parameters["tid"] = purchaseParams.transactionId
         if let affiliation = purchaseParams.affiliation {
             parameters["aff"] = affiliation
         }
@@ -280,9 +293,6 @@ class CroboxAPIServices {
         if let productID = customQueryParams.productId {
             parameters["pi"] = productID
         }
-        if let price = customQueryParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = customQueryParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
@@ -293,23 +303,40 @@ class CroboxAPIServices {
         if let productId = productParams.productId {
             parameters["pi"] = productId
         }
-        if let price = productParams.price {
-            parameters["price"] = "\(price)"
-        }
         if let quantity = productParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
-        if let otherProductIds = productParams.otherProductIds {
-            parameters["lst"] = "\(otherProductIds.joined(separator: ","))"
+        if let list = productParams.list {
+            parameters["lst"] = list
         }
     }
     
+    /// Sends each product as `imp[n].id`, with its position (1-based) and, when known, its quantity and list.
+    /// A plain `imp[n]=id` would make the server record every position as 0 (unknown) and every quantity as 1.
     private func processImpressions(_ impressions:[ProductParams], _ parameters: inout [String : String])
     {
-        let productIds = impressions.map{$0.productId}
-        for (index, id) in productIds.enumerated() {
-            parameters["[\(index)]"] = id
+        let products = impressions.filter { $0.productId != nil }
+        for (index, product) in products.enumerated() {
+            let prefix = "imp[\(index)]"
+            parameters["\(prefix).id"] = product.productId
+            parameters["\(prefix).pos"] = "\(index + 1)"
+            if let quantity = product.quantity {
+                parameters["\(prefix).qty"] = "\(quantity)"
+            }
+            if let list = product.list {
+                parameters["\(prefix).lst"] = list
+            }
         }
+    }
+
+    /// The UTC offset in hours, positive east of UTC, as the web snippet sends it (`getTimezoneOffset() / -60`):
+    /// "1" in Amsterdam in winter, "5.5" in India.
+    static func timezoneOffsetHours(_ timeZone: TimeZone, at date: Date) -> String {
+        let seconds = timeZone.secondsFromGMT(for: date)
+        if seconds % 3600 == 0 {
+            return "\(seconds / 3600)"
+        }
+        return "\(Double(seconds) / 3600)"
     }
     
     

@@ -27,7 +27,7 @@ class CroboxEventManager {
         // Initialize Crobox configuration
         let config = CroboxConfig(
             containerId: containerId,
-            visitorId: UUID(),
+            visitorId: CroboxConfig.persistentVisitorId(),
             localeCode: .en_US
         )
 
@@ -42,31 +42,31 @@ class CroboxEventManager {
     
     func onClickEvent(_ product: Product) {
         /// Sending Click events with optional event specific parameters
-        let clickQueryParams = ClickQueryParams(productId: product.id.uuidString, price: product.price, quantity: 1)
+        let clickQueryParams = ClickQueryParams(productId: product.id.uuidString, quantity: 1)
         Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
     }
     
     func onAddToCartEvent(_ product: Product, quantity: Int) {
         /// Sending Add To Cart events with optional event specific parameters
-        let addCartQueryParams = CartQueryParams(productId: product.id.uuidString, price: product.price, quantity: 1)
+        let addCartQueryParams = CartQueryParams(productId: product.id.uuidString, quantity: 1)
         Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
     }
     
-    func onAddToCartEvent(_ id: UUID, price: Double, quantity: Int) {
+    func onAddToCartEvent(_ id: UUID, quantity: Int) {
         /// Sending Add To Cart events with optional event specific parameters
-        let addCartQueryParams = CartQueryParams(productId: id.uuidString, price: price, quantity: 1)
+        let addCartQueryParams = CartQueryParams(productId: id.uuidString, quantity: 1)
         Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
     }
     
     func onRemoveFromCartEvent(_ product: Product, quantity: Int) {
         /// Sending Remove From Cart events with optional event specific parameters
-        let rmCartQueryParams = CartQueryParams(productId: product.id.uuidString, price: product.price, quantity: 1)
+        let rmCartQueryParams = CartQueryParams(productId: product.id.uuidString, quantity: 1)
         Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
     }
     
-    func onRemoveFromCartEvent(_ id: UUID, price: Double, quantity: Int) {
+    func onRemoveFromCartEvent(_ id: UUID, quantity: Int) {
         /// Sending Remove From Cart events with optional event specific parameters
-        let rmCartQueryParams = CartQueryParams(productId: id.uuidString, price: price, quantity: 1)
+        let rmCartQueryParams = CartQueryParams(productId: id.uuidString, quantity: 1)
         Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
     }
     
@@ -80,7 +80,7 @@ class CroboxEventManager {
         /// Sending page view event
         let pageViewParams = PageViewParams(
             pageTitle: pageName,
-            product: ProductParams(productId: "1", price: 1.0, otherProductIds: ["2", "3", "4"]),
+            product: ProductParams(productId: "1", list: "related products"),
             searchTerms: "some search terms",
             impressions: [
                 ProductParams(productId: "5"),
@@ -93,7 +93,7 @@ class CroboxEventManager {
     
     // Function to convert [BasketItem] -> [ProductParams]
     func convertToProductParams(items: [BasketItem]) -> [ProductParams] {
-        return items.map { ProductParams(productId: $0.id.uuidString) }
+        return items.map { ProductParams(productId: $0.id.uuidString, quantity: $0.quantity) }
     }
     
     func onCheckoutEvent(_ items: [BasketItem]) {
@@ -102,7 +102,7 @@ class CroboxEventManager {
         
         let checkoutParams = CheckoutParams(
             products: convertToProductParams(items: items),
-            step: "step-1",
+            step: "1",
             customProperties: ["page-specific-key":"value1"]
         )
         Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)

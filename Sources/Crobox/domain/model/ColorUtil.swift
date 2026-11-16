@@ -1,5 +1,33 @@
 import Foundation
 
+/// Parses a CSS hex color: `#RGB`, `#RGBA`, `#RRGGBB` or `#RRGGBBAA`.
+/// Returns the red, green, blue and alpha components (0-255), or nil if the string is not a valid hex color.
+func parseHexColor(_ string: String) -> (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8)? {
+    let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard trimmed.hasPrefix("#") else {
+        return nil
+    }
+    var hex = String(trimmed.dropFirst())
+    guard hex.allSatisfy({ $0.isHexDigit }) else {
+        return nil
+    }
+    // Expand the shorthands #RGB and #RGBA to #RRGGBB and #RRGGBBAA
+    if hex.count == 3 || hex.count == 4 {
+        hex = hex.map { "\($0)\($0)" }.joined()
+    }
+    // No alpha means fully opaque
+    if hex.count == 6 {
+        hex += "ff"
+    }
+    guard hex.count == 8, let value = UInt32(hex, radix: 16) else {
+        return nil
+    }
+    return (red: UInt8((value >> 24) & 0xFF),
+            green: UInt8((value >> 16) & 0xFF),
+            blue: UInt8((value >> 8) & 0xFF),
+            alpha: UInt8(value & 0xFF))
+}
+
 #if canImport(UIKit)
 import UIKit
 
@@ -44,25 +72,13 @@ extension String {
     }
     
     private func hexToUIColor() -> UIColor? {
-        guard starts(with: "#"), count <= 9, count >= 7 else {
+        guard let color = parseHexColor(self) else {
             return nil
         }
-
-        let hex = trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = ((int >> 24) & 0xFF, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-
-        return UIColor(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, alpha: Double(a) / 255)
+        return UIColor(red: CGFloat(color.red) / 255,
+                       green: CGFloat(color.green) / 255,
+                       blue: CGFloat(color.blue) / 255,
+                       alpha: CGFloat(color.alpha) / 255)
     }
     
     private func rgbaToUIColor() -> UIColor? {
