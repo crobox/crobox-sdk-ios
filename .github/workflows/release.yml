@@ -1,8 +1,8 @@
 name: Release
 
-# Releases a new version: sets it in Version.swift, commits that on top of main, tags the commit,
-# creates the GitHub release and publishes the pod. main keeps the 0.0.0-dev placeholder, because
-# branch protection does not let this workflow push to main. See CONTRIBUTING.md.
+# Releases a new version: sets it in Version.swift, commits that on top of main, tags the commit and
+# creates the GitHub release. Swift Package Manager installs from the tag. main keeps the 0.0.0-dev
+# placeholder, because branch protection does not let this workflow push to main. See CONTRIBUTING.md.
 
 on:
   workflow_dispatch:
@@ -22,7 +22,6 @@ jobs:
     runs-on: macos-latest
     env:
       VERSION: ${{ inputs.version }}
-      COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
 
     steps:
       - uses: actions/checkout@v7
@@ -40,25 +39,17 @@ jobs:
             echo "::error::Tag $VERSION already exists."
             exit 1
           fi
-          if [[ -z "$COCOAPODS_TRUNK_TOKEN" ]]; then
-            echo "::error::The COCOAPODS_TRUNK_TOKEN secret is not set."
-            exit 1
-          fi
 
       - name: Set the version
         run: |
           sed -i '' -E "s/(static let current = )\"[^\"]*\"/\1\"$VERSION\"/" Sources/Crobox/common/Version.swift
-          podspec_version="$(pod ipc spec croboxSDK.podspec | jq -r .version)"
-          if [[ "$podspec_version" != "$VERSION" ]]; then
-            echo "::error::The podspec reads version '$podspec_version' from Version.swift, expected '$VERSION'."
+          if ! grep -qF "static let current = \"$VERSION\"" Sources/Crobox/common/Version.swift; then
+            echo "::error::Could not set the version in Version.swift."
             exit 1
           fi
 
       - name: Build
         run: swift build
-
-      - name: Lint the pod
-        run: pod lib lint croboxSDK.podspec --allow-warnings
 
       - name: Tag the release commit
         run: |
@@ -72,6 +63,3 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$VERSION" --verify-tag --generate-notes --title "$VERSION"
-
-      - name: Publish the pod
-        run: pod trunk push croboxSDK.podspec --allow-warnings

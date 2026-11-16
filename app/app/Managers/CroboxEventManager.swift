@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import croboxSDK
+import Crobox
 
 // Singleton EventManager class
 class CroboxEventManager {

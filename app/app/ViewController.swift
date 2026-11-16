@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import croboxSDK
+import Crobox
 
 class ViewController: UIViewController {
     
