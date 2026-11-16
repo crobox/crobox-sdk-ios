@@ -18,7 +18,7 @@ Pod::Spec.new do |spec|
   spec.authors      = { "Crobox" => "info@crobox.com" }
 
   if spec.respond_to? 'swift_versions'
-    spec.swift_versions = ['5.10.1']
+    spec.swift_versions = ['5.9']
   end
 
   spec.platform     = :ios
