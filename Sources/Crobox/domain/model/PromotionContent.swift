@@ -47,12 +47,15 @@ public class PromotionContent: NSObject, Decodable {
         return config[key] ?? defaultValue
     }
     
+    /// Returns the content as an Image Badge, Text Badge or Secondary Messaging when the campaign uses one of the
+    /// mobile app components (`MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`),
+    /// or nil for any other component.
     public func contentConfig() -> PromotionContentConfig? {
-        if (componentName == "mob-app-image-badge.tsx") {
+        if (componentName == "MobAppImageBadgeTsx") {
             return getImageBadge()
-        } else if (componentName == "mob-app-secondary-messaging.tsx") {
+        } else if (componentName == "MobAppSecondaryMessagingTsx") {
             return getSecondaryMessaging()
-        } else if (componentName == "mob-app-text-badge.tsx") {
+        } else if (componentName == "MobAppTextBadgeTsx") {
             return getTextBadge()
         } else {
             return nil

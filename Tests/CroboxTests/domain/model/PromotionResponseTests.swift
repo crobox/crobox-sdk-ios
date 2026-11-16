@@ -180,7 +180,7 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testPromotionContentAsTextConfig() async throws {
-        let name = "mob-app-text-badge.tsx"
+        let name = "MobAppTextBadgeTsx"
         let text = "Best Seller"
         let fontColor = "#ffffff"
         let backgroundColor = "#aaaaaa"
@@ -215,7 +215,7 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testPromotionContentAsImageConfig() async throws {
-        let name = "mob-app-image-badge.tsx"
+        let name = "MobAppImageBadgeTsx"
         let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
         let altText = "Image alt text"
         let jsonStr = """
@@ -245,7 +245,7 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testPromotionContentAsSecondaryMessaging() async throws {
-        let name = "mob-app-secondary-messaging.tsx"
+        let name = "MobAppSecondaryMessagingTsx"
         let text = "Best Seller"
         let fontColor = "#ffffff"
         let jsonStr = """
@@ -302,7 +302,7 @@ final class PromotionResponseTests: XCTestCase {
     }
     
     func testSecondaryMessagingWithUIColor() async throws {
-        let name = "mob-app-secondary-messaging.tsx"
+        let name = "MobAppSecondaryMessagingTsx"
         let text = "Best Seller"
         let fontColor = "#000000"
         let jsonStr = """
@@ -352,7 +352,7 @@ final class PromotionResponseTests: XCTestCase {
         let jsonStr = """
             {
                 "id": "dd737bf6-0223-48e8-b102-b680265219ef",
-                "component": "mob-app-text-badge.tsx",
+                "component": "MobAppTextBadgeTsx",
                 "config": {
                     "text": "Best Seller",
                     "Text1_color": "#aaaaaa",
