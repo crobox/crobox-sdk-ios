@@ -95,8 +95,6 @@ public struct ErrorQueryParams {
  
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
- 
- The price is not sent: Crobox takes it from the product catalog.
  */
 public struct ClickQueryParams {
     public var productId: String?
@@ -115,8 +113,6 @@ public struct ClickQueryParams {
  
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
- 
- The price is not sent: Crobox takes it from the product catalog.
  */
 public struct CartQueryParams {
     public var productId: String?
@@ -137,8 +133,6 @@ public struct CartQueryParams {
  - parameter promotionId: Promotion Id, if available
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
- 
- The price is not sent: Crobox takes it from the product catalog.
  */
 public struct CustomQueryParams {
     var name: String?
@@ -165,7 +159,7 @@ public struct CustomQueryParams {
  - parameter quantity Optional quantity, e.g. of a purchased product
  - parameter list Optional name of the list the product is shown in, e.g. "search results" or "related products"
  
- The price is not sent: Crobox takes it from the product catalog. The position of an impression is its position in the list it is passed in.
+ The position of an impression is its position in the list it is passed in.
  */
 public struct ProductParams {
     var productId: String?

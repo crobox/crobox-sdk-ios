@@ -76,7 +76,6 @@ let addCartQueryParams = CartQueryParams(productId: "abc", quantity: 3)
 Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
 ```
 
-Product prices are not sent: Crobox takes them from the product catalog, in the currency of the user's region.
 Pass the products shown on a page as `impressions`, in the order they are shown; their position is taken from that order.
 A purchase is only recorded with a `transactionId`.
 
