@@ -130,6 +130,20 @@ final class RequestParametersTests: XCTestCase {
         XCTAssertTrue(message.contains("\(URLError.Code.timedOut.rawValue)"), message)
     }
 
+    func testErrorEventSendsLineOnlyWhenGiven() {
+        let withoutLine = parameters(.Error, ErrorQueryParams(tag: "sdk", name: "promotions", message: "HTTP 500"))
+        XCTAssertEqual("sdk", withoutLine["tg"])
+        XCTAssertEqual("promotions", withoutLine["nm"])
+        XCTAssertNil(withoutLine["l"])
+        XCTAssertEqual("42", parameters(.Error, ErrorQueryParams(line: 42))["l"])
+    }
+
+    func testRequestsTimeOutWithinSeconds() {
+        let configuration = APIRequests.sessionConfiguration()
+        XCTAssertEqual(15, configuration.timeoutIntervalForRequest)
+        XCTAssertEqual(30, configuration.timeoutIntervalForResource)
+    }
+
     func testPersistentVisitorId() {
         let defaults = UserDefaults(suiteName: "crobox-tests-\(UUID().uuidString)")!
         let first = CroboxConfig.persistentVisitorId(defaults: defaults)

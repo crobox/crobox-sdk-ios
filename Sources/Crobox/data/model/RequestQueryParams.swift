@@ -81,7 +81,7 @@ public struct ErrorQueryParams {
                 name: String? = nil,
                 message: String? = nil,
                 file: String? = nil,
-                line: Int? = 0) {
+                line: Int? = nil) {
         self.tag = tag
         self.name = name
         self.message = message
