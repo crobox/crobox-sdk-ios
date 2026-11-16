@@ -7,9 +7,6 @@ import Foundation
 /// OS version from its `CFNetwork/… Darwin/…` part; a bare `CroboxSDK/x.y.z` would tell it nothing about the device.
 enum UserAgent {
 
-    /// Keep in sync with `spec.version` in `croboxSDK.podspec`; a test checks that they match.
-    static let sdkVersion = "1.0.33"
-
     static let value: String = build(
         appName: Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ProcessInfo.processInfo.processName,
         appVersion: Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
@@ -27,7 +24,7 @@ enum UserAgent {
             parts.append("CFNetwork/\(cfNetworkVersion)")
             parts.append("Darwin/\(darwinVersion)")
         }
-        parts.append("CroboxSDK/\(sdkVersion)")
+        parts.append("CroboxSDK/\(Version.current)")
         return sanitize(parts.joined(separator: " "))
     }
 
