@@ -35,6 +35,21 @@ import Crobox
 
 The SDK is no longer published to CocoaPods, because CocoaPods trunk stops accepting new versions in December 2026.
 
+### Upgrading from CocoaPods
+
+1. Remove `pod 'croboxSDK'` from your `Podfile` and run `pod install`.
+2. Add the package as described above.
+3. Replace `import croboxSDK` with `import Crobox`.
+
+Version 1.1.0 also changed the API in a few places:
+
+- `LocaleCode` accepts any code, such as `LocaleCode("nl_BE")`, instead of a fixed list (`.en_US`).
+- `CroboxConfig` has no `currencyCode`: the currency comes from the region that the locale selects.
+- `timezone` is a `TimeZone` instead of an hour offset.
+- The `price` fields are gone. Crobox uses the prices from your product feed.
+- `PurchaseParams` requires a `transactionId`.
+- Pass a stable `visitorId`, such as `CroboxConfig.persistentVisitorId()`, instead of a new `UUID()` on every launch.
+
 ## Start using Crobox SDK
 
 First configure and create a `Crobox` singleton as:
@@ -138,7 +153,7 @@ Pass the product ids in the order they are displayed: the server ranks promotion
                     let imageBadge = content.getImageBadge()
                     let textBadge = content.getTextBadge()
                                
-                    let conf = p.content?.contentConfig()
+                    let conf = content.contentConfig()
                     switch conf {
                     case let conf as ImageBadge:
                         let image = conf.image
@@ -159,7 +174,7 @@ Pass the product ids in the order they are displayed: the server ranks promotion
                         let fontUIColor = conf.fontUIColor() ?? UIColor.clear
 
                     default:
-                        //
+                        break
                     }
                 }
             }
@@ -210,7 +225,7 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 | Name          | Type                | Description                                                                                                                                                |
 |---------------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | messageId     | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
-| component     | String              | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                              |
+| componentName | String              | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                              |
 | config        | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 | getTextBadge  | TextBadge?          | Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"              |
 | getImageBadge | ImageBadge?         | Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"                                             |
