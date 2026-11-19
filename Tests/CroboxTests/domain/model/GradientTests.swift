@@ -78,18 +78,26 @@ final class GradientTests: XCTestCase {
         assertPoints(linearGradientPoints(angle: 45, width: 100, height: 100), (0, 1), (1, 0))
     }
 
-    func testTextBadgeHasAGradientOrAColor() {
-        let gradient = TextBadge(text: "Sale", fontColor: nil,
-                                 backgroundColor: "linear-gradient(90deg, #ff0000 0%, #0000ff 100%)",
-                                 borderColor: nil, name: "MobAppTextBadgeTsx")
-        XCTAssertNotNil(gradient.backgroundGradient())
-
-        let solid = TextBadge(text: "Sale", fontColor: nil, backgroundColor: "#ff0000", borderColor: nil,
-                              name: "MobAppTextBadgeTsx")
-        XCTAssertNil(solid.backgroundGradient())
+    func testParsesABackgroundThatIsAGradientOrAPlainColor() {
+        XCTAssertEqual(.linear(angle: 180, stops: [stop("#ff0000", 0), stop("#ff0000", 1)]), parseBackground("#ff0000"))
+        XCTAssertEqual(.linear(angle: 90, stops: [stop("#ff0000", 0), stop("#0000ff", 1)]),
+                       parseBackground("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)"))
+        XCTAssertNil(parseBackground(""))
+        XCTAssertNil(parseBackground("nonsense"))
     }
 
     #if canImport(QuartzCore)
+    func testTextBadgeHasABackgroundLayerForAGradientOrAColor() {
+        func badge(_ background: String?) -> TextBadge {
+            TextBadge(text: "Sale", fontColor: nil, backgroundColor: background, borderColor: nil,
+                      name: "MobAppTextBadgeTsx")
+        }
+        XCTAssertNotNil(badge("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)").backgroundLayer())
+        XCTAssertNotNil(badge("#ff0000").backgroundLayer())
+        XCTAssertNil(badge(nil).backgroundLayer())
+        XCTAssertNil(badge("nonsense").backgroundLayer())
+    }
+
     func testLinearLayerFollowsItsBounds() throws {
         let gradient = try XCTUnwrap(parseGradient("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)"))
         let layer = gradient.makeLayer()

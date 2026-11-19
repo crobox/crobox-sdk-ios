@@ -3,8 +3,8 @@
 import QuartzCore
 import XCTest
 
-/// Draws each gradient's layer and compares pixels with what Chromium draws for the same CSS, which is what the App's
-/// preview shows. The expected colors were read from Chromium's screenshots of these cases, and the Android SDK checks
+/// Draws each badge's background layer, a plain color or a gradient, and compares pixels with what Chromium draws for the
+/// same CSS, which is what the App's preview shows. The expected colors were read from Chromium's screenshots of these cases, and the Android SDK checks
 /// the same ones.
 final class GradientRenderingTests: XCTestCase {
 
@@ -27,7 +27,9 @@ final class GradientRenderingTests: XCTestCase {
     func testDrawsWhatTheBrowserDraws() throws {
         var failures: [String] = []
         for gradientCase in cases {
-            let layer = try XCTUnwrap(parseGradient(gradientCase.css)).makeLayer()
+            let badge = TextBadge(text: "Sale", fontColor: nil, backgroundColor: gradientCase.css, borderColor: nil,
+                                  name: "MobAppTextBadgeTsx")
+            let layer = try XCTUnwrap(badge.backgroundLayer())
             layer.frame = CGRect(x: 0, y: 0, width: gradientCase.width, height: gradientCase.height)
             layer.layoutIfNeeded()
             let pixels = try render(layer, width: gradientCase.width, height: gradientCase.height)
@@ -60,6 +62,13 @@ final class GradientRenderingTests: XCTestCase {
     }
 
     private let cases: [Case] = [
+        Case(css: "#ff6396",
+             width: 100, height: 40,
+             samples: [
+                       Sample(x: 10, y: 4, color: "#ff6396"),
+                       Sample(x: 50, y: 20, color: "#ff6396"),
+                       Sample(x: 90, y: 36, color: "#ff6396")
+             ]),
         Case(css: "linear-gradient(87deg, #24d9f3 0%, #f40472 62%, #f74703 100%)",
              width: 200, height: 100,
              samples: [

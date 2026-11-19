@@ -1,8 +1,9 @@
 import Foundation
 
 /// A gradient set in a color setting with the Crobox App's gradient input, which stores it as a CSS
-/// `linear-gradient(...)` or `radial-gradient(circle, ...)`.
-public enum Gradient: Equatable {
+/// `linear-gradient(...)` or `radial-gradient(circle, ...)`. A plain color is a gradient of that one color, so that both
+/// are drawn the same way.
+enum Gradient: Equatable {
     /// A gradient along a line through the center, at `angle` degrees as in CSS: 0 runs from the bottom up, 90 from
     /// left to right, and the angle turns clockwise.
     case linear(angle: CGFloat, stops: [GradientStop])
@@ -10,7 +11,7 @@ public enum Gradient: Equatable {
     case radial(stops: [GradientStop])
 
     /// The color stops, at least two, in order of their location
-    public var stops: [GradientStop] {
+    var stops: [GradientStop] {
         switch self {
         case .linear(_, let stops), .radial(let stops):
             return stops
@@ -19,21 +20,25 @@ public enum Gradient: Equatable {
 }
 
 /// A color, with components from 0 to 1, at `location` along the gradient, from 0 at its start to 1 at its end
-public struct GradientStop: Equatable {
-    public let red: CGFloat
-    public let green: CGFloat
-    public let blue: CGFloat
-    public let alpha: CGFloat
-    public let location: CGFloat
+struct GradientStop: Equatable {
+    let red: CGFloat
+    let green: CGFloat
+    let blue: CGFloat
+    let alpha: CGFloat
+    let location: CGFloat
 }
 
-public extension TextBadge {
-
-    /// The background gradient when the background is set with the App's gradient input, or nil when it is a plain
-    /// color or there is none
-    func backgroundGradient() -> Gradient? {
-        return backgroundColor.flatMap(parseGradient)
+/// Parses a color setting: a gradient, or a plain color as a gradient of that one color
+func parseBackground(_ value: String) -> Gradient? {
+    if let gradient = parseGradient(value) {
+        return gradient
     }
+    guard let color = parseColor(value.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+        return nil
+    }
+    return .linear(angle: 180, stops: [0, 1].map {
+        GradientStop(red: color.red, green: color.green, blue: color.blue, alpha: color.alpha, location: $0)
+    })
 }
 
 /// Parses `linear-gradient(<angle>deg, <stops>)` or `radial-gradient(circle, <stops>)`, where each stop is a hex or
@@ -193,10 +198,19 @@ private func resolveLocations(_ locations: [CGFloat?]) -> [CGFloat] {
 #if canImport(QuartzCore)
 import QuartzCore
 
-public extension Gradient {
+public extension TextBadge {
 
-    /// Returns a layer that fills its bounds with this gradient, for example as the bottom sublayer of a badge's view,
-    /// with its frame set to the view's bounds in `layoutSubviews()`. Set its `cornerRadius` for rounded corners.
+    /// Returns a layer that fills its bounds with the background, a plain color or a gradient, or nil when there is
+    /// none. Add it as the bottom sublayer of the badge's view, and set its frame to the view's bounds in
+    /// `layoutSubviews()`. Set its `cornerRadius` for rounded corners.
+    func backgroundLayer() -> CAGradientLayer? {
+        return backgroundColor.flatMap(parseBackground)?.makeLayer()
+    }
+}
+
+extension Gradient {
+
+    /// Returns a layer that fills its bounds with this gradient
     func makeLayer() -> CAGradientLayer {
         return CSSGradientLayer(gradient: self)
     }
