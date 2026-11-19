@@ -214,7 +214,7 @@ final class CSSGradientLayer: CAGradientLayer {
         if case .radial = gradient {
             type = .radial
         }
-        colors = gradient.stops.map { CGColor(red: $0.red, green: $0.green, blue: $0.blue, alpha: $0.alpha) }
+        colors = gradient.stops.map { CGColor(srgbRed: $0.red, green: $0.green, blue: $0.blue, alpha: $0.alpha) }
         locations = gradient.stops.map { NSNumber(value: Double($0.location)) }
         updatePoints()
     }
