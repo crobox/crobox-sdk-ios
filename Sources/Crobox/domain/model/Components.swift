@@ -14,7 +14,8 @@ public struct TextBadge : PromotionContentConfig {
     public let text: String
     /// font color as hex for colors or rgba for colors with opacity
     public let fontColor: String?
-    /// background color as hex for colors or rgba for colors with opacity
+    /// background color as hex for colors or rgba for colors with opacity, or a CSS linear-gradient(...) or
+    /// radial-gradient(circle, ...) when it is set with the gradient input
     public let backgroundColor: String?
     /// border color as hex for colors or rgba for colors with opacity
     public let borderColor: String?

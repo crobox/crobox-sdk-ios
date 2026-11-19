@@ -167,6 +167,8 @@ Pass the product ids in the order they are displayed: the server ranks promotion
                         let fontUIColor = conf.fontUIColor() ?? UIColor.clear
                         let backgroundUIColor = conf.backgroundUIColor() ?? UIColor.clear
                         let borderUIColor = conf.borderUIColor() ?? UIColor.clear
+                        // A gradient background, set with the App's gradient input, as a layer for the badge's view
+                        let backgroundLayer = conf.backgroundGradient()?.makeLayer()
 
                     case let conf as SecondaryMessaging:
                         let text = conf.text
@@ -233,12 +235,47 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 
 ### TextBadge
 
-| Name            | Type        | Description               |
-|-----------------|-------------|---------------------------|
-| text            | String      | Text message              |
-| fontColor       | String      | Font color                |
-| backgroundColor | String?     | Optional background color |
-| borderColor     | String?     | Optional border color     |
+| Name                 | Type      | Description                                                                                                        |
+|----------------------|-----------|--------------------------------------------------------------------------------------------------------------------|
+| text                 | String    | Text message                                                                                                       |
+| fontColor            | String    | Font color                                                                                                         |
+| backgroundColor      | String?   | Optional background color, or a CSS `linear-gradient(...)` or `radial-gradient(circle, ...)` when it is a gradient |
+| borderColor          | String?   | Optional border color                                                                                              |
+| backgroundGradient() | Gradient? | The background gradient, or nil when the background is a plain color or there is none                             |
+
+### Gradient
+
+A `.linear(angle:stops:)` with an `angle` in degrees as in CSS (0 runs from the bottom up, 90 from left to right), or a
+`.radial(stops:)` from the center out to the farthest corner.
+
+| Name        | Type            | Description                                                                                                 |
+|-------------|-----------------|-------------------------------------------------------------------------------------------------------------|
+| stops       | [GradientStop]  | The colors, each with its `location` from 0 at the start to 1 at the end                                    |
+| makeLayer() | CAGradientLayer | A layer that fills its bounds with the gradient, and keeps the angle right when its bounds change           |
+
+For example, behind a badge's label:
+
+```swift
+final class BadgeView: UIView {
+    private var gradientLayer: CAGradientLayer?
+
+    func show(_ badge: TextBadge) {
+        gradientLayer?.removeFromSuperlayer()
+        gradientLayer = badge.backgroundGradient()?.makeLayer()
+        if let gradientLayer {
+            gradientLayer.cornerRadius = 4
+            layer.insertSublayer(gradientLayer, at: 0)
+        } else {
+            backgroundColor = badge.backgroundUIColor()
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer?.frame = bounds
+    }
+}
+```
 
 
 ### ImageBadge
