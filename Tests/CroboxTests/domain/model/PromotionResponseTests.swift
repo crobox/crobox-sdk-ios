@@ -104,229 +104,80 @@ final class PromotionResponseTests: XCTestCase {
         }
     }
     
-    func testImageBadge() async throws {
-        let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
-        let altText = "Image alt text"
-        let jsonStr = """
-            {
-                "component": "component1.tsx",
-                "config": {
-                    "image": "\(image)",
-                    "altText": "\(altText)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
-
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let imageBadge = promotionContent.getImageBadge()
-        XCTAssertEqual(image, imageBadge?.image)
-        XCTAssertEqual(altText, imageBadge?.altText)
-        
-        XCTAssertNil(promotionContent.getTextBadge())
+    private func promotionContent(_ component: String, _ config: [String: String]) throws -> PromotionContent {
+        let json = try JSONSerialization.data(withJSONObject: ["component": component, "config": config])
+        return try JSONDecoder().decode(PromotionContent.self, from: json)
     }
-    
-    func testTextBadge() async throws {
-        let text = "Best Seller"
-        let fontColor = "#ffffff"
-        let jsonStr = """
-            {
-                "component": "component1.tsx",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(fontColor)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
 
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let textBadge = promotionContent.getTextBadge()
-        XCTAssertEqual(text, textBadge?.text)
-        XCTAssertEqual(fontColor, textBadge?.fontColor)
-        
-        XCTAssertNil(promotionContent.getImageBadge())
-    }
-    
-    func testTextBadgeWithBackground() async throws {
-        let text = "Best Seller"
-        let fontColor = "#ffffff"
-        let backgroundColor = "#aaaaaa"
-        let borderColor = "#bbbbbb"
-        let jsonStr = """
-            {
-                "component": "component1.tsx",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(fontColor)",
-                    "backgroundColor": "\(backgroundColor)",
-                    "borderColor": "\(borderColor)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
-
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let textBadge = promotionContent.getTextBadge()
-        XCTAssertEqual(text, textBadge?.text)
-        XCTAssertEqual(fontColor, textBadge?.fontColor)
-        XCTAssertEqual(backgroundColor, textBadge?.backgroundColor)
-        XCTAssertEqual(borderColor, textBadge?.borderColor)
-        
-        XCTAssertNil(promotionContent.getImageBadge())
-    }
-    
-    func testPromotionContentAsTextConfig() async throws {
-        let name = "MobAppTextBadgeTsx"
-        let text = "Best Seller"
-        let fontColor = "#ffffff"
-        let backgroundColor = "#aaaaaa"
-        let borderColor = "#bbbbbb"
-        let jsonStr = """
-            {
-                "component": "\(name)",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(fontColor)",
-                    "backgroundColor": "\(backgroundColor)",
-                    "borderColor": "\(borderColor)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
-
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let textBadge = promotionContent.contentConfig()
-        switch textBadge {
-        case let textBadge as TextBadge:
-            XCTAssertEqual(name, textBadge.name)
-            XCTAssertEqual(text, textBadge.text)
-            XCTAssertEqual(fontColor, textBadge.fontColor)
-            XCTAssertEqual(backgroundColor, textBadge.backgroundColor)
-            XCTAssertEqual(borderColor, textBadge.borderColor)
-            XCTAssertNil(promotionContent.getImageBadge())
-        default:
-            XCTFail("Expected text badge")
+    func testImageBadge() throws {
+        let content = try promotionContent("MobAppImageBadgeTsx", ["image": "//cdn.crobox.io/content/xlrc9t/Image.png",
+                                                          "altText": "Image alt text"])
+        guard case .imageBadge(let badge) = content.component() else {
+            return XCTFail("Expected an image badge")
         }
+        XCTAssertEqual(URL(string: "https://cdn.crobox.io/content/xlrc9t/Image.png"), badge.imageUrl)
+        XCTAssertEqual("Image alt text", badge.altText)
     }
-    
-    func testPromotionContentAsImageConfig() async throws {
-        let name = "MobAppImageBadgeTsx"
-        let image = "//cdn.crobox.io/content/xlrc9t/Image.png"
-        let altText = "Image alt text"
-        let jsonStr = """
-            {
-                "component": "\(name)",
-                "config": {
-                    "image": "\(image)",
-                    "altText": "\(altText)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
 
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let badge = promotionContent.contentConfig()
-        switch badge {
-        case let badge as ImageBadge:
-            XCTAssertEqual(image, badge.image)
-            XCTAssertEqual(altText, badge.altText)
-            XCTAssertEqual(name, badge.name)
-            XCTAssertNil(promotionContent.getTextBadge())
-        default:
-            XCTFail("Expected image badge")
+    func testImageBadgeKeepsAFullUrl() throws {
+        let content = try promotionContent("MobAppImageBadgeTsx", ["image": "https://example.com/badge.png"])
+        guard case .imageBadge(let badge) = content.component() else {
+            return XCTFail("Expected an image badge")
         }
-        
+        XCTAssertEqual(URL(string: "https://example.com/badge.png"), badge.imageUrl)
+        XCTAssertNil(badge.altText)
     }
-    
-    func testPromotionContentAsSecondaryMessaging() async throws {
-        let name = "MobAppSecondaryMessagingTsx"
-        let text = "Best Seller"
-        let fontColor = "#ffffff"
-        let jsonStr = """
-            {
-                "component": "\(name)",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(fontColor)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
 
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let config = promotionContent.contentConfig()
-        switch config {
-        case let sm as SecondaryMessaging:
-            XCTAssertEqual(name, sm.name)
-            XCTAssertEqual(text, sm.text)
-            XCTAssertEqual(fontColor, sm.fontColor)
-        default:
-            XCTFail("Expected secondary messaging")
+    func testTextBadge() throws {
+        let content = try promotionContent("MobAppTextBadgeTsx", ["text": "Best Seller",
+                                                         "fontColor": "#ffffff",
+                                                         "backgroundColor": "#aaaaaa",
+                                                         "borderColor": "#bbbbbb"])
+        guard case .textBadge(let badge) = content.component() else {
+            return XCTFail("Expected a text badge")
         }
+        XCTAssertEqual("Best Seller", badge.text)
+        XCTAssertEqual("#ffffff", badge.fontColorValue)
+        XCTAssertEqual("#aaaaaa", badge.backgroundValue)
+        XCTAssertEqual("#bbbbbb", badge.borderColorValue)
     }
-    
+
+    func testSecondaryMessaging() throws {
+        let content = try promotionContent("MobAppSecondaryMessagingTsx", ["text": "Best Seller", "fontColor": "#ffffff"])
+        guard case .secondaryMessaging(let messaging) = content.component() else {
+            return XCTFail("Expected secondary messaging")
+        }
+        XCTAssertEqual("Best Seller", messaging.text)
+        XCTAssertEqual("#ffffff", messaging.fontColorValue)
+    }
+
+    func testComponentIsNilForOtherComponentsOrWithoutItsContent() throws {
+        XCTAssertNil(try promotionContent("component1.tsx", ["text": "Best Seller"]).component())
+        XCTAssertNil(try promotionContent("MobAppTextBadgeTsx", ["fontColor": "#ffffff"]).component())
+        XCTAssertNil(try promotionContent("MobAppImageBadgeTsx", ["altText": "Image alt text"]).component())
+    }
+
 #if canImport(UIKit)
-    
-    func testTextBadgeWithUIColor() async throws {
-        let text = "Best Seller"
-        let green = "#00ff00"
-        let red_transparent = "rgba(255, 0, 0, 0.5)"
-        let blue = "#0000ff"
-        
-        let jsonStr = """
-            {
-                "component": "component1.tsx",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(green)",
-                    "backgroundColor": "\(red_transparent)",
-                    "borderColor": "\(blue)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
 
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let textBadge = promotionContent.getTextBadge()
-        XCTAssertEqual(UIColor.green, textBadge?.fontUIColor())
-        XCTAssertEqual(UIColor.red.alpha(0.5), textBadge?.backgroundUIColor())
-        XCTAssertEqual(UIColor.blue, textBadge?.borderUIColor())
-    }
-    
-    func testSecondaryMessagingWithUIColor() async throws {
-        let name = "MobAppSecondaryMessagingTsx"
-        let text = "Best Seller"
-        let fontColor = "#000000"
-        let jsonStr = """
-            {
-                "component": "\(name)",
-                "config": {
-                    "text": "\(text)",
-                    "fontColor": "\(fontColor)"
-                }
-            }
-        """.trimmingCharacters(in: .whitespaces)
-        
-        let jsonData = jsonStr.data(using: .utf8)!
-        let promotionContent = try! JSONDecoder().decode(PromotionContent.self, from: jsonData)
-
-        let config = promotionContent.contentConfig()
-        switch config {
-        case let sm as SecondaryMessaging:
-            XCTAssertEqual(true, sm.fontUIColor()?.isBlack)
-        default :
-            XCTFail()
+    func testTextBadgeColors() throws {
+        let content = try promotionContent("MobAppTextBadgeTsx", ["text": "Best Seller",
+                                                         "fontColor": "#00ff00",
+                                                         "borderColor": "#0000ff"])
+        guard case .textBadge(let badge) = content.component() else {
+            return XCTFail("Expected a text badge")
         }
+        XCTAssertEqual(UIColor.green, badge.fontColor)
+        XCTAssertEqual(UIColor.blue, badge.borderColor)
     }
-    
+
+    func testSecondaryMessagingColor() throws {
+        let content = try promotionContent("MobAppSecondaryMessagingTsx", ["text": "Best Seller", "fontColor": "#000000"])
+        guard case .secondaryMessaging(let messaging) = content.component() else {
+            return XCTFail("Expected secondary messaging")
+        }
+        XCTAssertEqual(true, messaging.fontColor?.isBlack)
+    }
+
 #endif
 
     func testOneInvalidPromotionDoesNotDropTheOthers() throws {
@@ -372,7 +223,10 @@ final class PromotionResponseTests: XCTestCase {
         XCTAssertEqual("true", content.config["visible"])
         XCTAssertNil(content.config["missing"])
         XCTAssertNil(content.config["nested"])
-        XCTAssertEqual("Best Seller", content.getTextBadge()?.text)
+        guard case .textBadge(let badge) = content.component() else {
+            return XCTFail("Expected a text badge")
+        }
+        XCTAssertEqual("Best Seller", badge.text)
     }
 }
 

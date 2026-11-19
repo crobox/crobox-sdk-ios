@@ -47,48 +47,35 @@ public class PromotionContent: NSObject, Decodable {
         return config[key] ?? defaultValue
     }
     
-    /// Returns the content as an Image Badge, Text Badge or Secondary Messaging when the campaign uses one of the
-    /// mobile app components (`MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`),
-    /// or nil for any other component.
-    public func contentConfig() -> PromotionContentConfig? {
-        if (componentName == "MobAppImageBadgeTsx") {
-            return getImageBadge()
-        } else if (componentName == "MobAppSecondaryMessagingTsx") {
-            return getSecondaryMessaging()
-        } else if (componentName == "MobAppTextBadgeTsx") {
-            return getTextBadge()
-        } else {
-            return nil
-        }
-    }
-    
-    /// Returns image badge configuration with pre-designed configuration keys
-    public func getImageBadge() -> ImageBadge? {
-        if let image = getValue("image") {
-            return ImageBadge(image: image, altText: getValue("altText"), name: componentName)
-        } else {
-            return nil
-        }
-    }
-    
-    /// Returns text badge configuration with pre-designed configuration keys
-    public func getTextBadge() -> TextBadge? {
-        if let text = getValue("text") {
-            return TextBadge(text: text, fontColor: getValue("fontColor"), backgroundColor: getValue("backgroundColor"), borderColor: getValue("borderColor"), name: componentName)
-        } else {
-            return nil
-        }
-    }
-    
-    /// Returns secondary messaging configuration with pre-designed configuration keys
-    public func getSecondaryMessaging() -> SecondaryMessaging? {
-        if let text = getValue("text") {
-            return SecondaryMessaging(text: text, fontColor: getValue("fontColor"), name: componentName)
-        } else {
+    /// Returns what the promotion shows when its campaign uses one of the App components (`MobAppTextBadgeTsx`,
+    /// `MobAppImageBadgeTsx` or `MobAppSecondaryMessagingTsx`), or nil for any other component.
+    public func component() -> PromotionComponent? {
+        switch componentName {
+        case "MobAppTextBadgeTsx":
+            return getValue("text").map {
+                PromotionComponent.textBadge(TextBadge(text: $0,
+                                     fontColorValue: getValue("fontColor"),
+                                     backgroundValue: getValue("backgroundColor"),
+                                     borderColorValue: getValue("borderColor")))
+            }
+        case "MobAppImageBadgeTsx":
+            return getValue("image").flatMap(imageUrl).map {
+                PromotionComponent.imageBadge(ImageBadge(imageUrl: $0, altText: getValue("altText")))
+            }
+        case "MobAppSecondaryMessagingTsx":
+            return getValue("text").map {
+                PromotionComponent.secondaryMessaging(SecondaryMessaging(text: $0, fontColorValue: getValue("fontColor")))
+            }
+        default:
             return nil
         }
     }
 
+    /// Reads an image's address as a URL. The App can store a CDN image without its scheme, as `//cdn.crobox.io/...`,
+    /// which an app cannot load, so that gets https.
+    private func imageUrl(_ value: String) -> URL? {
+        return URL(string: value.hasPrefix("//") ? "https:" + value : value)
+    }
 }
 
 /// A config value that decodes any scalar JSON value as a String, and anything else as nil.

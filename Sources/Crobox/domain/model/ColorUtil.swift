@@ -32,31 +32,24 @@ func parseHexColor(_ string: String) -> (red: UInt8, green: UInt8, blue: UInt8, 
 import UIKit
 
 public extension TextBadge {
-    
-    /// font color and opacity as UIColor
-    func fontUIColor() -> UIColor? {
-        return fontColor.flatMap{ $0.toUIColor() }
+
+    /// The text's color, or nil when none is set
+    var fontColor: UIColor? {
+        return fontColorValue.flatMap { $0.toUIColor() }
     }
-    
-    /// background color and opacity as UIColor
-    func backgroundUIColor() -> UIColor? {
-        return backgroundColor.flatMap{ $0.toUIColor() }
+
+    /// The border's color, or nil when none is set
+    var borderColor: UIColor? {
+        return borderColorValue.flatMap { $0.toUIColor() }
     }
-    
-    /// border color and opacity as UIColor
-    func borderUIColor() -> UIColor? {
-        return borderColor.flatMap{ $0.toUIColor() }
-    }
-    
 }
 
 public extension SecondaryMessaging {
-    
-    /// font color and opacity as UIColor
-    func fontUIColor() -> UIColor? {
-        return fontColor.flatMap{ $0.toUIColor() }
+
+    /// The text's color, or nil when none is set
+    var fontColor: UIColor? {
+        return fontColorValue.flatMap { $0.toUIColor() }
     }
-    
 }
 
 
@@ -125,7 +118,7 @@ extension String {
 
 // MARK: - Helpers
 
-public extension UIColor {
+extension UIColor {
 
     func hex(hashPrefix: Bool = true) -> String {
         var (r, g, b, a): (CGFloat, CGFloat, CGFloat, CGFloat) = (0.0, 0.0, 0.0, 0.0)

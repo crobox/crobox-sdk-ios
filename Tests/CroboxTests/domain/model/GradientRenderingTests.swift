@@ -3,7 +3,7 @@
 import QuartzCore
 import XCTest
 
-/// Draws each badge's background layer, a plain color or a gradient, and compares pixels with what Chromium draws for the
+/// Draws each badge's background, a plain color or a gradient, as its layer does, and compares pixels with what Chromium draws for the
 /// same CSS, which is what the App's preview shows. The expected colors were read from Chromium's screenshots of these cases, and the Android SDK checks
 /// the same ones.
 final class GradientRenderingTests: XCTestCase {
@@ -27,11 +27,10 @@ final class GradientRenderingTests: XCTestCase {
     func testDrawsWhatTheBrowserDraws() throws {
         var failures: [String] = []
         for gradientCase in cases {
-            let badge = TextBadge(text: "Sale", fontColor: nil, backgroundColor: gradientCase.css, borderColor: nil,
-                                  name: "MobAppTextBadgeTsx")
+            let badge = TextBadge(text: "Sale", fontColorValue: nil, backgroundValue: gradientCase.css,
+                                  borderColorValue: nil)
             let layer = try XCTUnwrap(badge.backgroundLayer())
             layer.frame = CGRect(x: 0, y: 0, width: gradientCase.width, height: gradientCase.height)
-            layer.layoutIfNeeded()
             let pixels = try render(layer, width: gradientCase.width, height: gradientCase.height)
             for sample in gradientCase.samples {
                 let offset = (sample.y * gradientCase.width + sample.x) * 4
@@ -48,7 +47,8 @@ final class GradientRenderingTests: XCTestCase {
         XCTAssertTrue(failures.isEmpty, failures.joined(separator: "\n"))
     }
 
-    /// Draws the layer into an sRGB bitmap, flipped so that it runs from the top as on iOS, and returns its RGBA bytes
+    /// Draws the layer's contents into an sRGB bitmap, flipped so that y runs down from the top as in a layer on iOS,
+    /// and returns its RGBA bytes
     private func render(_ layer: CALayer, width: Int, height: Int) throws -> [UInt8] {
         let space = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         let context = try XCTUnwrap(CGContext(data: nil, width: width, height: height, bitsPerComponent: 8,
@@ -56,7 +56,7 @@ final class GradientRenderingTests: XCTestCase {
                                               bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
         context.translateBy(x: 0, y: CGFloat(height))
         context.scaleBy(x: 1, y: -1)
-        layer.render(in: context)
+        layer.draw(in: context)
         let data = try XCTUnwrap(context.data)
         return Array(UnsafeBufferPointer(start: data.assumingMemoryBound(to: UInt8.self), count: width * height * 4))
     }

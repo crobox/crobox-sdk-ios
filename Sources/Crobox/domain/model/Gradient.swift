@@ -68,16 +68,16 @@ func parseGradient(_ value: String) -> Gradient? {
     }
 }
 
-/// The start and end of a CSS linear gradient's line, in unit coordinates from (0, 0) at the top left to (1, 1) at the
-/// bottom right. The line runs through the center at the angle, and is just long enough for the corners to get the
-/// first and last color.
-func linearGradientPoints(angle: CGFloat, width: CGFloat, height: CGFloat) -> (start: CGPoint, end: CGPoint) {
+/// The start and end of a CSS linear gradient's line in a `width` by `height` area, with y running down from the top
+/// left. The line runs through the center at the angle, and is just long enough for the corners to get the first and
+/// last color.
+func linearGradientLine(angle: CGFloat, width: CGFloat, height: CGFloat) -> (start: CGPoint, end: CGPoint) {
     let radians = Double(angle) * .pi / 180
     let dx = CGFloat(sin(radians))
     let dy = CGFloat(-cos(radians))
     let half = (abs(width * dx) + abs(height * dy)) / 2
-    return (start: CGPoint(x: 0.5 - dx * half / width, y: 0.5 - dy * half / height),
-            end: CGPoint(x: 0.5 + dx * half / width, y: 0.5 + dy * half / height))
+    return (start: CGPoint(x: width / 2 - dx * half, y: height / 2 - dy * half),
+            end: CGPoint(x: width / 2 + dx * half, y: height / 2 + dy * half))
 }
 
 /// Splits on the commas between arguments, not the ones inside a color such as `rgba(0, 0, 0, 0.5)`
@@ -201,40 +201,60 @@ import QuartzCore
 public extension TextBadge {
 
     /// Returns a layer that fills its bounds with the background, a plain color or a gradient, or nil when there is
-    /// none. Add it as the bottom sublayer of the badge's view, and set its frame to the view's bounds in
-    /// `layoutSubviews()`. Set its `cornerRadius` for rounded corners.
-    func backgroundLayer() -> CAGradientLayer? {
-        return backgroundColor.flatMap(parseBackground)?.makeLayer()
+    /// none. Add it as the bottom sublayer of the badge's view, set its frame to the view's bounds in
+    /// `layoutSubviews()`, and its `contentsScale` to the screen's scale. Set its `cornerRadius` for rounded corners.
+    func backgroundLayer() -> CALayer? {
+        return backgroundValue.flatMap(parseBackground).map { BackgroundLayer(gradient: $0) }
     }
 }
 
 extension Gradient {
 
-    /// Returns a layer that fills its bounds with this gradient
-    func makeLayer() -> CAGradientLayer {
-        return CSSGradientLayer(gradient: self)
+    /// Draws this gradient over a `width` by `height` area of the context, from its origin, with y running down as in
+    /// a layer on iOS. The colors mix in sRGB and the gradient's geometry follows CSS, so it looks as it does in a
+    /// browser.
+    func draw(in context: CGContext, width: CGFloat, height: CGFloat) {
+        guard width > 0, height > 0,
+              let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let gradient = CGGradient(
+                colorsSpace: space,
+                colors: stops.map { CGColor(srgbRed: $0.red, green: $0.green, blue: $0.blue, alpha: $0.alpha) } as CFArray,
+                locations: stops.map(\.location)) else {
+            return
+        }
+        let options: CGGradientDrawingOptions = [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+        context.saveGState()
+        context.clip(to: CGRect(x: 0, y: 0, width: width, height: height))
+        switch self {
+        case .linear(let angle, _):
+            let line = linearGradientLine(angle: angle, width: width, height: height)
+            context.drawLinearGradient(gradient, start: line.start, end: line.end, options: options)
+        case .radial:
+            let center = CGPoint(x: width / 2, y: height / 2)
+            let radius = CGFloat(hypot(Double(width) / 2, Double(height) / 2))
+            context.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center,
+                                       endRadius: radius, options: options)
+        }
+        context.restoreGState()
     }
 }
 
-/// Keeps the gradient's points matched to the layer's bounds: CSS draws a linear gradient's angle in the box itself, and
-/// a radial gradient out to its farthest corner, so both depend on the width and height.
-final class CSSGradientLayer: CAGradientLayer {
+/// Draws a badge's background itself rather than with a CAGradientLayer, which mixes colors in another color space and
+/// measures a gradient's angle as if the layer were square, so that the badge looks as it does in a browser.
+final class BackgroundLayer: CALayer {
 
     private var gradient: Gradient?
 
     init(gradient: Gradient) {
         self.gradient = gradient
         super.init()
-        if case .radial = gradient {
-            type = .radial
-        }
-        colors = gradient.stops.map { CGColor(srgbRed: $0.red, green: $0.green, blue: $0.blue, alpha: $0.alpha) }
-        locations = gradient.stops.map { NSNumber(value: Double($0.location)) }
-        updatePoints()
+        needsDisplayOnBoundsChange = true
+        masksToBounds = true
+        setNeedsDisplay()
     }
 
     override init(layer: Any) {
-        gradient = (layer as? CSSGradientLayer)?.gradient
+        gradient = (layer as? BackgroundLayer)?.gradient
         super.init(layer: layer)
     }
 
@@ -242,34 +262,8 @@ final class CSSGradientLayer: CAGradientLayer {
         super.init(coder: coder)
     }
 
-    override var bounds: CGRect {
-        didSet {
-            updatePoints()
-        }
-    }
-
-    override func layoutSublayers() {
-        super.layoutSublayers()
-        updatePoints()
-    }
-
-    private func updatePoints() {
-        guard let gradient, bounds.width > 0, bounds.height > 0 else {
-            return
-        }
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        switch gradient {
-        case .linear(let angle, _):
-            let points = linearGradientPoints(angle: angle, width: bounds.width, height: bounds.height)
-            startPoint = points.start
-            endPoint = points.end
-        case .radial:
-            let radius = CGFloat(hypot(Double(bounds.width) / 2, Double(bounds.height) / 2))
-            startPoint = CGPoint(x: 0.5, y: 0.5)
-            endPoint = CGPoint(x: 0.5 + radius / bounds.width, y: 0.5 + radius / bounds.height)
-        }
-        CATransaction.commit()
+    override func draw(in context: CGContext) {
+        gradient?.draw(in: context, width: bounds.width, height: bounds.height)
     }
 }
 #endif

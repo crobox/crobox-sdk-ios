@@ -68,14 +68,14 @@ final class GradientTests: XCTestCase {
     }
 
     func testRunsTheLineFromEdgeToEdgeForTheSides() {
-        assertPoints(linearGradientPoints(angle: 90, width: 200, height: 100), (0, 0.5), (1, 0.5))
-        assertPoints(linearGradientPoints(angle: 180, width: 200, height: 100), (0.5, 0), (0.5, 1))
-        assertPoints(linearGradientPoints(angle: 0, width: 200, height: 100), (0.5, 1), (0.5, 0))
+        assertPoints(linearGradientLine(angle: 90, width: 200, height: 100), (0, 50), (200, 50))
+        assertPoints(linearGradientLine(angle: 180, width: 200, height: 100), (100, 0), (100, 100))
+        assertPoints(linearGradientLine(angle: 0, width: 200, height: 100), (100, 100), (100, 0))
     }
 
     func testRunsTheLineThroughTheCornersPerpendicularToIt() {
         // At 45deg on a square, the line runs corner to corner
-        assertPoints(linearGradientPoints(angle: 45, width: 100, height: 100), (0, 1), (1, 0))
+        assertPoints(linearGradientLine(angle: 45, width: 100, height: 100), (0, 100), (100, 0))
     }
 
     func testParsesABackgroundThatIsAGradientOrAPlainColor() {
@@ -87,44 +87,15 @@ final class GradientTests: XCTestCase {
     }
 
     #if canImport(QuartzCore)
-    func testTextBadgeHasABackgroundLayerForAGradientOrAColor() {
+    func testTextBadgeHasABackgroundLayerForAGradientOrAColor() throws {
         func badge(_ background: String?) -> TextBadge {
-            TextBadge(text: "Sale", fontColor: nil, backgroundColor: background, borderColor: nil,
-                      name: "MobAppTextBadgeTsx")
+            TextBadge(text: "Sale", fontColorValue: nil, backgroundValue: background, borderColorValue: nil)
         }
-        XCTAssertNotNil(badge("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)").backgroundLayer())
+        let layer = try XCTUnwrap(badge("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)").backgroundLayer())
+        XCTAssertTrue(layer.needsDisplayOnBoundsChange)
         XCTAssertNotNil(badge("#ff0000").backgroundLayer())
         XCTAssertNil(badge(nil).backgroundLayer())
         XCTAssertNil(badge("nonsense").backgroundLayer())
-    }
-
-    func testLinearLayerFollowsItsBounds() throws {
-        let gradient = try XCTUnwrap(parseGradient("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)"))
-        let layer = gradient.makeLayer()
-        XCTAssertEqual(.axial, layer.type)
-        XCTAssertEqual(2, layer.colors?.count)
-        XCTAssertEqual([0, 1], layer.locations)
-
-        layer.frame = CGRect(x: 0, y: 0, width: 200, height: 100)
-        layer.layoutIfNeeded()
-        assertPoints((layer.startPoint, layer.endPoint), (0, 0.5), (1, 0.5))
-
-        // At 45deg the line depends on the box: corner to corner on a square, not on a wide badge
-        let diagonal = try XCTUnwrap(parseGradient("linear-gradient(45deg, #ff0000 0%, #0000ff 100%)")).makeLayer()
-        diagonal.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        diagonal.layoutIfNeeded()
-        assertPoints((diagonal.startPoint, diagonal.endPoint), (0, 1), (1, 0))
-    }
-
-    func testRadialLayerReachesTheFarthestCorner() throws {
-        let gradient = try XCTUnwrap(parseGradient("radial-gradient(circle, #ff0000 0%, #0000ff 100%)"))
-        let layer = gradient.makeLayer()
-        XCTAssertEqual(.radial, layer.type)
-
-        layer.frame = CGRect(x: 0, y: 0, width: 80, height: 60)
-        layer.layoutIfNeeded()
-        // The radius is 50, half the diagonal, which is 50/80 of the width and 50/60 of the height
-        assertPoints((layer.startPoint, layer.endPoint), (0.5, 0.5), (0.5 + 50.0 / 80, 0.5 + 50.0 / 60))
     }
     #endif
 

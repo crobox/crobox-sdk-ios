@@ -141,26 +141,19 @@ class ViewController: UIViewController {
             print("Config: \(p.content?.config ?? [:])")
             
             
-            let badge = p.content?.contentConfig()
-            switch badge {
-            case let badge as ImageBadge:
-                print("Image: \(badge.image)")
+            switch p.content?.component() {
+            case .imageBadge(let badge):
+                print("Image: \(badge.imageUrl)")
                 print("AltText: \(badge.altText ?? "")")
-            case let badge as TextBadge:
+            case .textBadge(let badge):
                 print("Text: \(badge.text)")
-                print("FontColor: \(badge.fontColor ?? "")")
-                print("Background: \(badge.backgroundColor ?? "")")
-                print("BorderColor: \(badge.borderColor ?? "")")
-                
-                print("Font UIColor: \(badge.fontUIColor() ?? UIColor.clear )")
-                print("Background UIColor: \(badge.backgroundUIColor() ?? UIColor.clear)")
-                print("Border UIColor: \(badge.borderUIColor() ?? UIColor.clear)")
-                
-            case let badge as SecondaryMessaging:
-                print("Text: \(badge.text)")
-                print("FontColor: \(badge.fontColor ?? "")")
-                print("FontUIColor: \(badge.fontUIColor() ?? UIColor.clear)")
-            default:
+                print("Font color: \(badge.fontColor ?? UIColor.clear)")
+                print("Border color: \(badge.borderColor ?? UIColor.clear)")
+                print("Background: \(badge.backgroundLayer().map { "\($0)" } ?? "none")")
+            case .secondaryMessaging(let messaging):
+                print("Text: \(messaging.text)")
+                print("Font color: \(messaging.fontColor ?? UIColor.clear)")
+            case nil:
                 print("n/a")
             }
 
