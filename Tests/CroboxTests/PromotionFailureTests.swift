@@ -13,7 +13,7 @@ final class PromotionFailureTests: XCTestCase {
         Crobox.shared.configure(brokenConfig)
         Crobox.shared.isLoggingEnabled = true
         
-        let result = await Crobox.shared.promotions(placementId: "1",
+        let result = await Crobox.shared.promotions(placementId: 1,
                                                     view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {

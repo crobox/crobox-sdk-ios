@@ -106,7 +106,7 @@ public class Crobox {
     /// - Parameter placementId: Identifier of the placement
     /// - Parameter view: Common parameters, shared by the requests sent from the same view
     /// - Parameter productIds: List of product ID's which promotions are requested for, in the order they are displayed. The server ranks promotions in this order. It may be empty for the views where products are not involved. (e.g. Checkout view)
-    public func promotions(placementId: String,
+    public func promotions(placementId: Int,
                            view: ViewContext,
                            productIds: [String] = []) async -> Result<PromotionsResponse, CroboxError> {
         do {

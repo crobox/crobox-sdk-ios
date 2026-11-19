@@ -4,13 +4,13 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
 
-    func promotions(placementId:String,
+    func promotions(placementId: Int,
                     view:ViewContext,
                     productIds: [String] = []) async throws -> PromotionsResponse {
 
         //Mandatory
         var parameters = viewParameters(view: view)
-        parameters["vpid"] = placementId
+        parameters["vpid"] = String(placementId)
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {

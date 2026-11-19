@@ -17,7 +17,7 @@ final class PromotionTests: XCTestCase {
     
     func testPromotionsNoProduct() async throws {
         let checkoutView = ViewContext(viewId: UUID(), viewType: .checkout)
-        let result = await Crobox.shared.promotions(placementId: "1", view: checkoutView)
+        let result = await Crobox.shared.promotions(placementId: 1, view: checkoutView)
         
         switch result {
         case let .success(response):
@@ -31,7 +31,7 @@ final class PromotionTests: XCTestCase {
     
     func testPromotionsOneProduct() async throws {
         let detailView = ViewContext(viewId: UUID(), viewType: .detail)
-        let result = await Crobox.shared.promotions(placementId: "1",
+        let result = await Crobox.shared.promotions(placementId: 1,
                                                     view: detailView,
                                                     productIds: ["1"])
         switch result {
@@ -45,7 +45,7 @@ final class PromotionTests: XCTestCase {
     }
     
     func testPromotionsMultiProducts() async throws {
-        let result = await Crobox.shared.promotions(placementId: "1",
+        let result = await Crobox.shared.promotions(placementId: 1,
                                                     view: overviewView,
                                                     productIds: ["product1", "product2", "product3", "product4"])
         switch result {

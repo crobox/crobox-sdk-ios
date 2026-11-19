@@ -92,7 +92,7 @@ class ViewController: UIViewController {
         //*****************PROMOTIONS*********************
         Task {
             /// Requesting for a promotion from an overview view with a placementId configured for overview views in Crobox Container for a collection of products/impressions
-            let result = await Crobox.shared.promotions(placementId: "1",
+            let result = await Crobox.shared.promotions(placementId: 1,
                                                         view: overviewView,
                                                         productIds: productIds)
             switch result {
@@ -104,7 +104,7 @@ class ViewController: UIViewController {
 
             /// Requesting for a promotion from a product detail view with another placementId for a single product
             let detailView = ViewContext(viewId: UUID(), viewType: .detail)
-            let resultPDP = await Crobox.shared.promotions(placementId: "1",
+            let resultPDP = await Crobox.shared.promotions(placementId: 1,
                                                            view: detailView,
                                                            productIds: ["1"])
             switch resultPDP {
@@ -115,7 +115,7 @@ class ViewController: UIViewController {
             }
 
             /// Requesting for a promotion from the checkout view with another placementId without any product
-            let resultCheckout = await Crobox.shared.promotions(placementId: "2", view: checkoutView)
+            let resultCheckout = await Crobox.shared.promotions(placementId: 2, view: checkoutView)
             switch resultCheckout {
             case let .success(response):
                 self.printAll(response: response)

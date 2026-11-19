@@ -98,7 +98,7 @@ For retrieving promotions for zero, one or more products, use the specific `plac
 Pass the product ids in the order they are displayed: the server ranks promotions in that order.
 
 ```swift
-        let result = await Crobox.shared.promotions(placementId: "1",
+        let result = await Crobox.shared.promotions(placementId: 1,
                                                     view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {
@@ -119,7 +119,7 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 ## Promotion Response Schema
 
 ```swift
-        let result = await Crobox.shared.promotions(placementId: "1",
+        let result = await Crobox.shared.promotions(placementId: 1,
                                                     view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {
