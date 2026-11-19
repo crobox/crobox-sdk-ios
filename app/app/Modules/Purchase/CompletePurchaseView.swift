@@ -26,7 +26,7 @@ struct CompletePurchaseView: View {
         .background(Color(UIColor.systemGray6))
         .navigationBarHidden(true)
         .onAppear {
-            CroboxEventManager.shared.onPageViewEvent(pageName: "purchase")
+            CroboxEventManager.shared.onViewEvent(title: "purchase")
         }
     }
 

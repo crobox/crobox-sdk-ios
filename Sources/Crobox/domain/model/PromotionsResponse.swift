@@ -2,7 +2,7 @@
 import Foundation
 
 /// Promotion Result
-public class PromotionResponse: NSObject, Decodable {
+public class PromotionsResponse: NSObject, Decodable {
 
     /// The context about campaigns
     public var context: PromotionContext

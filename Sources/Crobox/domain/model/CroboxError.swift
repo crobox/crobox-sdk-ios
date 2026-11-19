@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CroboxErrors: Error {
+public enum CroboxError: Error {
     case invalidUUID(key: String, value: String)
     case invalidJSON(msg: String, value: String)
     case httpError(statusCode: Int)

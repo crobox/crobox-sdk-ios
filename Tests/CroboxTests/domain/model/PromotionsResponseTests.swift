@@ -1,7 +1,7 @@
 @testable import Crobox
 import XCTest
 
-final class PromotionResponseTests: XCTestCase {
+final class PromotionsResponseTests: XCTestCase {
     
     func testPromotionsResponse() async throws {
         let jsonStr = """
@@ -64,7 +64,7 @@ final class PromotionResponseTests: XCTestCase {
         """.trimmingCharacters(in: .whitespaces)
 
         let jsonData = jsonStr.data(using: .utf8)!
-        let promotionResponse = try! JSONDecoder().decode(PromotionResponse.self, from: jsonData)
+        let promotionResponse = try! JSONDecoder().decode(PromotionsResponse.self, from: jsonData)
 
         XCTAssertEqual(UUID(uuidString: "722D78A6-ADA6-4E03-B903-2F6869185912"), promotionResponse.context.visitorId)
         XCTAssertEqual(UUID(uuidString: "1DC4FE32-B2CE-4A84-A85F-50AF738226F9"), promotionResponse.context.sessionId)
@@ -194,7 +194,7 @@ final class PromotionResponseTests: XCTestCase {
                 ]
             }
         """
-        let response = try JSONDecoder().decode(PromotionResponse.self, from: jsonStr.data(using: .utf8)!)
+        let response = try JSONDecoder().decode(PromotionsResponse.self, from: jsonStr.data(using: .utf8)!)
         XCTAssertEqual(1, response.promotions.count)
         XCTAssertEqual("Product2", response.promotions.first?.productId)
     }
