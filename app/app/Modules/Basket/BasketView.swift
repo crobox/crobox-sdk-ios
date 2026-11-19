@@ -29,7 +29,7 @@ struct BasketView: View {
         .animation(.linear(duration: 0.12), value: basketItems.count)
         .onAppear {
             basketItems = purchaseManager.itemsInBasket.toBasketItems().sorted { $0.title > $1.title }
-            CroboxEventManager.shared.onPageViewEvent(pageName: "basket")
+            CroboxEventManager.shared.onViewEvent(title: "basket")
         }
         .onChange(of: purchaseManager.itemsInBasket) { _, _ in
             basketItems = purchaseManager.itemsInBasket.toBasketItems().sorted { $0.title > $1.title }

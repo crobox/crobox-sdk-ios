@@ -30,7 +30,7 @@ public class PromotionContext: NSObject, Decodable {
            let visitorId = UUID(uuidString: visitorIdStr) {
             self.visitorId = visitorId
         } else {
-            throw CroboxErrors.invalidUUID(
+            throw CroboxError.invalidUUID(
                 key: "context.visitorId",
                 value: (try? container.decode(String.self, forKey: .visitorId)) ?? "nil"
             )
@@ -41,7 +41,7 @@ public class PromotionContext: NSObject, Decodable {
            let sessionId = UUID(uuidString: sessionIdStr) {
             self.sessionId = sessionId
         } else {
-            throw CroboxErrors.invalidUUID(
+            throw CroboxError.invalidUUID(
                 key: "context.sessionId",
                 value: (try? container.decode(String.self, forKey: .sessionId)) ?? "nil"
             )

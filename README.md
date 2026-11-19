@@ -41,30 +41,30 @@ The SDK is no longer published to CocoaPods, because CocoaPods trunk stops accep
 2. Add the package as described above.
 3. Replace `import croboxSDK` with `import Crobox`.
 
-Version 1.1.0 also changed the API in a few places:
+The API also changed in a few places since the CocoaPods releases:
 
 - `LocaleCode` accepts any code, such as `LocaleCode("nl_BE")`, instead of a fixed list (`.en_US`).
 - `CroboxConfig` has no `currencyCode`: the currency comes from the region that the locale selects.
 - `timezone` is a `TimeZone` instead of an hour offset.
 - The `price` fields are gone. Crobox uses the prices from your product feed.
 - `PurchaseParams` requires a `transactionId`.
-- Pass a stable `visitorId`, such as `CroboxConfig.persistentVisitorId()`, instead of a new `UUID()` on every launch.
+- Pass a stable `visitorId`, such as `CroboxVisitor.visitorId()`, instead of a new `UUID()` on every launch.
 
 ## Start using Crobox SDK
 
 First configure and create a `Crobox` singleton as:
 
 ```swift
-Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlhvci",
-                                              visitorId: CroboxConfig.persistentVisitorId(),
-                                              localeCode: LocaleCode("en_US")))
+Crobox.shared.configure(CroboxConfig(containerId: "xlhvci",
+                                     visitorId: CroboxVisitor.visitorId(),
+                                     localeCode: LocaleCode("en_US")))
 ```
 
 The `visitorId` must stay the same across app launches. Campaign and control assignment is keyed on it,
 so creating a new `UUID()` on every launch puts the user in a different variant each time and makes the A/B results unusable.
-`CroboxConfig.persistentVisitorId()` creates an id on first use and stores it in `UserDefaults`.
+`CroboxVisitor.visitorId()` creates an id on first use and stores it in `UserDefaults`.
 If your app already stores its own visitor id, pass that instead.
-Call `CroboxConfig.resetPersistentVisitorId()` if a visitor should start over, for example on logout.
+Call `CroboxVisitor.reset()` if a visitor should start over, for example on logout. It stores a new id and returns it.
 
 The `localeCode` selects the region of the Container (country, language and currency). If the Container has
 several regions, set it to the region the user is shopping in, for example `LocaleCode("nl_BE")` or
@@ -75,31 +75,31 @@ Crobox.shared.config.localeCode = LocaleCode("nl_BE")
 The device time zone is sent automatically. To use a different one, set `timezone`, for example
 `TimeZone(identifier: "Europe/Amsterdam")`.
 
-`RequestQueryParams` contains page specific parameters, shared by all requests sent from the same page/view.
-Create **one** `RequestQueryParams` (with a new `viewId`) each time a screen is displayed, and use it for the pageview
-and for every promotions request and event on that screen. The server counts every new `viewId` as a page,
-so a new `viewId` per request double-counts pages, and one `viewId` for the whole app merges all screens into one page.
+`ViewContext` contains view specific parameters, shared by all requests sent from the same view.
+Create **one** `ViewContext` (with a new `viewId`) each time a screen is displayed, and use it for the view event
+and for every promotions request and event on that screen. The server counts every new `viewId` as a view,
+so a new `viewId` per request double-counts views, and one `viewId` for the whole app merges all screens into one view.
 ```swift
-let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType : .PageDetail, customProperties: ["test":"test"])
+let detailView = ViewContext(viewId: UUID(), viewType: .detail, customProperties: ["test":"test"])
 ```
 
 For sending events, use the `xyzEvent` APIs exposed by the Crobox instance.
 Events might also take event specific parameters:
 
 ```swift
-let addCartQueryParams = CartQueryParams(productId: "abc", quantity: 3)
-Crobox.shared.addCartEvent(queryParams: detailPageParams, addCartQueryParams: addCartQueryParams)
+let cartParams = CartParams(productId: "abc", quantity: 3)
+Crobox.shared.addToCartEvent(view: detailView, params: cartParams)
 ```
 
-Pass the products shown on a page as `impressions`, in the order they are shown; their position is taken from that order.
+Pass the products shown in a view as `impressions`, in the order they are shown; their position is taken from that order.
 A purchase is only recorded with a `transactionId`.
 
-For retrieving promotions for zero, one or more products, use the specific PlaceholderId that was already configured with specific page types and linked to campaigns via Crobox Admin App.
+For retrieving promotions for zero, one or more products, use the specific `placementId` that was already configured with specific view types and linked to campaigns via Crobox Admin App.
 Pass the product ids in the order they are displayed: the server ranks promotions in that order.
 
 ```swift
-        let result = await Crobox.shared.promotions(placeholderId: "1",
-                                                    queryParams: overviewPageParams,
+        let result = await Crobox.shared.promotions(placementId: "1",
+                                                    view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {
         case let .success(p):
@@ -119,8 +119,8 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 ## Promotion Response Schema
 
 ```swift
-        let result = await Crobox.shared.promotions(placeholderId: "1",
-                                                    queryParams: overviewPageParams,
+        let result = await Crobox.shared.promotions(placementId: "1",
+                                                    view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {
         case let .success(response):
@@ -285,9 +285,9 @@ Sample App sends Crobox event requests for the next scenarios:  <br/>
 ```swift
 CroboxEventManager.shared.onClickEvent(product)
 ```
-**onPageViewEvent**  - used to track page view events, for example list of products, product details, checkout, etc.<br/>
+**onViewEvent**  - used to track view events, for example list of products, product details, checkout, etc.<br/>
 ```swift
-CroboxEventManager.shared.onPageViewEvent(pageName: "basket")
+CroboxEventManager.shared.onViewEvent(title: "basket")
 ```
 **onAddToCartEvent**  - used to track analytics when the user add products to the basket<br/>
 ```swift

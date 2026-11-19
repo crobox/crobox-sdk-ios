@@ -21,8 +21,10 @@ struct Preferences {
         return visitorId
     }
 
-    /// Forgets the stored visitor id, so the next call to `visitorId()` creates a new one
-    func resetVisitorId() {
-        defaults.removeObject(forKey: Preferences.visitorIdKey)
+    /// Creates and stores a new visitor id, which `visitorId()` returns from then on
+    func resetVisitorId() -> UUID {
+        let visitorId = UUID()
+        defaults.set(visitorId.uuidString, forKey: Preferences.visitorIdKey)
+        return visitorId
     }
 }

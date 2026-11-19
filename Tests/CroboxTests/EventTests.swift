@@ -3,11 +3,11 @@ import XCTest
 
 final class EventTests: XCTestCase {
     
-    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["ios":"yes"])
+    let overviewView = ViewContext(viewId: UUID(), viewType: .overview, customProperties: ["ios":"yes"])
     
     override class func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: LocaleCode("en_US")))
-        Crobox.shared.isDebug = true
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: UUID.init(), localeCode: LocaleCode("en_US")))
+        Crobox.shared.isLoggingEnabled = true
     }
     
     override func tearDown() async throws {
@@ -15,33 +15,33 @@ final class EventTests: XCTestCase {
     }
     
     func testClickEvent() async throws {
-        let clickQueryParams = ClickQueryParams(productId: "4")
-        Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
+        let clickParams = ClickParams(productId: "4")
+        Crobox.shared.clickEvent(view: overviewView, params: clickParams)
     }
     
     func testAddCartEvent() async throws {
-        let addCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
-        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
+        let addToCartParams = CartParams(productId: "3", quantity: 12)
+        Crobox.shared.addToCartEvent(view: overviewView, params: addToCartParams)
     }
     
     func testRmCartEvent() async throws {
-        let rmCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
-        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
+        let removeFromCartParams = CartParams(productId: "3", quantity: 12)
+        Crobox.shared.removeFromCartEvent(view: overviewView, params: removeFromCartParams)
     }
     
     func testErrorEvent() async throws {
-        let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
+        let errorParams = ErrorParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
+        Crobox.shared.errorEvent(view: overviewView, params: errorParams)
     }
     
     func testCustomEvent() async throws {
-        let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", quantity: 1)
-        Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
+        let customParams = CustomEventParams(name: "custom-event", promotionId: UUID(), productId: "3", quantity: 1)
+        Crobox.shared.customEvent(view: overviewView, params: customParams)
     }
     
     func testPageViewEvent() async throws {
-        let pageViewParams = PageViewParams(
-            pageTitle: "some page title",
+        let viewParams = ViewParams(
+            title: "some page title",
             product: ProductParams(productId: "1", list: "related products"),
             searchTerms: "some search terms",
             impressions: [
@@ -50,12 +50,11 @@ final class EventTests: XCTestCase {
             ],
             customProperties: ["event-specific": "value1", "event-specific2": "value2"]
         )
-        Crobox.shared.pageViewEvent(queryParams: overviewPageParams,
-                                          pageViewParams: pageViewParams)
+        Crobox.shared.viewEvent(view: overviewView, params: viewParams)
     }
     
     func testCheckoutEvent() async throws {
-        let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout, customProperties: ["checkout-specific":"yes"])
+        let checkoutView = ViewContext(viewId: UUID(), viewType: .checkout, customProperties: ["checkout-specific":"yes"])
         
         let checkoutParams = CheckoutParams(
             products: [
@@ -66,12 +65,12 @@ final class EventTests: XCTestCase {
             customProperties: ["page-specific-key":"value1"]
         )
         
-        Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)
+        Crobox.shared.checkoutEvent(view: checkoutView, params: checkoutParams)
     }
     
     
     func testPurchaseEvent() async throws {
-        let pageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageComplete, customProperties: ["complete-specific":"yes"])
+        let completeView = ViewContext(viewId: UUID(), viewType: .complete, customProperties: ["complete-specific":"yes"])
         
         let purchaseParams = PurchaseParams(
             products: [
@@ -85,14 +84,14 @@ final class EventTests: XCTestCase {
             customProperties: ["event-specific": "value and value2"]
         )
         
-        Crobox.shared.purchaseEvent(queryParams: pageParams, purchaseParams: purchaseParams)
+        Crobox.shared.purchaseEvent(view: completeView, params: purchaseParams)
     }
     
     
     func testCounter_e() async throws {
-        let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
-        let errorParams2 = ErrorQueryParams(tag: "ParsingError2", name: "IllegalArgumentException2", message: "bad input2 ")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams2)
+        let errorParams = ErrorParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
+        Crobox.shared.errorEvent(view: overviewView, params: errorParams)
+        let errorParams2 = ErrorParams(tag: "ParsingError2", name: "IllegalArgumentException2", message: "bad input2 ")
+        Crobox.shared.errorEvent(view: overviewView, params: errorParams2)
     }
 }

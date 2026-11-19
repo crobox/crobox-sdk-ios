@@ -36,7 +36,7 @@ struct ProductDetailsView: View {
         .background(Color(UIColor.systemGray6))
         .navigationBarHidden(true)
         .onAppear {
-            CroboxEventManager.shared.onPageViewEvent(pageName: "product-details")
+            CroboxEventManager.shared.onViewEvent(title: "product-details")
         }
     }
 

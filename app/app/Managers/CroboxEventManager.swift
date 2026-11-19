@@ -16,9 +16,9 @@ class CroboxEventManager {
         setupCrobox()
     }
     
-    /// RequestQueryParams contains page specific parameters, shared by all event and promotion requests sent from the same page/view.
-    /// Request params must be re-created when user visits a page/view, eg. CartPage,
-    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
+    /// ViewContext contains view specific parameters, shared by all event and promotion requests sent from the same view.
+    /// It must be re-created when the user visits a view, eg. the cart,
+    let overviewView = ViewContext(viewId: UUID(), viewType: .overview, customProperties: ["test":"test"])
 
     /// Crobox Configuration Setup
     private func setupCrobox() {
@@ -27,14 +27,14 @@ class CroboxEventManager {
         // Initialize Crobox configuration
         let config = CroboxConfig(
             containerId: containerId,
-            visitorId: CroboxConfig.persistentVisitorId(),
+            visitorId: CroboxVisitor.visitorId(),
             localeCode: LocaleCode("en_US")
         )
 
-        Crobox.shared.initConfig(config: config)
+        Crobox.shared.configure(config)
         
         /// Enable/Disable debugging
-        Crobox.shared.isDebug = true
+        Crobox.shared.isLoggingEnabled = true
         
         
         print("Crobox initialized with containerId: \(containerId)")
@@ -42,44 +42,44 @@ class CroboxEventManager {
     
     func onClickEvent(_ product: Product) {
         /// Sending Click events with optional event specific parameters
-        let clickQueryParams = ClickQueryParams(productId: product.id.uuidString, quantity: 1)
-        Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
+        let clickParams = ClickParams(productId: product.id.uuidString, quantity: 1)
+        Crobox.shared.clickEvent(view: overviewView, params: clickParams)
     }
     
     func onAddToCartEvent(_ product: Product, quantity: Int) {
         /// Sending Add To Cart events with optional event specific parameters
-        let addCartQueryParams = CartQueryParams(productId: product.id.uuidString, quantity: 1)
-        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
+        let addToCartParams = CartParams(productId: product.id.uuidString, quantity: 1)
+        Crobox.shared.addToCartEvent(view: overviewView, params: addToCartParams)
     }
     
     func onAddToCartEvent(_ id: UUID, quantity: Int) {
         /// Sending Add To Cart events with optional event specific parameters
-        let addCartQueryParams = CartQueryParams(productId: id.uuidString, quantity: 1)
-        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
+        let addToCartParams = CartParams(productId: id.uuidString, quantity: 1)
+        Crobox.shared.addToCartEvent(view: overviewView, params: addToCartParams)
     }
     
     func onRemoveFromCartEvent(_ product: Product, quantity: Int) {
         /// Sending Remove From Cart events with optional event specific parameters
-        let rmCartQueryParams = CartQueryParams(productId: product.id.uuidString, quantity: 1)
-        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
+        let removeFromCartParams = CartParams(productId: product.id.uuidString, quantity: 1)
+        Crobox.shared.removeFromCartEvent(view: overviewView, params: removeFromCartParams)
     }
     
     func onRemoveFromCartEvent(_ id: UUID, quantity: Int) {
         /// Sending Remove From Cart events with optional event specific parameters
-        let rmCartQueryParams = CartQueryParams(productId: id.uuidString, quantity: 1)
-        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
+        let removeFromCartParams = CartParams(productId: id.uuidString, quantity: 1)
+        Crobox.shared.removeFromCartEvent(view: overviewView, params: removeFromCartParams)
     }
     
     func onErrorEvent() {
         /// Sending Error events with optional event specific parameters
-        let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
+        let errorParams = ErrorParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
+        Crobox.shared.errorEvent(view: overviewView, params: errorParams)
     }
     
-    func onPageViewEvent(pageName: String) {
-        /// Sending page view event
-        let pageViewParams = PageViewParams(
-            pageTitle: pageName,
+    func onViewEvent(title: String) {
+        /// Sending view event
+        let viewParams = ViewParams(
+            title: title,
             product: ProductParams(productId: "1", list: "related products"),
             searchTerms: "some search terms",
             impressions: [
@@ -88,7 +88,7 @@ class CroboxEventManager {
             ],
             customProperties: ["event-specific": "value1", "event-specific2": "value2"]
         )
-        Crobox.shared.pageViewEvent(queryParams: overviewPageParams, pageViewParams: pageViewParams)
+        Crobox.shared.viewEvent(view: overviewView, params: viewParams)
     }
     
     // Function to convert [BasketItem] -> [ProductParams]
@@ -98,19 +98,19 @@ class CroboxEventManager {
     
     func onCheckoutEvent(_ items: [BasketItem]) {
         /// Sending checkout event
-        let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout, customProperties: ["checkout-specific":"yes"])
+        let checkoutView = ViewContext(viewId: UUID(), viewType: .checkout, customProperties: ["checkout-specific":"yes"])
         
         let checkoutParams = CheckoutParams(
             products: convertToProductParams(items: items),
             step: "1",
             customProperties: ["page-specific-key":"value1"]
         )
-        Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)
+        Crobox.shared.checkoutEvent(view: checkoutView, params: checkoutParams)
     }
     
     func onPurchaseEvent(_ items: [BasketItem]) {
         /// Sending purchase event
-        let pageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageComplete, customProperties: ["complete-specific":"yes"])
+        let completeView = ViewContext(viewId: UUID(), viewType: .complete, customProperties: ["complete-specific":"yes"])
         
         let purchaseParams = PurchaseParams(
             products: convertToProductParams(items: items),
@@ -120,7 +120,7 @@ class CroboxEventManager {
             revenue: 5.0,
             customProperties: ["event-specific": "value and value2"]
         )
-        Crobox.shared.purchaseEvent(queryParams: pageParams, purchaseParams: purchaseParams)
+        Crobox.shared.purchaseEvent(view: completeView, params: purchaseParams)
     }
 
 }

@@ -4,22 +4,22 @@ class CroboxAPIServices {
     
     static let shared = CroboxAPIServices()
 
-    func promotions(placeholderId:String!,
-                    queryParams:RequestQueryParams,
-                    productIds: [String]? = []) async throws -> PromotionResponse {
+    func promotions(placementId:String,
+                    view:ViewContext,
+                    productIds: [String] = []) async throws -> PromotionsResponse {
 
         //Mandatory
-        var parameters = requestQueryParams(queryParams: queryParams)
-        parameters["vpid"] = placeholderId!
+        var parameters = viewParameters(view: view)
+        parameters["vpid"] = placementId
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
-            throw CroboxErrors.internalRequestError(msg: "Failed to form promotions path")
+            throw CroboxError.internalRequestError(msg: "Failed to form promotions path")
         }
         urlComponents.queryItems = queryItems
 
         guard let url = urlComponents.url else {
-            throw CroboxErrors.internalRequestError(msg: "Failed to form promotions parameters")
+            throw CroboxError.internalRequestError(msg: "Failed to form promotions parameters")
         }
 
         let bodyString = promotionsBody(productIds: productIds)
@@ -30,17 +30,17 @@ class CroboxAPIServices {
             // All coding keys match the JSON keys, so no key conversion: it would also rename
             // keys inside the promotion `config` map (e.g. "Text1_color").
             let decoder = JSONDecoder()
-            let promotionResponse = try decoder.decode(PromotionResponse.self, from: data)
-            return promotionResponse
+            let promotionsResponse = try decoder.decode(PromotionsResponse.self, from: data)
+            return promotionsResponse
         } catch {
-            throw CroboxErrors.invalidJSON(msg: "Decoding error", value: "\(error)")
+            throw CroboxError.invalidJSON(msg: "Decoding error", value: "\(error)")
         }
     }
 
     func event(eventType:EventType!,
-               additionalParams:Any?,
-               queryParams:RequestQueryParams) async throws -> Void {
-        let parameters = eventParameters(eventType: eventType, additionalParams: additionalParams, queryParams: queryParams)
+               params:Any?,
+               view:ViewContext) async throws -> Void {
+        let parameters = eventParameters(eventType: eventType, params: params, view: view)
         return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
     }
 
@@ -53,14 +53,14 @@ class CroboxAPIServices {
 
     /// All query parameters of an event request
     func eventParameters(eventType:EventType!,
-                         additionalParams:Any?,
-                         queryParams:RequestQueryParams) -> [String: String] {
+                         params:Any?,
+                         view:ViewContext) -> [String: String] {
         //Mandatory
-        var parameters = requestQueryParams(queryParams: queryParams)
+        var parameters = viewParameters(view: view)
         parameters["t"] = eventType.rawValue
 
         checkEventType(eventType:eventType,
-                       additionalParams: additionalParams,
+                       params: params,
                        parameters: &parameters)
         return parameters
     }
@@ -71,14 +71,14 @@ class CroboxAPIServices {
         return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
     }
     
-    private func requestQueryParams(queryParams:RequestQueryParams) -> [String: String] {
+    private func viewParameters(view:ViewContext) -> [String: String] {
         // Mandatory
         var parameters = [
             "cid": Crobox.shared.config.containerId,
             "pid": "\(Crobox.shared.config.visitorId)",
-            "e": "\(queryParams.viewCounter())",
-            "vid": "\(queryParams.viewId)",
-            "pt": "\(queryParams.pageType.rawValue)",
+            "e": "\(view.viewCounter())",
+            "vid": "\(view.viewId)",
+            "pt": "\(view.viewType.rawValue)",
             "sdk": "1"
         ]
         // Optional
@@ -93,15 +93,15 @@ class CroboxAPIServices {
         let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         
-        if let pageName = queryParams.pageName {
-            parameters["lh"] = pageName
+        if let viewName = view.viewName {
+            parameters["lh"] = viewName
         }
         
         // Container-wide custom properties first, so that view specific ones can override them
         if let customProperties = Crobox.shared.config.customProperties {
             processCustomProperties(customProperties, &parameters)
         }
-        if let customProperties = queryParams.customProperties {
+        if let customProperties = view.customProperties {
             processCustomProperties(customProperties, &parameters)
         }
         
@@ -111,48 +111,48 @@ class CroboxAPIServices {
     
     // check for event type
     
-    private func checkEventType(eventType:EventType!, additionalParams: Any?, parameters: inout [String : String])
+    private func checkEventType(eventType:EventType!, params: Any?, parameters: inout [String : String])
     {
         switch eventType {
         case .Click:
-            if let clickParams = additionalParams as? ClickQueryParams {
+            if let clickParams = params as? ClickParams {
                 clickEvent(clickParams: clickParams, parameters: &parameters)
             }
             break
         case .AddCart, .RemoveCart:
-            if let addCartQueryParams = additionalParams as? CartQueryParams {
-                cartEvent(cartQueryParams: addCartQueryParams, parameters: &parameters)
+            if let cartParams = params as? CartParams {
+                cartEvent(cartParams: cartParams, parameters: &parameters)
             }
             break
         case .PageView:
-            if let pageViewParams = additionalParams as? PageViewParams {
-                pageViewEvent(pageViewParams: pageViewParams, parameters: &parameters)
+            if let viewParams = params as? ViewParams {
+                viewEvent(viewParams: viewParams, parameters: &parameters)
             }
             break
         case .Checkout:
-            // Checkout is a pageview of a checkout page; the server only records it with that page type
+            // Checkout is a pageview of a checkout view; the server only records it with that view type
             parameters["t"] = EventType.PageView.rawValue
-            parameters["pt"] = "\(PageType.PageCheckout.rawValue)"
-            if let checkoutParams = additionalParams as? CheckoutParams {
+            parameters["pt"] = "\(ViewType.checkout.rawValue)"
+            if let checkoutParams = params as? CheckoutParams {
                 checkoutEvent(checkoutParams: checkoutParams, parameters: &parameters)
             }
             break
         case .Purchase:
-            // Purchase is a pageview of the order complete page; the server only records it with that page type
+            // Purchase is a pageview of the order complete view; the server only records it with that view type
             parameters["t"] = EventType.PageView.rawValue
-            parameters["pt"] = "\(PageType.PageComplete.rawValue)"
-            if let purchaseParams = additionalParams as? PurchaseParams {
+            parameters["pt"] = "\(ViewType.complete.rawValue)"
+            if let purchaseParams = params as? PurchaseParams {
                 purchaseEvent(purchaseParams: purchaseParams, parameters: &parameters)
             }
             break
         case .Error:
-            if let errorQueryParams = additionalParams as? ErrorQueryParams {
-                errorEvent(errorQueryParams: errorQueryParams, parameters: &parameters)
+            if let errorParams = params as? ErrorParams {
+                errorEvent(errorParams: errorParams, parameters: &parameters)
             }
             break
         default:
-            if let customQueryParams = additionalParams as? CustomQueryParams {
-                customEvent(customQueryParams: customQueryParams, parameters: &parameters)
+            if let customEventParams = params as? CustomEventParams {
+                customEvent(customEventParams: customEventParams, parameters: &parameters)
             }
             break
         }
@@ -166,21 +166,21 @@ class CroboxAPIServices {
      
      */
     
-    private func errorEvent(errorQueryParams:ErrorQueryParams, parameters: inout [String : String])
+    private func errorEvent(errorParams:ErrorParams, parameters: inout [String : String])
     {
-        if let tag = errorQueryParams.tag {
+        if let tag = errorParams.tag {
             parameters["tg"] = tag
         }
-        if let name = errorQueryParams.name {
+        if let name = errorParams.name {
             parameters["nm"] = name
         }
-        if let message = errorQueryParams.message {
+        if let message = errorParams.message {
             parameters["msg"] = message
         }
-        if let file = errorQueryParams.file {
+        if let file = errorParams.file {
             parameters["f"] = file
         }
-        if let line = errorQueryParams.line {
+        if let line = errorParams.line {
             parameters["l"] = "\(line)"
         }
     }
@@ -194,7 +194,7 @@ class CroboxAPIServices {
      */
     
     
-    private func clickEvent(clickParams:ClickQueryParams, parameters: inout [String : String])
+    private func clickEvent(clickParams:ClickParams, parameters: inout [String : String])
     {
         if let productId = clickParams.productId {
             parameters["pi"] = productId
@@ -212,32 +212,32 @@ class CroboxAPIServices {
      
      */
     
-    private  func cartEvent(cartQueryParams:CartQueryParams, parameters: inout [String : String])
+    private  func cartEvent(cartParams:CartParams, parameters: inout [String : String])
     {
-        if let productId = cartQueryParams.productId {
+        if let productId = cartParams.productId {
             parameters["pi"] = productId
         }
-        if let quantity = cartQueryParams.quantity {
+        if let quantity = cartParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
     }
     
     
-    private func pageViewEvent(pageViewParams:PageViewParams, parameters: inout [String : String])
+    private func viewEvent(viewParams:ViewParams, parameters: inout [String : String])
     {
-        if let pageTitle = pageViewParams.pageTitle {
-            parameters["dt"] = "\(pageTitle)"
+        if let title = viewParams.title {
+            parameters["dt"] = "\(title)"
         }
-        if let productParams = pageViewParams.product {
+        if let productParams = viewParams.product {
             processProductParams(productParams, &parameters)
         }
-        if let impressions = pageViewParams.impressions {
+        if let impressions = viewParams.impressions {
             processImpressions(impressions, &parameters)
         }
-        if let searchTerms = pageViewParams.searchTerms {
+        if let searchTerms = viewParams.searchTerms {
             parameters["st"] = "\(searchTerms)"
         }
-        if let customProperties = pageViewParams.customProperties {
+        if let customProperties = viewParams.customProperties {
             processCustomProperties(customProperties, &parameters)
         }
     }
@@ -282,18 +282,18 @@ class CroboxAPIServices {
      */
     
     
-    private func customEvent(customQueryParams:CustomQueryParams, parameters: inout [String : String])
+    private func customEvent(customEventParams:CustomEventParams, parameters: inout [String : String])
     {
-        if let name = customQueryParams.name {
+        if let name = customEventParams.name {
             parameters["nm"] = name
         }
-        if let promotionID = customQueryParams.promotionId {
+        if let promotionID = customEventParams.promotionId {
             parameters["promoId"] = "\(promotionID)"
         }
-        if let productID = customQueryParams.productId {
+        if let productID = customEventParams.productId {
             parameters["pi"] = productID
         }
-        if let quantity = customQueryParams.quantity {
+        if let quantity = customEventParams.quantity {
             parameters["qty"] = "\(quantity)"
         }
     }

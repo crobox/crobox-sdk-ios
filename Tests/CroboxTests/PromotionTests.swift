@@ -3,12 +3,12 @@ import XCTest
 
 final class PromotionTests: XCTestCase {
     
-    let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"async"])
+    let overviewView = ViewContext(viewId: UUID(), viewType: .overview, customProperties: ["test":"async"])
     static var visitorId: UUID = UUID.init()
     
     override class func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, localeCode: LocaleCode("en_US")))
-        Crobox.shared.isDebug = true
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, localeCode: LocaleCode("en_US")))
+        Crobox.shared.isLoggingEnabled = true
     }
     
     override func tearDown() async throws {
@@ -16,8 +16,8 @@ final class PromotionTests: XCTestCase {
     }
     
     func testPromotionsNoProduct() async throws {
-        let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout)
-        let result = await Crobox.shared.promotions(placeholderId: "1", queryParams: checkoutPageParams)
+        let checkoutView = ViewContext(viewId: UUID(), viewType: .checkout)
+        let result = await Crobox.shared.promotions(placementId: "1", view: checkoutView)
         
         switch result {
         case let .success(response):
@@ -30,9 +30,9 @@ final class PromotionTests: XCTestCase {
     }
     
     func testPromotionsOneProduct() async throws {
-        let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
-        let result = await Crobox.shared.promotions(placeholderId: "1",
-                                                    queryParams: detailPageParams,
+        let detailView = ViewContext(viewId: UUID(), viewType: .detail)
+        let result = await Crobox.shared.promotions(placementId: "1",
+                                                    view: detailView,
                                                     productIds: ["1"])
         switch result {
         case let .success(response):
@@ -45,8 +45,8 @@ final class PromotionTests: XCTestCase {
     }
     
     func testPromotionsMultiProducts() async throws {
-        let result = await Crobox.shared.promotions(placeholderId: "1",
-                                                    queryParams: overviewPageParams,
+        let result = await Crobox.shared.promotions(placementId: "1",
+                                                    view: overviewView,
                                                     productIds: ["product1", "product2", "product3", "product4"])
         switch result {
         case let .success(response):
@@ -59,7 +59,7 @@ final class PromotionTests: XCTestCase {
         }
     }
     
-    private func printAll(_ response: PromotionResponse) {
+    private func printAll(_ response: PromotionsResponse) {
         let context = response.context
         let p = context.visitorId
         print("VisitorId: \(p)")

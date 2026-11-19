@@ -20,12 +20,12 @@ class APIRequests: NSObject {
 
     func get(url: String, parameters: [String: String]) async throws -> Void {
         guard var urlComponents = URLComponents(string: url) else {
-            throw CroboxErrors.invalidURL
+            throw CroboxError.invalidURL
         }
         urlComponents.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard let finalURL = urlComponents.url else {
-            throw CroboxErrors.invalidURL
+            throw CroboxError.invalidURL
         }
 
         var urlRequest = URLRequest(url: finalURL)
@@ -34,7 +34,7 @@ class APIRequests: NSObject {
         let (_, response) = try await session.data(for: urlRequest)
 
         if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-            throw CroboxErrors.httpError(statusCode: httpResponse.statusCode)
+            throw CroboxError.httpError(statusCode: httpResponse.statusCode)
         }
     }
 
@@ -48,7 +48,7 @@ class APIRequests: NSObject {
         let (data, response) = try await session.data(for: urlRequest)
 
         if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-            throw CroboxErrors.httpError(statusCode: httpResponse.statusCode)
+            throw CroboxError.httpError(statusCode: httpResponse.statusCode)
         }
 
         return data
