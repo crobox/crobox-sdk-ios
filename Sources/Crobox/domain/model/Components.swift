@@ -1,29 +1,33 @@
 import Foundation
 
-public protocol PromotionContentConfig {
-    var name: String { get }
+/// What a promotion shows when its campaign uses one of the App components, which the app draws natively
+public enum PromotionComponent {
+    case textBadge(TextBadge)
+    case imageBadge(ImageBadge)
+    case secondaryMessaging(SecondaryMessaging)
 }
 
-public struct ImageBadge : PromotionContentConfig {
-    public let image: String
+/// An image, from the App image badge
+public struct ImageBadge {
+    /// The image's URL
+    public let imageUrl: URL
+    /// Text that describes the image, for VoiceOver
     public let altText: String?
-    public let name: String
 }
 
-public struct TextBadge : PromotionContentConfig {
+/// A short text on a background, from the App text badge. Its colors and background are in `fontColor`,
+/// `borderColor` and `backgroundLayer()`.
+public struct TextBadge {
+    /// The text
     public let text: String
-    /// font color as hex for colors or rgba for colors with opacity
-    public let fontColor: String?
-    /// background color as hex for colors or rgba for colors with opacity
-    public let backgroundColor: String?
-    /// border color as hex for colors or rgba for colors with opacity
-    public let borderColor: String?
-    public let name: String
+    let fontColorValue: String?
+    let backgroundValue: String?
+    let borderColorValue: String?
 }
 
-public struct SecondaryMessaging : PromotionContentConfig {
+/// A line of text, from the App secondary messaging. Its color is in `fontColor`.
+public struct SecondaryMessaging {
+    /// The text
     public let text: String
-    /// font color as hex for colors or rgba for colors with opacity
-    public let fontColor: String?
-    public let name: String
+    let fontColorValue: String?
 }

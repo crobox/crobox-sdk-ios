@@ -6,8 +6,8 @@ name: Swift
 on:
   push:
     branches: [ "main" ]
+  # Every pull request, so that one stacked on another gets checked too
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -20,3 +20,23 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test -v
+
+  # swift test runs on macOS, where the UIKit code is left out. This builds and tests the SDK for iOS, and builds the
+  # sample app against it.
+  ios:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v7
+    - name: Pick an iPhone simulator
+      run: |
+        SIMULATOR=$(xcrun simctl list devices available -j | jq -r '[.devices[][] | select(.name | startswith("iPhone"))][0].udid')
+        echo "Using simulator $SIMULATOR"
+        echo "SIMULATOR=$SIMULATOR" >> "$GITHUB_ENV"
+    - name: List the schemes
+      run: xcodebuild -list && xcodebuild -list -project app/App.xcodeproj
+    - name: Test the SDK on iOS
+      run: xcodebuild test -scheme Crobox -destination "id=$SIMULATOR"
+    - name: Build the sample app
+      run: xcodebuild build -project app/App.xcodeproj -scheme CroboxTestApp -destination "id=$SIMULATOR" CODE_SIGNING_ALLOWED=NO
