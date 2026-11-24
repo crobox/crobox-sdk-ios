@@ -150,30 +150,19 @@ Pass the product ids in the order they are displayed: the server ranks promotion
                         let configKey = c.key
                         let configValue = c.value
                     }
-                    let imageBadge = content.getImageBadge()
-                    let textBadge = content.getTextBadge()
-                               
-                    let conf = content.contentConfig()
-                    switch conf {
-                    case let conf as ImageBadge:
-                        let image = conf.image
-                        let altText = conf.altText
-                    case let conf as TextBadge:
-                        let text = conf.text
-                        let fontColor = conf.fontColor ?? ""
-                        let background = conf.backgroundColor ?? ""
-                        let borderColor = conf.borderColor ?? ""
-
-                        let fontUIColor = conf.fontUIColor() ?? UIColor.clear
-                        let backgroundUIColor = conf.backgroundUIColor() ?? UIColor.clear
-                        let borderUIColor = conf.borderUIColor() ?? UIColor.clear
-
-                    case let conf as SecondaryMessaging:
-                        let text = conf.text
-                        let fontColor = conf.fontColor ?? ""
-                        let fontUIColor = conf.fontUIColor() ?? UIColor.clear
-
-                    default:
+                    switch content.component() {
+                    case .textBadge(let badge):
+                        badgeLabel.text = badge.text
+                        badgeLabel.textColor = badge.fontColor
+                        // The background, a plain color or a gradient, as a layer for the badge's view
+                        let backgroundLayer = badge.backgroundLayer()
+                    case .imageBadge(let badge):
+                        let imageUrl = badge.imageUrl
+                        let altText = badge.altText
+                    case .secondaryMessaging(let messaging):
+                        messageLabel.text = messaging.text
+                        messageLabel.textColor = messaging.fontColor
+                    case nil:
                         break
                     }
                 }
@@ -227,34 +216,56 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 | messageId     | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
 | componentName | String              | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                              |
 | config        | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
-| getTextBadge  | TextBadge?          | Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"              |
-| getImageBadge | ImageBadge?         | Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"                                             |
-| contentConfig | PromotionContentConfig? | Returns an Image Badge, Text Badge or Secondary Messaging when the campaign uses `MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`, otherwise nil |
+| component()   | PromotionComponent? | What the promotion shows when the campaign uses an App component: `.textBadge` (`MobAppTextBadgeTsx`), `.imageBadge` (`MobAppImageBadgeTsx`) or `.secondaryMessaging` (`MobAppSecondaryMessagingTsx`), otherwise nil |
 
 ### TextBadge
 
-| Name            | Type        | Description               |
-|-----------------|-------------|---------------------------|
-| text            | String      | Text message              |
-| fontColor       | String      | Font color                |
-| backgroundColor | String?     | Optional background color |
-| borderColor     | String?     | Optional border color     |
+| Name              | Type     | Description                                                                                         |
+|-------------------|----------|-----------------------------------------------------------------------------------------------------|
+| text              | String   | The text                                                                                            |
+| fontColor         | UIColor? | The text's color                                                                                    |
+| borderColor       | UIColor? | The border's color                                                                                  |
+| backgroundLayer() | CALayer? | The background, a plain color or a gradient, as a layer that fills its bounds, or nil when there is none |
 
+The background is set in the App as a color, or as a gradient with its gradient input. Gradients look as they do in the
+App's preview: a linear gradient's angle runs clockwise from the bottom up (90deg runs from left to right), and a radial
+gradient runs from the center out to the farthest corner. For example, behind a badge's label:
+
+```swift
+final class BadgeView: UIView {
+    private var backgroundLayer: CALayer?
+
+    func show(_ badge: TextBadge) {
+        backgroundLayer?.removeFromSuperlayer()
+        backgroundLayer = badge.backgroundLayer()
+        if let backgroundLayer {
+            backgroundLayer.cornerRadius = 4
+            backgroundLayer.contentsScale = traitCollection.displayScale
+            layer.insertSublayer(backgroundLayer, at: 0)
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        backgroundLayer?.frame = bounds
+    }
+}
+```
 
 ### ImageBadge
 
-| Name    | Type    | Description    |
-|---------|---------|----------------|
-| image   | String  | Image url      |
-| altText | String? | Alternate text |
-
+| Name     | Type    | Description                                 |
+|----------|---------|---------------------------------------------|
+| imageUrl | URL     | The image's URL                             |
+| altText  | String? | Text that describes the image, for VoiceOver |
 
 ### Secondary Messaging
 
-| Name            | Type        | Description               |
-|-----------------|-------------|---------------------------|
-| text            | String      | Text message              |
-| fontColor       | String      | Font color                |
+| Name      | Type     | Description      |
+|-----------|----------|------------------|
+| text      | String   | The text         |
+| fontColor | UIColor? | The text's color |
+
 
 ## Samples
  

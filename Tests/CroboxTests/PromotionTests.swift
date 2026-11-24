@@ -73,20 +73,15 @@ final class PromotionTests: XCTestCase {
             print("Campaign Id: \(p.campaignId)")
             print("Config: \(p.content?.config ?? [:])")
             
-            let badge = p.content?.contentConfig()
-            switch badge {
-            case let badge as ImageBadge:
-                print("Image: \(badge.image)")
+            switch p.content?.component() {
+            case .imageBadge(let badge):
+                print("Image: \(badge.imageUrl)")
                 print("AltText: \(badge.altText ?? "")")
-            case let badge as TextBadge:
+            case .textBadge(let badge):
                 print("Text: \(badge.text)")
-                print("FontColor: \(badge.fontColor ?? "")")
-                print("Background: \(badge.backgroundColor ?? "")")
-                print("Border: \(badge.borderColor ?? "")")
-            case let badge as SecondaryMessaging:
-                print("Secondary Text: \(badge.text)")
-                print("Secondary FontColor: \(badge.fontColor ?? "")")
-            default:
+            case .secondaryMessaging(let messaging):
+                print("Secondary Text: \(messaging.text)")
+            case nil:
                 print("n/a")
             }
         }
