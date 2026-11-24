@@ -7,4 +7,6 @@ public enum CroboxError: Error {
     case internalRequestError(msg: String)
     case internalError(msg: String, cause: Error)
     case invalidURL
+    /// A request was made before `Crobox.shared.configure(_:)`
+    case notConfigured
 }

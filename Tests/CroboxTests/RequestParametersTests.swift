@@ -13,7 +13,7 @@ final class RequestParametersTests: XCTestCase {
     private func parameters(_ eventType: EventType, _ params: Any?, viewType: ViewType = .overview,
                             customProperties: [String: String]? = nil) -> [String: String] {
         let view = ViewContext(viewId: UUID(), viewType: viewType, customProperties: customProperties)
-        return CroboxAPIServices.shared.eventParameters(eventType: eventType, params: params, view: view)
+        return try! CroboxAPIServices.shared.eventParameters(eventType: eventType, params: params, view: view)
     }
 
     func testPageViewImpressionsCarryIdPositionQuantityAndList() {

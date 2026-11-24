@@ -9,7 +9,7 @@ class CroboxAPIServices {
                     productIds: [String] = []) async throws -> PromotionsResponse {
 
         //Mandatory
-        var parameters = viewParameters(view: view)
+        var parameters = try viewParameters(view: view)
         parameters["vpid"] = String(placementId)
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
@@ -40,7 +40,7 @@ class CroboxAPIServices {
     func event(eventType:EventType!,
                params:Any?,
                view:ViewContext) async throws -> Void {
-        let parameters = eventParameters(eventType: eventType, params: params, view: view)
+        let parameters = try eventParameters(eventType: eventType, params: params, view: view)
         return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
     }
 
@@ -54,9 +54,9 @@ class CroboxAPIServices {
     /// All query parameters of an event request
     func eventParameters(eventType:EventType!,
                          params:Any?,
-                         view:ViewContext) -> [String: String] {
+                         view:ViewContext) throws -> [String: String] {
         //Mandatory
-        var parameters = viewParameters(view: view)
+        var parameters = try viewParameters(view: view)
         parameters["t"] = eventType.rawValue
 
         checkEventType(eventType:eventType,
@@ -71,25 +71,28 @@ class CroboxAPIServices {
         return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
     }
     
-    private func viewParameters(view:ViewContext) -> [String: String] {
+    private func viewParameters(view:ViewContext) throws -> [String: String] {
+        guard let config = Crobox.shared.config else {
+            throw CroboxError.notConfigured
+        }
         // Mandatory
         var parameters = [
-            "cid": Crobox.shared.config.containerId,
-            "pid": "\(Crobox.shared.config.visitorId)",
+            "cid": config.containerId,
+            "pid": "\(config.visitorId)",
             "e": "\(view.viewCounter())",
             "vid": "\(view.viewId)",
             "pt": "\(view.viewType.rawValue)",
             "sdk": "1"
         ]
         // Optional
-        if let localeCode = Crobox.shared.config.localeCode {
+        if let localeCode = config.localeCode {
             parameters["lc"] = localeCode.code
         }
-        if let userId = Crobox.shared.config.userId {
+        if let userId = config.userId {
             parameters["uid"] = userId
         }
         let now = Date()
-        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(Crobox.shared.config.timezone ?? TimeZone.current, at: now)
+        parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(config.timezone ?? TimeZone.current, at: now)
         let millis = Int64(now.timeIntervalSince1970 * 1000)
         parameters["ts"] = CroboxEncoder.shared.toBase36(millis: millis)
         
@@ -98,7 +101,7 @@ class CroboxAPIServices {
         }
         
         // Container-wide custom properties first, so that view specific ones can override them
-        if let customProperties = Crobox.shared.config.customProperties {
+        if let customProperties = config.customProperties {
             processCustomProperties(customProperties, &parameters)
         }
         if let customProperties = view.customProperties {
