@@ -36,7 +36,7 @@ struct ProductGridView: View {
             .animation(.linear(duration: 0.12), value: filteredProducts)
         }
         .onAppear {
-            CroboxEventManager.shared.onPageViewEvent(pageName: "product-list")
+            CroboxEventManager.shared.onViewEvent(title: "product-list")
         }
     }
     

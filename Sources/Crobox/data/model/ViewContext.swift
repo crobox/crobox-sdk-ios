@@ -2,18 +2,18 @@
 import Foundation
 
 /**
- Common parameters for all requests sent from the same page view.
+ Common parameters for all requests sent from the same view.
  
- - parameter viewId: Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
- - parameter pageType: One of the values in predefined list of types of pages of the whole e-commerce funnel
+ - parameter viewId: Unique identifier for a unique viewing of a screen, reused between various event and promotion requests from the same view. It must be refreshed when a user goes to another view or reloads the same view.
+ - parameter viewType: One of the values in predefined list of types of views of the whole e-commerce funnel
  - parameter customProperties: Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
- - parameter pageName: Free format Page Name if exists
+ - parameter viewName: Free format name of the view, if any
  */
-public class RequestQueryParams {
+public class ViewContext {
     public let viewId: UUID
-    public var pageType: PageType
+    public var viewType: ViewType
     public var customProperties: [String: String]?
-    public var pageName: String?
+    public var viewName: String?
     
     // Events from the same view are deduplicated on the counter, so it must never hand out
     // the same value twice, even when requests are sent from concurrent tasks.
@@ -21,16 +21,16 @@ public class RequestQueryParams {
     private let counterLock = NSLock()
 
     public init(viewId: UUID,
-                pageType: PageType,
+                viewType: ViewType,
                 customProperties: [String: String]? = nil,
-                pageName: String? = nil) {
+                viewName: String? = nil) {
         self.viewId = viewId
-        self.pageType = pageType
+        self.viewType = viewType
         self.customProperties = customProperties
-        self.pageName = pageName
+        self.viewName = viewName
     }
     
-    public func viewCounter() -> Int {
+    func viewCounter() -> Int {
         counterLock.lock()
         defer { counterLock.unlock() }
         let currentCount = counter
@@ -39,18 +39,18 @@ public class RequestQueryParams {
     }
 }
 
-public enum PageType:Int{
-    case PageOther = 0
-    case PageIndex = 1
-    case PageOverview = 2
-    case PageDetail = 3
-    case PageCart = 4
-    case PageCheckout = 5
-    case PageComplete = 6
-    case PageSearch = 7
+public enum ViewType:Int{
+    case other = 0
+    case index = 1
+    case overview = 2
+    case detail = 3
+    case cart = 4
+    case checkout = 5
+    case complete = 6
+    case search = 7
 }
 
-public enum EventType:String{
+enum EventType:String{
     case Click = "click" // Click
     case AddCart = "cart" // Add to Shopping Cart
     case RemoveCart = "rmcart" // Remove from Shopping Cart
@@ -70,7 +70,7 @@ public enum EventType:String{
  - parameter file: File name, if available
  - parameter line : Line number, if available
  */
-public struct ErrorQueryParams {
+public struct ErrorParams {
     public var tag: String?
     public var name: String?
     public var message: String?
@@ -96,7 +96,7 @@ public struct ErrorQueryParams {
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
  */
-public struct ClickQueryParams {
+public struct ClickParams {
     public var productId: String?
     public var quantity: Int?
     
@@ -114,7 +114,7 @@ public struct ClickQueryParams {
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
  */
-public struct CartQueryParams {
+public struct CartParams {
     public var productId: String?
     public var quantity: Int?
     
@@ -134,7 +134,7 @@ public struct CartQueryParams {
  - parameter productId: Unique identifier for a product
  - parameter quantity: Quantity, if available
  */
-public struct CustomQueryParams {
+public struct CustomEventParams {
     var name: String?
     var promotionId: UUID?
     var productId: String?
@@ -177,28 +177,28 @@ public struct ProductParams {
 }
 
 /**
- Type specific parameters for Page View events
+ Type specific parameters for View events
 
- - parameter pageTitle: Title of the page, if available
- - parameter product: The product of a product detail page
- - parameter searchTerms: Search terms of a search results page
- - parameter impressions: The products shown on the page, in the order they are shown
+ - parameter title: Title of the view, if available
+ - parameter product: The product of a product detail view
+ - parameter searchTerms: Search terms of a search results view
+ - parameter impressions: The products shown in the view, in the order they are shown
  - parameter customProperties: Optional set of general purpose custom properties
  */
-public struct PageViewParams {
-    var pageTitle: String?
+public struct ViewParams {
+    var title: String?
     var product: ProductParams?
     var searchTerms: String?
     var impressions: [ProductParams]?
     var customProperties: [String : String]?
     
-    public init(pageTitle: String?,
+    public init(title: String?,
                 product: ProductParams?,
                 searchTerms: String?,
                 impressions: [ProductParams]?,
                 customProperties: [String : String]?
     ) {
-        self.pageTitle = pageTitle
+        self.title = title
         self.product = product
         self.searchTerms = searchTerms
         self.impressions = impressions
@@ -211,7 +211,7 @@ public struct PageViewParams {
  
  - parameter products: Optional set of products to be purchased
  - parameter step: Optional number of the step in the checkout process (e.g. "1"). The server reads it as an integer.
- - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
+ - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the view
  */
 public struct CheckoutParams {
     var products: [ProductParams]?
@@ -236,7 +236,7 @@ public struct CheckoutParams {
  - parameter affiliation The store or affiliation from which this transaction occurred (e.g. Google Store), if available
  - parameter coupon Coupon, if available
  - parameter revenue The total associated with the transaction, in the currency of the locale. Without it, Crobox adds up the catalog prices of the products.
- - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the page
+ - parameter customProperties Optional set of general purpose custom properties, for example to help identifying certaion traits of the view
  */
 public struct PurchaseParams {
     var products: [ProductParams]?
@@ -266,7 +266,7 @@ public struct PurchaseParams {
  Common Configuration parameters for all requests
  
  - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
- - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxConfig.persistentVisitorId()` unless the app already stores its own id.
+ - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxVisitor.visitorId()` unless the app already stores its own id.
  - parameter localeCode: Locale code combination for the localization. Crobox picks the region (country, language and currency) of the Container from it, so in a Container with several regions it must be set to the region the user is shopping in.
  - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
  - parameter timezone: Time zone of the visitor, to use instead of the device's, for example `TimeZone(identifier: "Europe/Amsterdam")`. It is sent as its offset from UTC in hours at the time of each request. When nil, the device's time zone is used.
@@ -287,17 +287,5 @@ public struct CroboxConfig {
         self.userId = userId
         self.timezone = timezone
         self.customProperties = customProperties
-    }
-
-    /// Returns a visitor id that is stored in `UserDefaults` and stays the same across app launches.
-    /// A new id is created and stored on first use.
-    public static func persistentVisitorId(defaults: UserDefaults = .standard) -> UUID {
-        return Preferences(defaults: defaults).visitorId()
-    }
-
-    /// Forgets the stored visitor id, for example when the user logs out.
-    /// The next call to `persistentVisitorId()` returns a new id.
-    public static func resetPersistentVisitorId(defaults: UserDefaults = .standard) {
-        Preferences(defaults: defaults).resetVisitorId()
     }
 }

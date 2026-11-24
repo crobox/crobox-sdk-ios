@@ -20,7 +20,7 @@ public class Promotion: NSObject, Decodable {
         // Validate and decode `id` as UUID, or throw an error
         let idStr = try container.decode(String.self, forKey: .id)
         guard let id = UUID(uuidString: idStr) else {
-            throw CroboxErrors.invalidUUID(key: "promotion.id", value: idStr)
+            throw CroboxError.invalidUUID(key: "promotion.id", value: idStr)
         }
         self.id = id
 

@@ -16,40 +16,40 @@ class ViewController: UIViewController {
         let productIds = ["1", "2", "3"]
         
         //Crobox.shared is the single point of contact for all interactions, keeping the configuration and providing all functionality
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: containerId, visitorId: CroboxConfig.persistentVisitorId(), localeCode: LocaleCode("en_US")))
+        Crobox.shared.configure(CroboxConfig(containerId: containerId, visitorId: CroboxVisitor.visitorId(), localeCode: LocaleCode("en_US")))
         
         /// Enable/Disable debugging
-        Crobox.shared.isDebug = true
+        Crobox.shared.isLoggingEnabled = true
         
-        /// RequestQueryParams contains page specific parameters, shared by all event and promotion requests sent from the same page/view.
-        /// Request params must be re-created when user visits a page/view, eg. CartPage,
-        let overviewPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageOverview, customProperties: ["test":"test"])
+        /// ViewContext contains view specific parameters, shared by all event and promotion requests sent from the same view.
+        /// It must be re-created when the user visits a view, eg. the cart,
+        let overviewView = ViewContext(viewId: UUID(), viewType: .overview, customProperties: ["test":"test"])
         
         //***************** EVENTS *********************
         
         /// Sending Click events with optional event specific parameters
-        let clickQueryParams = ClickQueryParams(productId: "4", quantity: 3)
-        Crobox.shared.clickEvent(queryParams: overviewPageParams, clickQueryParams: clickQueryParams)
+        let clickParams = ClickParams(productId: "4", quantity: 3)
+        Crobox.shared.clickEvent(view: overviewView, params: clickParams)
         
         /// Sending Add To Cart events with optional event specific parameters
-        let addCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
-        Crobox.shared.addCartEvent(queryParams: overviewPageParams, addCartQueryParams:addCartQueryParams)
+        let addToCartParams = CartParams(productId: "3", quantity: 12)
+        Crobox.shared.addToCartEvent(view: overviewView, params: addToCartParams)
         
         /// Sending Remove From Cart events with optional event specific parameters
-        let rmCartQueryParams = CartQueryParams(productId: "3", quantity: 12)
-        Crobox.shared.removeCartEvent(queryParams: overviewPageParams, rmCartQueryParams: rmCartQueryParams)
+        let removeFromCartParams = CartParams(productId: "3", quantity: 12)
+        Crobox.shared.removeFromCartEvent(view: overviewView, params: removeFromCartParams)
         
         /// Sending Error events with optional event specific parameters
-        let errorParams = ErrorQueryParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
-        Crobox.shared.errorEvent(queryParams: overviewPageParams, errorQueryParams: errorParams)
+        let errorParams = ErrorParams(tag: "ParsingError", name: "IllegalArgumentException", message: "bad input")
+        Crobox.shared.errorEvent(view: overviewView, params: errorParams)
         
         /// Sending general-purpose Custom event
-        let customParams = CustomQueryParams(name: "custom-event", promotionId: UUID(), productId: "3", quantity: 1)
-        Crobox.shared.customEvent(queryParams: overviewPageParams, customQueryParams: customParams)
+        let customParams = CustomEventParams(name: "custom-event", promotionId: UUID(), productId: "3", quantity: 1)
+        Crobox.shared.customEvent(view: overviewView, params: customParams)
         
-        /// Sending page view event
-        let pageViewParams = PageViewParams(
-            pageTitle: "some page title",
+        /// Sending view event
+        let viewParams = ViewParams(
+            title: "some page title",
             product: ProductParams(productId: "1", list: "related products"),
             searchTerms: "some search terms",
             impressions: [
@@ -58,10 +58,10 @@ class ViewController: UIViewController {
             ],
             customProperties: ["event-specific": "value1", "event-specific2": "value2"]
         )
-        Crobox.shared.pageViewEvent(queryParams: overviewPageParams, pageViewParams: pageViewParams)
+        Crobox.shared.viewEvent(view: overviewView, params: viewParams)
         
         /// Sending checkout event
-        let checkoutPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageCheckout, customProperties: ["checkout-specific":"yes"])
+        let checkoutView = ViewContext(viewId: UUID(), viewType: .checkout, customProperties: ["checkout-specific":"yes"])
         
         let checkoutParams = CheckoutParams(
             products: [
@@ -71,10 +71,10 @@ class ViewController: UIViewController {
             step: "1",
             customProperties: ["page-specific-key":"value1"]
         )
-        Crobox.shared.checkoutEvent(queryParams: checkoutPageParams, checkoutParams: checkoutParams)
+        Crobox.shared.checkoutEvent(view: checkoutView, params: checkoutParams)
         
         /// Sending purchase event
-        let pageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageComplete, customProperties: ["complete-specific":"yes"])
+        let completeView = ViewContext(viewId: UUID(), viewType: .complete, customProperties: ["complete-specific":"yes"])
         
         let purchaseParams = PurchaseParams(
             products: [
@@ -87,13 +87,13 @@ class ViewController: UIViewController {
             revenue: 5.0,
             customProperties: ["event-specific": "value and value2"]
         )
-        Crobox.shared.purchaseEvent(queryParams: pageParams, purchaseParams: purchaseParams)
+        Crobox.shared.purchaseEvent(view: completeView, params: purchaseParams)
 
         //*****************PROMOTIONS*********************
         Task {
-            /// Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container for a collection of products/impressions
-            let result = await Crobox.shared.promotions(placeholderId: "1",
-                                                        queryParams: overviewPageParams,
+            /// Requesting for a promotion from an overview view with a placementId configured for overview views in Crobox Container for a collection of products/impressions
+            let result = await Crobox.shared.promotions(placementId: 1,
+                                                        view: overviewView,
                                                         productIds: productIds)
             switch result {
             case let .success(response):
@@ -102,10 +102,10 @@ class ViewController: UIViewController {
                 print(error)
             }
 
-            /// Requesting for a promotion from a product detail page with another placeholderId for a single product
-            let detailPageParams = RequestQueryParams.init(viewId: UUID(), pageType: .PageDetail)
-            let resultPDP = await Crobox.shared.promotions(placeholderId: "1",
-                                                           queryParams: detailPageParams,
+            /// Requesting for a promotion from a product detail view with another placementId for a single product
+            let detailView = ViewContext(viewId: UUID(), viewType: .detail)
+            let resultPDP = await Crobox.shared.promotions(placementId: 1,
+                                                           view: detailView,
                                                            productIds: ["1"])
             switch resultPDP {
             case let .success(response):
@@ -114,8 +114,8 @@ class ViewController: UIViewController {
                 print(error)
             }
 
-            /// Requesting for a promotion from Checkout Page with another placeholderId without any product
-            let resultCheckout = await Crobox.shared.promotions(placeholderId: "2", queryParams: checkoutPageParams)
+            /// Requesting for a promotion from the checkout view with another placementId without any product
+            let resultCheckout = await Crobox.shared.promotions(placementId: 2, view: checkoutView)
             switch resultCheckout {
             case let .success(response):
                 self.printAll(response: response)
@@ -126,7 +126,7 @@ class ViewController: UIViewController {
         
     }
     
-    private func printAll(response: PromotionResponse) {
+    private func printAll(response: PromotionsResponse) {
         let context = response.context
         let p = context.visitorId
         print("VisitorId: \(p)")

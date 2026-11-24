@@ -17,7 +17,7 @@ CI runs the same command on macOS for every pull request.
 Some test suites call the live Crobox API: `PromotionTests`, `PromotionFailureTests` and `EventTests`. They need a network connection and take a few seconds. To run only the offline suites:
 
 ```sh
-swift test --filter 'UserAgentTests|RequestParametersTests|PromotionResponseTests|ColorUtilTest'
+swift test --filter 'UserAgentTests|RequestParametersTests|PromotionsResponseTests|ColorUtilTest'
 ```
 
 The tests need macOS, because the network layer uses async `URLSession` APIs that are not available on Linux. Tests for UIKit colors run only on an iOS target, for example from Xcode.

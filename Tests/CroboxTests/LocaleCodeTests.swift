@@ -17,9 +17,9 @@ final class LocaleCodeTests: XCTestCase {
     }
 
     func testIsSentAsLc() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID(), localeCode: LocaleCode("nl_BE")))
-        let params = CroboxAPIServices.shared.eventParameters(eventType: .Click, additionalParams: nil,
-                                                              queryParams: RequestQueryParams(viewId: UUID(), pageType: .PageIndex))
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: UUID(), localeCode: LocaleCode("nl_BE")))
+        let params = CroboxAPIServices.shared.eventParameters(eventType: .Click, params: nil,
+                                                              view: ViewContext(viewId: UUID(), viewType: .index))
         XCTAssertEqual("nl_BE", params["lc"])
     }
 }

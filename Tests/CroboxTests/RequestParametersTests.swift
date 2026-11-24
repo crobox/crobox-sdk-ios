@@ -5,21 +5,21 @@ import XCTest
 final class RequestParametersTests: XCTestCase {
 
     override func setUp() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t",
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t",
                                                       visitorId: UUID(),
                                                       customProperties: ["app": "ios", "shared": "config"]))
     }
 
-    private func parameters(_ eventType: EventType, _ params: Any?, pageType: PageType = .PageOverview,
+    private func parameters(_ eventType: EventType, _ params: Any?, viewType: ViewType = .overview,
                             customProperties: [String: String]? = nil) -> [String: String] {
-        let queryParams = RequestQueryParams(viewId: UUID(), pageType: pageType, customProperties: customProperties)
-        return CroboxAPIServices.shared.eventParameters(eventType: eventType, additionalParams: params, queryParams: queryParams)
+        let view = ViewContext(viewId: UUID(), viewType: viewType, customProperties: customProperties)
+        return CroboxAPIServices.shared.eventParameters(eventType: eventType, params: params, view: view)
     }
 
     func testPageViewImpressionsCarryIdPositionQuantityAndList() {
         var impressions = (0..<12).map { ProductParams(productId: "p\($0)") }
         impressions[1] = ProductParams(productId: "p1", quantity: 2, list: "search results")
-        let params = parameters(.PageView, PageViewParams(pageTitle: nil, product: nil, searchTerms: nil,
+        let params = parameters(.PageView, ViewParams(title: nil, product: nil, searchTerms: nil,
                                                           impressions: impressions, customProperties: nil))
         XCTAssertEqual("p0", params["imp[0].id"])
         XCTAssertEqual("1", params["imp[0].pos"])
@@ -34,9 +34,9 @@ final class RequestParametersTests: XCTestCase {
     }
 
     func testProductDetailSendsListNameAndNoPrice() {
-        let params = parameters(.PageView, PageViewParams(pageTitle: nil, product: ProductParams(productId: "1", list: "related"),
+        let params = parameters(.PageView, ViewParams(title: nil, product: ProductParams(productId: "1", list: "related"),
                                                           searchTerms: nil, impressions: nil, customProperties: nil),
-                                pageType: .PageDetail)
+                                viewType: .detail)
         XCTAssertEqual("1", params["pi"])
         XCTAssertEqual("related", params["lst"])
         XCTAssertNil(params["price"])
@@ -57,25 +57,25 @@ final class RequestParametersTests: XCTestCase {
     }
 
     func testConfiguredTimezoneWins() {
-        Crobox.shared.initConfig(config: CroboxConfig(containerId: "xlrc9t", visitorId: UUID(),
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: UUID(),
                                                       timezone: TimeZone(identifier: "Asia/Kolkata")))
         XCTAssertEqual("5.5", parameters(.Click, nil)["tz"])
     }
 
-    func testCheckoutSendsProductsAndCheckoutPageType() {
+    func testCheckoutSendsProductsAndCheckoutViewType() {
         let params = parameters(.Checkout, CheckoutParams(products: [ProductParams(productId: "1"), ProductParams(productId: "2")],
                                                           step: "1", customProperties: nil),
-                                pageType: .PageOther)
+                                viewType: .other)
         XCTAssertEqual("pageview", params["t"])
         XCTAssertEqual("5", params["pt"])
         XCTAssertEqual("1", params["imp[0].id"])
         XCTAssertEqual("2", params["imp[1].id"])
     }
 
-    func testPurchaseSendsProductsAndCompletePageType() {
+    func testPurchaseSendsProductsAndCompleteViewType() {
         let params = parameters(.Purchase, PurchaseParams(products: [ProductParams(productId: "1", quantity: 3)], transactionId: "t1",
                                                           affiliation: nil, coupon: nil, revenue: 1.0, customProperties: nil),
-                                pageType: .PageOther)
+                                viewType: .other)
         XCTAssertEqual("pageview", params["t"])
         XCTAssertEqual("6", params["pt"])
         XCTAssertEqual("1", params["imp[0].id"])
@@ -85,9 +85,9 @@ final class RequestParametersTests: XCTestCase {
     }
 
     func testClickCartAndCustomEventsSendNoPrice() {
-        XCTAssertNil(parameters(.Click, ClickQueryParams(productId: "1", quantity: 1))["price"])
-        XCTAssertEqual("2", parameters(.AddCart, CartQueryParams(productId: "1", quantity: 2))["qty"])
-        XCTAssertEqual("1", parameters(.CustomEvent, CustomQueryParams(name: "x", productId: "1"))["pi"])
+        XCTAssertNil(parameters(.Click, ClickParams(productId: "1", quantity: 1))["price"])
+        XCTAssertEqual("2", parameters(.AddCart, CartParams(productId: "1", quantity: 2))["qty"])
+        XCTAssertEqual("1", parameters(.CustomEvent, CustomEventParams(name: "x", productId: "1"))["pi"])
     }
 
     func testConfigCustomPropertiesAreSentAndViewPropertiesWin() {
@@ -103,10 +103,10 @@ final class RequestParametersTests: XCTestCase {
     }
 
     func testViewCounterIsUniqueAcrossConcurrentCalls() async {
-        let queryParams = RequestQueryParams(viewId: UUID(), pageType: .PageOverview)
+        let view = ViewContext(viewId: UUID(), viewType: .overview)
         let values = await withTaskGroup(of: Int.self, returning: [Int].self) { group in
             for _ in 0..<1000 {
-                group.addTask { queryParams.viewCounter() }
+                group.addTask { view.viewCounter() }
             }
             return await group.reduce(into: []) { $0.append($1) }
         }
@@ -116,26 +116,26 @@ final class RequestParametersTests: XCTestCase {
     func testCancellationIsDetected() {
         XCTAssertTrue(Crobox.isCancellation(CancellationError()))
         XCTAssertTrue(Crobox.isCancellation(URLError(.cancelled)))
-        XCTAssertTrue(Crobox.isCancellation(CroboxErrors.internalError(msg: "x", cause: URLError(.cancelled))))
+        XCTAssertTrue(Crobox.isCancellation(CroboxError.internalError(msg: "x", cause: URLError(.cancelled))))
         XCTAssertFalse(Crobox.isCancellation(URLError(.timedOut)))
-        XCTAssertFalse(Crobox.isCancellation(CroboxErrors.httpError(statusCode: 500)))
+        XCTAssertFalse(Crobox.isCancellation(CroboxError.httpError(statusCode: 500)))
     }
 
     func testErrorMessageLeavesOutRequestUrl() {
         let url = "https://api.crobox.com/promotions?uid=secret-user&cp.email=a@b.c"
         let error = URLError(.timedOut, userInfo: [NSURLErrorFailingURLStringErrorKey: url,
                                                    NSURLErrorFailingURLErrorKey: URL(string: url)!])
-        let message = Crobox.errorMessage(CroboxErrors.internalError(msg: "Promotion request failure", cause: error))
+        let message = Crobox.errorMessage(CroboxError.internalError(msg: "Promotion request failure", cause: error))
         XCTAssertFalse(message.contains("secret-user"), message)
         XCTAssertTrue(message.contains("\(URLError.Code.timedOut.rawValue)"), message)
     }
 
     func testErrorEventSendsLineOnlyWhenGiven() {
-        let withoutLine = parameters(.Error, ErrorQueryParams(tag: "sdk", name: "promotions", message: "HTTP 500"))
+        let withoutLine = parameters(.Error, ErrorParams(tag: "sdk", name: "promotions", message: "HTTP 500"))
         XCTAssertEqual("sdk", withoutLine["tg"])
         XCTAssertEqual("promotions", withoutLine["nm"])
         XCTAssertNil(withoutLine["l"])
-        XCTAssertEqual("42", parameters(.Error, ErrorQueryParams(line: 42))["l"])
+        XCTAssertEqual("42", parameters(.Error, ErrorParams(line: 42))["l"])
     }
 
     func testRequestsTimeOutWithinSeconds() {
@@ -144,11 +144,13 @@ final class RequestParametersTests: XCTestCase {
         XCTAssertEqual(30, configuration.timeoutIntervalForResource)
     }
 
-    func testPersistentVisitorId() {
+    func testVisitorIdIsStoredAndReset() {
         let defaults = UserDefaults(suiteName: "crobox-tests-\(UUID().uuidString)")!
-        let first = CroboxConfig.persistentVisitorId(defaults: defaults)
-        XCTAssertEqual(first, CroboxConfig.persistentVisitorId(defaults: defaults))
-        CroboxConfig.resetPersistentVisitorId(defaults: defaults)
-        XCTAssertNotEqual(first, CroboxConfig.persistentVisitorId(defaults: defaults))
+        let first = CroboxVisitor.visitorId(defaults: defaults)
+        XCTAssertEqual(first, CroboxVisitor.visitorId(defaults: defaults))
+        XCTAssertEqual(first.uuidString, defaults.string(forKey: "com.crobox.sdk.visitorId"))
+        let second = CroboxVisitor.reset(defaults: defaults)
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(second, CroboxVisitor.visitorId(defaults: defaults))
     }
 }

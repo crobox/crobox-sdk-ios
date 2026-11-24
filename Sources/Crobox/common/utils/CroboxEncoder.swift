@@ -6,9 +6,9 @@
 //
 
 import Foundation
-public class CroboxEncoder:NSObject
+class CroboxEncoder:NSObject
 {
-    public static let shared = CroboxEncoder()
+    static let shared = CroboxEncoder()
     func toBase36(millis: Int64) -> String {
         return String(millis, radix: 36)
     }
