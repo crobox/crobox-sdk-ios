@@ -13,14 +13,14 @@ public class Crobox {
      */
     public var isLoggingEnabled = false
     
-    /*
-     mandatory for common configuration parameters
-     */
-    public var config:CroboxConfig!
-    
-    
-    public func configure(_ config:CroboxConfig) {
-        self.config =  config
+    /// The configuration that requests use, set with `configure(_:)`. Requests made before that fail with
+    /// `CroboxError.notConfigured`.
+    public private(set) var config: CroboxConfig?
+
+    /// Sets the configuration for all later requests. To change one setting, such as the `localeCode`, configure
+    /// again with a changed copy.
+    public func configure(_ config: CroboxConfig) {
+        self.config = config
     }
     
     /// For sending a Click Event, to track the ratio of visits on impressions.

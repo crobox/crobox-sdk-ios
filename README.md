@@ -18,7 +18,7 @@ In a `Package.swift`, add the package and the `Crobox` product:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "1.1.0"),
+    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "2.0.0"),
 ],
 targets: [
     .target(name: "YourApp", dependencies: [
@@ -50,6 +50,34 @@ The API also changed in a few places since the CocoaPods releases:
 - `PurchaseParams` requires a `transactionId`.
 - Pass a stable `visitorId`, such as `CroboxVisitor.visitorId()`, instead of a new `UUID()` on every launch.
 
+### Upgrading to 2.0
+
+Version 2.0 names the API after views in an app, the way the Android SDK does, and gives the App components
+ready-to-use colors and backgrounds. What to change:
+
+| 1.x                                                                    | 2.0                                                              |
+|------------------------------------------------------------------------|------------------------------------------------------------------|
+| `Crobox.shared.initConfig(config:)`                                    | `Crobox.shared.configure(_:)`                                    |
+| `Crobox.shared.config.localeCode = ...`                                | `configure(_:)` again with a changed copy; `config` is read-only and optional |
+| `Crobox.shared.isDebug`                                                | `isLoggingEnabled`                                               |
+| `CroboxConfig.persistentVisitorId()`, `resetPersistentVisitorId()`     | `CroboxVisitor.visitorId()`, `CroboxVisitor.reset()`             |
+| `RequestQueryParams(viewId:pageType:customProperties:pageName:)`       | `ViewContext(viewId:viewType:customProperties:viewName:)`        |
+| `PageType.PageDetail`, `PageType.PageOverview`, ...                    | `ViewType.detail`, `ViewType.overview`, ...                      |
+| `clickEvent(queryParams:clickQueryParams:)`, and the other events      | `clickEvent(view:params:)`                                       |
+| `addCartEvent`, `removeCartEvent`                                      | `addToCartEvent`, `removeFromCartEvent`                          |
+| `pageViewEvent(...)` with `PageViewParams(pageTitle:...)`              | `viewEvent(...)` with `ViewParams(title:...)`                    |
+| `ClickQueryParams`, `CartQueryParams`, `ErrorQueryParams`, `CustomQueryParams` | `ClickParams`, `CartParams`, `ErrorParams`, `CustomEventParams` |
+| `promotions(placeholderId: String, queryParams:productIds:)`           | `promotions(placementId: Int, view:productIds:)`                 |
+| `PromotionResponse`, `CroboxErrors`                                    | `PromotionsResponse`, `CroboxError`, with a new `.notConfigured` |
+| `PromotionContent.contentConfig()`, `getTextBadge()`, `getImageBadge()`, `getSecondaryMessaging()` | `component()`, a `PromotionComponent` enum |
+| `TextBadge.fontColor` / `borderColor` (CSS strings) and `fontUIColor()` / `borderUIColor()` | `fontColor` / `borderColor` as `UIColor`s |
+| `TextBadge.backgroundColor` and `backgroundUIColor()`                  | `backgroundLayer()`, for a color or a gradient                   |
+| `SecondaryMessaging.fontColor` and `fontUIColor()`                     | `fontColor` as a `UIColor`                                       |
+| `ImageBadge.image`                                                     | `imageUrl`, a `URL`                                              |
+| `ImageBadge.name`, `TextBadge.name`, `SecondaryMessaging.name`         | `PromotionContent.componentName`                                 |
+
+The raw settings of a promotion are still in `PromotionContent.config`. What the SDK sends to Crobox is unchanged.
+
 ## Start using Crobox SDK
 
 First configure and create a `Crobox` singleton as:
@@ -68,9 +96,12 @@ Call `CroboxVisitor.reset()` if a visitor should start over, for example on logo
 
 The `localeCode` selects the region of the Container (country, language and currency). If the Container has
 several regions, set it to the region the user is shopping in, for example `LocaleCode("nl_BE")` or
-`LocaleCode.of(Locale.current)`, and update it when the user switches:
+`LocaleCode.of(Locale.current)`, and update it when the user switches, by configuring again with a changed copy:
 ```swift
-Crobox.shared.config.localeCode = LocaleCode("nl_BE")
+if var config = Crobox.shared.config {
+    config.localeCode = LocaleCode("nl_BE")
+    Crobox.shared.configure(config)
+}
 ```
 The device time zone is sent automatically. To use a different one, set `timezone`, for example
 `TimeZone(identifier: "Europe/Amsterdam")`.
