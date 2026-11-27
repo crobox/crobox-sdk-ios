@@ -93,6 +93,7 @@ so creating a new `UUID()` on every launch puts the user in a different variant 
 `CroboxVisitor.visitorId()` creates an id on first use and stores it in `UserDefaults`.
 If your app already stores its own visitor id, pass that instead.
 Call `CroboxVisitor.reset()` if a visitor should start over, for example on logout. It stores a new id and returns it.
+Pass `nil` while the user hasn't consented to tracking; see [Consent](#consent).
 
 The `localeCode` selects the region of the Container (country, language and currency). If the Container has
 several regions, set it to the region the user is shopping in, for example `LocaleCode("nl_BE")` or
@@ -105,6 +106,37 @@ if var config = Crobox.shared.config {
 ```
 The device time zone is sent automatically. To use a different one, set `timezone`, for example
 `TimeZone(identifier: "Europe/Amsterdam")`.
+
+### Consent
+
+The `visitorId` is what makes the SDK track the user. Without one, the SDK works the way the website does
+for a visitor who opted out:
+
+- It sends no events at all, error events included.
+- It still requests promotions, so the app can show campaign messages, but without the `visitorId`,
+  view id and `userId`, and marked "do not persist": Crobox stores nothing about the request. Crobox
+  picks the campaign variant from an anonymous id that changes every day, and `context.visitorId` in
+  the response is that id.
+
+If your app needs consent before tracking, pass `nil` until the user gives it:
+
+```swift
+Crobox.shared.configure(CroboxConfig(containerId: "xlhvci",
+                                     visitorId: hasConsent ? CroboxVisitor.visitorId() : nil))
+
+// The user consents
+if var config = Crobox.shared.config {
+    config.visitorId = CroboxVisitor.visitorId()
+    Crobox.shared.configure(config)
+}
+
+// The user withdraws consent: stop tracking, and start as a new visitor if they consent again
+CroboxVisitor.reset()
+if var config = Crobox.shared.config {
+    config.visitorId = nil
+    Crobox.shared.configure(config)
+}
+```
 
 `ViewContext` contains view specific parameters, shared by all requests sent from the same view.
 Create **one** `ViewContext` (with a new `viewId`) each time a screen is displayed, and use it for the view event
@@ -216,7 +248,7 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 | Name      | Type           | Description                                      |
 |-----------|----------------|--------------------------------------------------|
 | sessionId | UUID           | Session ID                                       |
-| visitorId | UUID           | Visitor ID                                       |
+| visitorId | UUID           | Visitor ID; without a configured `visitorId`, the anonymous id of the day |
 | groupName | String?        | The list of campaign and variant names, combined |
 | campaigns | List<Campaign> | The list of ongoing campaigns                    |
 

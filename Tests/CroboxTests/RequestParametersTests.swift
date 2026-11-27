@@ -96,6 +96,44 @@ final class RequestParametersTests: XCTestCase {
         XCTAssertEqual("view", params["cp.shared"])
     }
 
+    func testWithAVisitorIdRequestsIdentifyTheVisitor() throws {
+        let visitorId = UUID()
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: visitorId, userId: "JohnDoe"))
+        let view = ViewContext(viewId: UUID(), viewType: .overview)
+
+        let params = try CroboxAPIServices.shared.promotionsParameters(placementId: 12, view: view)
+
+        XCTAssertEqual("\(visitorId)", params["pid"])
+        XCTAssertEqual("\(view.viewId)", params["vid"])
+        XCTAssertEqual("JohnDoe", params["uid"])
+        XCTAssertNil(params["dnp"])
+        XCTAssertTrue(CroboxAPIServices.shared.sendsEvents)
+    }
+
+    func testWithoutAVisitorIdPromotionsAreAnonymousAndNotStored() throws {
+        Crobox.shared.configure(CroboxConfig(containerId: "xlrc9t", visitorId: nil, userId: "JohnDoe"))
+        let view = ViewContext(viewId: UUID(), viewType: .overview)
+
+        let params = try CroboxAPIServices.shared.promotionsParameters(placementId: 12, view: view)
+
+        XCTAssertEqual("true", params["dnp"])
+        XCTAssertNil(params["pid"])
+        XCTAssertNil(params["vid"])
+        XCTAssertNil(params["uid"])
+        XCTAssertEqual("1", params["sdk"])
+        XCTAssertEqual("12", params["vpid"])
+        XCTAssertFalse(CroboxAPIServices.shared.sendsEvents)
+    }
+
+    func testClearingTheVisitorIdStopsEvents() throws {
+        var config = try XCTUnwrap(Crobox.shared.config)
+        config.visitorId = nil
+
+        Crobox.shared.configure(config)
+
+        XCTAssertFalse(CroboxAPIServices.shared.sendsEvents)
+    }
+
     func testPromotionsBodyKeepsOrderAndEncodesIds() {
         let body = CroboxAPIServices.shared.promotionsBody(productIds: ["c", "a", "b&x=1", "50%+"])
         XCTAssertEqual("0=c&1=a&2=b%26x%3D1&3=50%25%2B", body)
