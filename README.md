@@ -18,7 +18,7 @@ In a `Package.swift`, add the package and the `Crobox` product:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "2.0.0"),
+    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "2.0.1"),
 ],
 targets: [
     .target(name: "YourApp", dependencies: [
@@ -133,12 +133,14 @@ Pass the product ids in the order they are displayed: the server ranks promotion
                                                     view: overviewView,
                                                     productIds: ["1", "2", "3"])
         switch result {
-        case let .success(p):
-            print("id: \(p.promotions[2].id ?? "")")
-            print("campaignId: \(String(describing: p.promotions[2].campaignId))")
-            print("productId: \(p.promotions[2].productId ?? "")")
-            print("content.id: \(p.promotions[2].content?.id ?? "")")
-            print("content.config: \(p.promotions[2].content?.config?.data ?? [:])")
+        case let .success(response):
+            for promotion in response.promotions {
+                print("id: \(promotion.id)")
+                print("campaignId: \(promotion.campaignId)")
+                print("productId: \(promotion.productId ?? "")")
+                print("content.messageId: \(promotion.content?.messageId ?? "")")
+                print("content.config: \(promotion.content?.config ?? [:])")
+            }
         case let .failure(error):
             print(error)
         }
