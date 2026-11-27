@@ -18,7 +18,7 @@ In a `Package.swift`, add the package and the `Crobox` product:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "2.0.1"),
+    .package(url: "https://github.com/crobox/crobox-sdk-ios.git", from: "2.1.0"),
 ],
 targets: [
     .target(name: "YourApp", dependencies: [
