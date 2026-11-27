@@ -9,7 +9,7 @@ This is an asynchronous SDK kit for consuming Crobox API for iOS applications, w
 
 ## Installation
 
-The SDK is distributed with Swift Package Manager and needs iOS 16 or later.
+The SDK is distributed with Swift Package Manager and needs iOS 15 or later.
 
 In Xcode, choose **File → Add Package Dependencies…**, enter `https://github.com/crobox/crobox-sdk-ios.git`
 and add the `Crobox` library to your app target.
