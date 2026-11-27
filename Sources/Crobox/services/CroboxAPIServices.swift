@@ -8,9 +8,7 @@ class CroboxAPIServices {
                     view:ViewContext,
                     productIds: [String] = []) async throws -> PromotionsResponse {
 
-        //Mandatory
-        var parameters = try viewParameters(view: view)
-        parameters["vpid"] = String(placementId)
+        let parameters = try promotionsParameters(placementId: placementId, view: view)
         let queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         guard var urlComponents = URLComponents(string: "\(Constant.Promotions_Path)") else {
@@ -41,7 +39,20 @@ class CroboxAPIServices {
                params:Any?,
                view:ViewContext) async throws -> Void {
         let parameters = try eventParameters(eventType: eventType, params: params, view: view)
+        guard sendsEvents else { return }
         return try await APIRequests.shared.get(url: Constant.Event_Path , parameters: parameters)
+    }
+
+    /// Without a visitorId the user hasn't consented to tracking, so no event leaves the device, error events included.
+    var sendsEvents: Bool {
+        return Crobox.shared.config?.visitorId != nil
+    }
+
+    /// All query parameters of a promotions request
+    func promotionsParameters(placementId: Int, view: ViewContext) throws -> [String: String] {
+        var parameters = try viewParameters(view: view)
+        parameters["vpid"] = String(placementId)
+        return parameters
     }
 
     /// The form-encoded body of a promotions request. The server ranks promotions in this order.
@@ -78,18 +89,23 @@ class CroboxAPIServices {
         // Mandatory
         var parameters = [
             "cid": config.containerId,
-            "pid": "\(config.visitorId)",
             "e": "\(view.viewCounter())",
-            "vid": "\(view.viewId)",
             "pt": "\(view.viewType.rawValue)",
             "sdk": "1"
         ]
+        if let visitorId = config.visitorId {
+            parameters["pid"] = "\(visitorId)"
+            parameters["vid"] = "\(view.viewId)"
+            if let userId = config.userId {
+                parameters["uid"] = userId
+            }
+        } else {
+            // Opted out, as the website's optOut(): nothing that identifies the visitor, and Crobox stores nothing
+            parameters["dnp"] = "true"
+        }
         // Optional
         if let localeCode = config.localeCode {
             parameters["lc"] = localeCode.code
-        }
-        if let userId = config.userId {
-            parameters["uid"] = userId
         }
         let now = Date()
         parameters["tz"] = CroboxAPIServices.timezoneOffsetHours(config.timezone ?? TimeZone.current, at: now)

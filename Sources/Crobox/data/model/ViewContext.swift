@@ -266,7 +266,7 @@ public struct PurchaseParams {
  Common Configuration parameters for all requests
  
  - parameter containerId: This is the unique id of the Crobox Container as it is generated and assigned by Crobox.
- - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxVisitor.visitorId()` unless the app already stores its own id.
+ - parameter visitorId: This is a randomly generated id that identifies a visitor / user. It must stay the same across app launches: campaign and control assignment is keyed on it, so a new id on every launch re-buckets the user. Use `CroboxVisitor.visitorId()` unless the app already stores its own id. Nil when the user hasn't consented to tracking: the SDK then sends no events, and requests promotions without identifying the visitor and with "do not persist", like the website's opt-out. Set it once the user consents.
  - parameter localeCode: Locale code combination for the localization. Crobox picks the region (country, language and currency) of the Container from it, so in a Container with several regions it must be set to the region the user is shopping in.
  - parameter userId: It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
  - parameter timezone: Time zone of the visitor, to use instead of the device's, for example `TimeZone(identifier: "Europe/Amsterdam")`. It is sent as its offset from UTC in hours at the time of each request. When nil, the device's time zone is used.
@@ -274,13 +274,13 @@ public struct PurchaseParams {
  */
 public struct CroboxConfig {
     public let containerId: String
-    public let visitorId: UUID
+    public var visitorId: UUID?
     public var localeCode: LocaleCode?
     public var userId: String?
     public var timezone: TimeZone?
     public var customProperties: [String: String]?
 
-    public init(containerId: String, visitorId: UUID, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: TimeZone? = nil, customProperties: [String: String]? = nil) {
+    public init(containerId: String, visitorId: UUID?, localeCode: LocaleCode? = nil, userId: String? = nil, timezone: TimeZone? = nil, customProperties: [String: String]? = nil) {
         self.containerId = containerId
         self.visitorId = visitorId
         self.localeCode = localeCode
