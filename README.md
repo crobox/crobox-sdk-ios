@@ -137,7 +137,6 @@ Pass the product ids in the order they are displayed: the server ranks promotion
             print("id: \(p.promotions[2].id ?? "")")
             print("campaignId: \(String(describing: p.promotions[2].campaignId))")
             print("productId: \(p.promotions[2].productId ?? "")")
-            print("variantId: \(p.promotions[2].variantId ?? -1)")
             print("content.id: \(p.promotions[2].content?.id ?? "")")
             print("content.config: \(p.promotions[2].content?.config?.data ?? [:])")
         case let .failure(error):
@@ -171,7 +170,6 @@ Pass the product ids in the order they are displayed: the server ranks promotion
             for promotion in response.promotions {
                 let promotionId = promotion.id
                 let campaignId = promotion.campaignId
-                let variantId = promotion.variantId
                 let productId = promotion.productId
                 if let content = promotion.content {
                     let messageId = content.messageId
@@ -224,9 +222,9 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 
 | Name        | Type    | Description                                                                                                                                                                                                                                         |
 |-------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| id          | String  | Campaign ID                                                                                                                                                                                                                                         |
+| id          | Int     | Campaign ID                                                                                                                                                                                                                                         |
 | name        | String  | Campaign Name                                                                                                                                                                                                                                       |
-| variantId   | String  | There is a ratio that determines the amount of traffic exposed to this campaign (or is allocated to the control group) between Crobox and Control group. Variant id refers to the variant which this promotion belongs to and is used for debugging |
+| variantId   | Int     | There is a ratio that determines the amount of traffic exposed to this campaign (or is allocated to the control group) between Crobox and Control group. Variant id refers to the variant which this promotion belongs to and is used for debugging |
 | variantName | String  | Name of the Campaign Variant                                                                                                                                                                                                                        |  
 | control     | Boolean | Indicates if the variant is allocated to the control group                                                                                                                                                                                          |
 
@@ -234,11 +232,12 @@ Pass the product ids in the order they are displayed: the server ranks promotion
 
 | Name       | Type              | Description                                          |
 |------------|-------------------|------------------------------------------------------|
-| id         | String            | Unique id for this promotion                         |
+| id         | UUID              | Unique id for this promotion                         |
 | productId  | String?           | Product ID if requested                              |
 | campaignId | Int               | The campaign which this promotion belongs to         |
-| variantId  | Int               | ID of the variant that this promotion is assigned to |
 | content    | PromotionContent? | Promotion Content                                    |
+
+The variant a promotion belongs to is the `variantId` of the campaign in `context.campaigns` with the same `campaignId`.
 
 ### PromotionContent
 
