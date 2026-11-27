@@ -12,7 +12,7 @@ final class PromotionTests: XCTestCase {
     }
     
     override func tearDown() async throws {
-        try await Task.sleep(for: .milliseconds(100), tolerance: .seconds(0.5))
+        try await Task.sleep(nanoseconds: 100_000_000)
     }
     
     func testPromotionsNoProduct() async throws {

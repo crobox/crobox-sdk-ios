@@ -38,10 +38,8 @@ final class PromotionsResponseTests: XCTestCase {
                             },
                             "id": "dd737bf6-0223-48e8-b102-b680265219ef"
                         },
-                        "experimentId": 1,
                         "id": "821037e1-42a6-11ef-b765-a7995e01acd0",
-                        "productId": "Product1",
-                        "variantId": 1
+                        "productId": "Product1"
                     },
                     {
                         "campaignId": 2,
@@ -53,11 +51,8 @@ final class PromotionsResponseTests: XCTestCase {
                             },
                             "id": "94d31690-f4be-4e77-9f26-c711d3c7b258"
                         },
-                        "experimentId": 2,
                         "id": "820fe9a0-42a6-11ef-b765-a7995e01acd0",
-                        "parameters": {},
-                        "productId": "Product2",
-                        "variantId": 1
+                        "productId": "Product2"
                     }
                 ]
             }
@@ -84,7 +79,6 @@ final class PromotionsResponseTests: XCTestCase {
         if let promotion1 = promotionResponse.promotions.filter ({ p in p.campaignId == 1}).first {
             XCTAssertEqual(UUID(uuidString: "821037e1-42a6-11ef-b765-a7995e01acd0"), promotion1.id)
             XCTAssertEqual(1, promotion1.campaignId)
-            XCTAssertEqual(1, promotion1.variantId)
             XCTAssertEqual("Product1", promotion1.productId)
             XCTAssertEqual("component1.tsx", promotion1.content?.componentName)
             XCTAssertEqual("dd737bf6-0223-48e8-b102-b680265219ef", promotion1.content?.messageId)
@@ -95,7 +89,6 @@ final class PromotionsResponseTests: XCTestCase {
         if let promotion2 = promotionResponse.promotions.filter({ p in p.campaignId == 2}).first {
             XCTAssertEqual(UUID(uuidString: "820fe9a0-42a6-11ef-b765-a7995e01acd0"), promotion2.id)
             XCTAssertEqual(2, promotion2.campaignId)
-            XCTAssertEqual(1, promotion2.variantId)
             XCTAssertEqual("Product2", promotion2.productId)
             XCTAssertEqual("component2.tsx", promotion2.content?.componentName)
             XCTAssertEqual("94d31690-f4be-4e77-9f26-c711d3c7b258", promotion2.content?.messageId)

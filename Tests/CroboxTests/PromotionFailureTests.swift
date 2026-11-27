@@ -4,7 +4,7 @@ import XCTest
 final class PromotionFailureTests: XCTestCase {
     
     override func tearDown() async throws {
-        try await Task.sleep(for: .milliseconds(2000), tolerance: .seconds(0.5))
+        try await Task.sleep(nanoseconds: 2_000_000_000)
     }
     
     func testPromotionsError() async throws {

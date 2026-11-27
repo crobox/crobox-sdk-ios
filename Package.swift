@@ -7,7 +7,7 @@ let package = Package(
     name: "Crobox",
     platforms: [
         .macOS(.v10_15),
-        .iOS(.v16)
+        .iOS(.v15)
     ],
     products: [
         .library(name: "Crobox",targets: ["Crobox"]),

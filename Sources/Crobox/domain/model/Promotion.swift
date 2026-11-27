@@ -7,8 +7,6 @@ public class Promotion: NSObject, Decodable {
     public let id: UUID
     /// Product ID that this promotion was requested for
     public let productId: String?
-    /// The variant which this promotion belongs to
-    public let variantId: Int
     /// The campaign which this promotion belongs to
     public let campaignId: Int
     /// Promotion Content
@@ -26,7 +24,6 @@ public class Promotion: NSObject, Decodable {
 
         // Decode other properties with defaulting or optional handling
         self.productId = try? container.decode(String?.self, forKey: .productId) // Optional, defaults to `nil`
-        self.variantId = (try? container.decode(Int.self, forKey: .variantId)) ?? 0 // Default to 0
         self.campaignId = (try? container.decode(Int.self, forKey: .campaignId)) ?? 0 // Default to 0
         self.content = try? container.decode(PromotionContent.self, forKey: .content) // Optional, defaults to `nil`
     }
@@ -34,7 +31,6 @@ public class Promotion: NSObject, Decodable {
     private enum CodingKeys: String, CodingKey {
         case id
         case productId
-        case variantId
         case campaignId
         case content
     }
