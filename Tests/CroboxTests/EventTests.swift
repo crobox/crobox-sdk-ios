@@ -11,7 +11,7 @@ final class EventTests: XCTestCase {
     }
     
     override func tearDown() async throws {
-        try await Task.sleep(for: .milliseconds(1000), tolerance: .seconds(0.5))
+        try await Task.sleep(nanoseconds: 1_000_000_000)
     }
     
     func testClickEvent() async throws {
